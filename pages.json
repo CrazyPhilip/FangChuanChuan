@@ -1,0 +1,236 @@
+{
+	"easycom": {
+		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+	},
+
+	"pages": [{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Home/Home",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/HouseList",
+			"style": {
+				"navigationBarTitleText": "房源管理",
+				"navigationStyle": "custom", // 隐藏系统导航栏
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/HouseManage/EstateSelector",
+			"style": {
+				"navigationBarTitleText": "搜索小区",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/HouseDetail",
+			"style": {
+				"navigationBarTitleText": "房源详情",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/HouseDetail2",
+			"style": {
+				"navigationBarTitleText": "房源详情",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/HouseFollowUp",
+			"style": {
+				"navigationBarTitleText": "看跟进",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/NewHouseFollowUp",
+			"style": {
+				"navigationBarTitleText": "写跟进",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/map",
+			"style": {
+				"navigationBarTitleText": "地图找房",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/map2",
+			"style": {
+				"navigationBarTitleText": "地图找房",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/map3",
+			"style": {
+				"navigationBarTitleText": "地图找房",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/mapHouseList",
+			"style": {
+				"navigationBarTitleText": "地图房源列表",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Home/location",
+			"style": {
+				"navigationBarTitleText": "城市定位",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/CustomerManage/CustomerList",
+			"style": {
+				"navigationBarTitleText": "客源管理",
+				"navigationStyle": "custom", // 隐藏系统导航栏
+				"enablePullDownRefresh": true
+			}
+		},
+		{
+			"path": "pages/CustomerManage/CustomerDetail",
+			"style": {
+				"navigationBarTitleText": "客源详情",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/CustomerManage/CustomerFollowUp",
+			"style": {
+				"navigationBarTitleText": "看跟进",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/CustomerManage/NewCustomerFollowUp",
+			"style": {
+				"navigationBarTitleText": "写跟进",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/User/me",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/User/ResetPassword",
+			"style": {
+				"navigationBarTitleText": "重置密码",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/User/Register",
+			"style": {
+				"navigationBarTitleText": "注册",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/User/EditUserInfo",
+			"style": {
+				"navigationBarTitleText": "修改用户信息",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/OuterNet",
+			"style": {
+				"navigationBarTitleText": "全网房源",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Home/About",
+			"style": {
+				"navigationBarTitleText": "关于",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Calculator/taxCalculator2",
+			"style": {
+				"navigationBarTitleText": "税费计算器",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Calculator/loanCalculator2",
+			"style": {
+				"navigationBarTitleText": "房贷计算器",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/NewHouse",
+			"style": {
+				"navigationBarTitleText": "新增房源",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/CustomerManage/NewCustomer",
+			"style": {
+				"navigationBarTitleText": "新增客源",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		}
+	],
+
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "JunJun",
+		"navigationBarBackgroundColor": "#007AFF",
+		"backgroundColor": "#FFFFFF"
+	},
+
+	"tabBar": {
+		"color": "#fff",
+		"selectedColor": "#2196f3",
+		"backgroundColor": "#FFFFFF",
+		"list": [{
+				"pagePath": "pages/Home/Home",
+				"iconPath": "/static/icon/home.png",
+				"selectedIconPath": "/static/icon/home_sel.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/HouseManage/HouseList",
+				"iconPath": "/static/icon/building.png",
+				"selectedIconPath": "/static/icon/building_sel.png",
+				"text": "房源管理"
+			},
+			{
+				"pagePath": "pages/CustomerManage/CustomerList",
+				"iconPath": "/static/icon/people.png",
+				"selectedIconPath": "/static/icon/people_sel.png",
+				"text": "客源管理"
+			},
+			{
+				"pagePath": "pages/User/me",
+				"iconPath": "/static/icon/me.png",
+				"selectedIconPath": "/static/icon/me_sel.png",
+				"text": "我的"
+			}
+		]
+	}
+}

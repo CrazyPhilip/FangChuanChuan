@@ -1,0 +1,462 @@
+<template>
+	<view>
+		<map id="map1" ref="map1" style="width: 750rpx; height: 1500rpx;" :latitude="center.lat" :longitude="center.lng" :scale="zoom"
+		 :show-compass="false" :markers="bubbles" :polygons="polygons" @markertap="markerTap" @callouttap="showHouseList"
+		 :controls="controls" @controltap="controlTap" @regionchange="regionChange">
+
+			<cover-view style="background-color: white;">
+				<view class="navBar">
+					<icon type="cancel" size="30" @click="goBack"></icon>
+					<view style="border-width: 2rpx;border-color: #007AFF;border-radius: 8rpx;padding: 10rpx;background-color: #007AFF;">
+						<picker @change="change0" :value="value0" :range="options0">
+							<text style="font-size: 30rpx;color: white;">{{options0[value0]}}</text>
+						</picker>
+					</view>
+					<icon type="search" size="30" @click="toSearch"></icon>
+				</view>
+
+				<view class="pickers">
+					<view>
+						<picker @change="change1" :value="value1" :range="options1">
+							<text style="font-size: 30rpx;color: black;">{{options1[value1]}}</text>
+						</picker>
+					</view>
+					<view>
+						<picker @change="change2" :value="value2" :range="options2">
+							<text style="font-size: 30rpx;color: black;">{{options2[value2]}}</text>
+						</picker>
+					</view>
+					<view>
+						<picker @change="change3" :value="value3" :range="options3">
+							<text style="font-size: 30rpx;color: black;">{{options3[value3]}}</text>
+						</picker>
+					</view>
+					<view>
+						<picker @change="change4" :value="value4" :range="options4">
+							<text style="font-size: 30rpx;color: black;">{{options4[value4]}}</text>
+						</picker>
+					</view>
+				</view>
+
+			</cover-view>
+
+		</map>
+	</view>
+</template>
+
+<script>
+	export default {
+		name: "Map",
+
+		data() {
+			return {
+				mapShow: false,
+				center: {
+					lng: 104.08153533935547,
+					lat: 30.65582275390625
+				},
+				zoom: 10,
+				scale: 10,
+				districts: [],
+				zones: [],
+				estates:[],
+				houseList:[],
+				
+				bubbles: [],
+				polygons: [],
+				polygonId: -1,
+				controls: [
+					/* {
+						id:0,
+						iconPath:'/static/icon/star_yellow.png',
+						clickable:true,
+						position:{
+							left: 40,
+							top: 500,
+							width:40,
+							height:40
+						}
+					} */
+				],
+
+				type1: 'primary',
+				type2: 'default',
+				type3: 'default',
+
+				value0: 0,
+				value1: 0,
+				value2: 0,
+				value3: 0,
+				value4: 0,
+				options0: ['二手房', '租房', '新房'],
+				options1: ['区域', '1房', '2房', '3房', '4房及以上'],
+				options2: ['全部房型', '1房', '2房', '3房', '4房及以上'],
+				options3: ['全部价格', '0-30万', '30-50万', '50-100万', '100-150万', '150-200万', '200-300万', '300-500万', '500万及以上'],
+				options4: ['全部面积', '0-20平米', '20-50平米', '50-100平米', '100-150平米', '150-200平米', '200-250平米', '250-500平米',
+					'500-800平米', '800平米以上'
+				],
+
+			};
+		},
+
+		computed: {
+			getPolygonPath() {
+				let arr2 = [];
+				if (this.polygonPath !== "") {
+					let arr = this.polygonPath.split(";");
+					for (let i = 0; i < arr.length; i++) {
+						let arr3 = arr[i].split(",");
+						arr2.push({
+							lng: parseFloat(arr3[0]),
+							lat: parseFloat(arr3[1])
+						});
+					}
+				}
+				return arr2;
+			}
+		},
+
+		watch: {
+
+		},
+
+		onShow() {
+
+		},
+
+		onReady() {},
+
+		onLoad() {
+			console.log('这是vue');
+
+			uni.request({
+				url: 'http://47.108.202.57:8090/map/getDistrictsV2?cityPinyin=chengdu',
+				success: (res) => {
+					this.districts = res.data.data;
+					var b = [];
+					for (var i = 0; i < this.districts.length; i++) {
+						b[i] = {
+							id: this.districts[i].areaId,
+							latitude: this.districts[i].lat,
+							longitude: this.districts[i].lng,
+							iconPath: '/static/icon/blue_bubble.png',
+							height: 20,
+							width: 20,
+							callout: {
+								content: this.districts[i].districtName + ' ' + this.districts[i].houseCnt + '套',
+								color: '#FFFFFF',
+								bgColor: '#2979ff',
+								display: 'ALWAYS',
+								borderRadius: 8,
+								padding: 8
+							},
+							level:'district',
+							/* label:{
+								content:this.districts[i].districtName + ' ' + this.districts[i].houseCnt + '套',
+								color:'#000000',
+								bgColor: '#FFFFFF',
+								textAlign: 'center',
+								x: '10',
+								y: '10',
+							} */
+						};
+					};
+					this.bubbles = b;
+				}
+			});
+
+			uni.request({
+				url: 'http://47.108.202.57:8090/map/getZonesV2?cityPinyin=chengdu',
+				success: (res) => {
+					this.zones = res.data.data;
+				}
+			});
+
+			uni.request({
+				url: 'http://47.108.202.57:8090/map/getCityV2?cityPinyin=chengdu',
+				success: (res) => {
+					const data = res.data;
+					this.center.lng = data.lng;
+					this.center.lat = data.lat;
+					//this.$set(this.center, "lng", data.lng);
+					//this.$set(this.center, "lat", data.lat);
+				}
+			});
+			
+			
+
+		},
+
+		methods: {
+			goBack() {
+				uni.navigateBack({
+					delta: 1
+				});
+			},
+
+			toSearch() {
+				console.log(this.zones);
+			},
+
+			controlTap(e) {
+				console.log(e.detail.controlId);
+			},
+
+			change0(e) {
+				this.value0 = e.detail.value;
+			},
+			change1(e) {
+				this.value1 = e.detail.value;
+			},
+			change2(e) {
+				this.value2 = e.detail.value;
+			},
+			change3(e) {
+				this.value3 = e.detail.value;
+			},
+			change4(e) {
+				this.value4 = e.detail.value;
+			},
+
+			markerTap(e) {
+				//console.log(e.detail.markerId);
+				console.log(this.scale);
+				
+				if(this.polygonId === e.detail.markerId && this.polygons.length > 0){
+					//console.log(this.polygons);
+					this.polygons = [];
+					return;
+				}
+				this.polygons = [];
+				this.polygonId = e.detail.markerId;
+				var points = [];
+				
+				if(this.scale < 12){
+					for (var i = 0; i < this.districts.length; i++) {
+						if (this.districts[i].areaId === e.detail.markerId) {
+							this.center.lng = this.districts[i].lng;
+							this.center.lat = this.districts[i].lat;
+							//this.zoom = 10;
+							var ps = this.districts[i].border.split(';');
+							for (var j = 0; j < ps.length; j++) {
+								var p = ps[j].split(',');
+								points.push({
+									longitude: parseFloat(p[0]),
+									latitude: parseFloat(p[1])
+								});
+							}
+					
+							this.polygons.push({
+								points: points,
+								fillColor: '#26beff7f',
+								strokeWidth: 1,
+								strokeColor: "#FF2F13"
+							});
+							
+						}
+					}
+				}
+				else if(this.scale >= 12 && this.scale < 14){
+					uni.request({
+						url:'http://47.108.202.57:8090/map/getEstatesByZoneIdAndConditionV2?cityPinyin=chengdu&zoneId=' + this.polygonId,
+						data:{},
+						method:'POST',
+						success: (res) => {
+							console.log(res.data);
+							this.estates = res.data.data;
+							var b = [];
+							for (var i = 0; i < this.estates.length; i++) {
+								b[i] = {
+									id: this.estates[i].estateId,
+									latitude: this.estates[i].lat,
+									longitude: this.estates[i].lng,
+									iconPath: '/static/icon/blue_bubble.png',
+									height: 20,
+									width: 20,
+									callout: {
+										content: this.estates[i].estateName + ' ' + this.estates[i].houseCnt + '套 ' + this.estates[i].salePrice + '万',
+										color: '#FFFFFF',
+										bgColor: '#2979ff',
+										display: 'ALWAYS',
+										borderRadius: 8,
+										padding: 8
+									},
+									level:'estate',
+									/* label:{
+										content:this.estates[i].districtName + ' ' + this.estates[i].houseCnt + '套',
+										color:'#000000',
+										bgColor: '#FFFFFF',
+										textAlign: 'center',
+										x: '10',
+										y: '10',
+									} */
+								};
+							};
+							this.bubbles = b;
+						}
+					});
+					
+					for (var i = 0; i < this.zones.length; i++) {
+						if (this.zones[i].areaId === e.detail.markerId) {
+							this.center.lng = this.zones[i].lng;
+							this.center.lat = this.zones[i].lat;
+							this.zoom = 15;
+							var ps = this.zones[i].border.split(';');
+							for (var j = 0; j < ps.length; j++) {
+								var p = ps[j].split(',');
+								points.push({
+									longitude: parseFloat(p[0]),
+									latitude: parseFloat(p[1])
+								});
+							}
+					
+							this.polygons.push({
+								points: points,
+								fillColor: '#26beff7f',
+								strokeWidth: 1,
+								strokeColor: "#FF2F13"
+							});
+							
+						}
+					}
+				}
+				else if(this.scale >= 14){
+					for (var i = 0; i < this.estates.length; i++) {
+						if (this.estates[i].estateId === e.detail.markerId) {
+							uni.navigateTo({
+								url:'./mapHouseList?estateId=' + this.estates[i].estateId + '&estateName=' + this.estates[i].estateName,
+							});
+							
+							// uni.request({
+							// 		url:'http://47.108.202.57:8090/property/getPropertiesByEstateId?cityPinyin=chengdu&pageNum=1&pageSize=10&estateId=' + this.estates[i].estateId,
+							// 		data:{},
+							// 		method:'GET',
+							// 		success: (res) => {
+							// 			console.log(res.data);
+							// 			this.houseList = res.data.data;
+										
+							// 		}
+							// 	});
+							
+						}
+					}
+					
+				}
+				
+			},
+			
+			regionChange(){
+				uni.createMapContext('map1', this).getScale({
+					success:(res) =>{
+						//this.scale = res.scale;
+						console.log(this.scale);
+						if(res.scale < 12 && this.scale > 12){
+							
+							var b = [];
+							for (var i = 0; i < this.districts.length; i++) {
+								b[i] = {
+									id: this.districts[i].areaId,
+									latitude: this.districts[i].lat,
+									longitude: this.districts[i].lng,
+									iconPath: '/static/icon/blue_bubble.png',
+									height: 20,
+									width: 20,
+									callout: {
+										content: this.districts[i].districtName + ' ' + this.districts[i].houseCnt + '套',
+										color: '#FFFFFF',
+										bgColor: '#2979ff',
+										display: 'ALWAYS',
+										borderRadius: 8,
+										padding: 8
+									},
+									level:'district',
+									/* label:{
+										content:this.districts[i].districtName + ' ' + this.districts[i].houseCnt + '套',
+										color:'#000000',
+										bgColor: '#FFFFFF',
+										textAlign: 'center',
+										x: '10',
+										y: '10',
+									} */
+								};
+							};
+							this.bubbles = b;
+						}
+						if(res.scale >= 12 && res.scale < 14 && (this.scale < 12 || this.scale > 14) ){
+							var b = [];
+							for (var i = 0; i < this.zones.length; i++) {
+								b[i] = {
+									id: this.zones[i].areaId,
+									latitude: this.zones[i].lat,
+									longitude: this.zones[i].lng,
+									iconPath: '/static/icon/blue_bubble.png',
+									height: 20,
+									width: 20,
+									callout: {
+										content: this.zones[i].zoneName + ' ' + this.zones[i].houseCnt + '套',
+										color: '#FFFFFF',
+										bgColor: '#2979ff',
+										display: 'ALWAYS',
+										borderRadius: 8,
+										padding: 8
+									},
+									level:'zone',
+									/* label:{
+										content:this.zones[i].zoneName + ' ' + this.zones[i].houseCnt + '套',
+										color:'#000000',
+										bgColor: '#FFFFFF',
+										textAlign: 'center',
+										x: '10',
+										y: '10',
+									} */
+								};
+							};
+							this.bubbles = b;
+						}
+						else if(res.scale >= 14 && this.scale < 14){
+						
+						}
+						
+						this.scale = res.scale;
+					}
+				});
+			},
+
+			showHouseList(e) {
+				for (var i = 0; i < this.districts.length; i++) {
+					if (this.districts[i].areaId === e.detail.markerId) {
+						
+					}
+				}
+			},
+
+		},
+
+		// 判断一个对象是否为空对象
+		ifEmptyObj(obj) {
+			if (JSON.stringify(obj) == "{}") {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	};
+</script>
+
+<style scoped lang="scss">
+	.pickers {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		height: 60upx;
+		padding: 0 20upx;
+	}
+
+	.navBar {
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: center;
+		height: 100upx;
+		padding: 0 20upx;
+	}
+</style>
