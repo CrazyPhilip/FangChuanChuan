@@ -133,7 +133,7 @@
 		},
 	
 		onLoad() {
-			this.getDistrictsByCity('cd');
+			
 		},
 	
 		onReady() {
@@ -153,7 +153,7 @@
 				});
 			},
 			
-			//注册
+			//修改密码
 			modifyPassword() {
 				this.$u.get(this.global_data.global_data.BaseUrl + 'ModTelPassword', {
 					Tel: this.model.phone,

@@ -40,6 +40,13 @@
 			}
 		},
 		{
+			"path": "pages/HouseManage/HouseGrabList",
+			"style": {
+				"navigationBarTitleText": "抢房列表",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
 			"path": "pages/HouseManage/HouseDetail2",
 			"style": {
 				"navigationBarTitleText": "房源详情",
@@ -160,9 +167,9 @@
 			}
 		},
 		{
-			"path": "pages/Home/About",
+			"path": "pages/User/FollowArea",
 			"style": {
-				"navigationBarTitleText": "关于",
+				"navigationBarTitleText": "关注区域",
 				"navigationStyle": "custom" // 隐藏系统导航栏
 			}
 		},
@@ -193,6 +200,62 @@
 				"navigationBarTitleText": "新增客源",
 				"navigationStyle": "custom" // 隐藏系统导航栏
 			}
+		},
+		{
+			"path": "pages/Message/MessageList",
+			"style": {
+				"navigationBarTitleText": "消息",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/Achievement",
+			"style": {
+				"navigationBarTitleText": "业绩报表",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Setting/Setting",
+			"style": {
+				"navigationBarTitleText": "设置",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Setting/Privacy",
+			"style": {
+				"navigationBarTitleText": "用户隐私与规则中心",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Setting/Service",
+			"style": {
+				"navigationBarTitleText": "用户服务协议",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Setting/About",
+			"style": {
+				"navigationBarTitleText": "关于",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Setting/Credentials",
+			"style": {
+				"navigationBarTitleText": "证照资质中心",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Setting/BadInfoReport",
+			"style": {
+				"navigationBarTitleText": "违法和不良信息举报",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
 		}
 	],
 
@@ -204,7 +267,7 @@
 	},
 
 	"tabBar": {
-		"color": "#fff",
+		"color": "#8a8a8a",
 		"selectedColor": "#2196f3",
 		"backgroundColor": "#FFFFFF",
 		"list": [{
@@ -217,13 +280,19 @@
 				"pagePath": "pages/HouseManage/HouseList",
 				"iconPath": "/static/icon/building.png",
 				"selectedIconPath": "/static/icon/building_sel.png",
-				"text": "房源管理"
+				"text": "房源"
 			},
 			{
 				"pagePath": "pages/CustomerManage/CustomerList",
 				"iconPath": "/static/icon/people.png",
 				"selectedIconPath": "/static/icon/people_sel.png",
-				"text": "客源管理"
+				"text": "客源"
+			},
+			{
+				"pagePath": "pages/Message/MessageList",
+				"iconPath": "/static/icon/message.png",
+				"selectedIconPath": "/static/icon/message_sel.png",
+				"text": "消息"
 			},
 			{
 				"pagePath": "pages/User/me",

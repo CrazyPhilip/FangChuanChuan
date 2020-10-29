@@ -93,12 +93,30 @@
 
 			</u-form>
 			
-			<view class="agreement">
-				<u-checkbox v-model="model.shareToOutside" @change="checkboxChange"></u-checkbox>
-				<view class="agreement-text">对外展示</view>
-				<view>将房源概要信息同步至外网，保证信息安全</view>
+			<view calss="agreement" v-if = "model.show_agree">
+				
+				<u-row style="margin: 30rpx 0;">
+					<u-checkbox v-model="model.shareToOutside" @change="checkboxChange0"></u-checkbox>
+					<view class="agreement-text">对外展示</view>
+					<view>将房源概要信息同步至外网，保证信息安全</view>
+				</u-row>
+				
+				<u-row style="margin: 30rpx 0;">
+					<u-checkbox v-model="model.shareToBroker" @change="checkboxChange1"></u-checkbox>
+					<view class="agreement-text">对外分享</view>
+					<view>将该房源概要信息分享，推送给其他独立经纪人</view>
+				</u-row>
+				
 			</view>
-
+			<!-- <view class="agreement" v-if = "model.show_agree">
+				
+			
+				
+				<u-checkbox v-model="model.shareToBroker" @change="checkboxChange"></u-checkbox>
+				<view class="agreement-text">对外分享</view>
+				<view>将该房源信息分享给其他独立经纪人</view>
+			</view> -->
+			
 			<view style="margin: 20rpx 0; text-align: center;font-weight: bold;">以上为必填信息</view>
 
 			<!--非必填信息-->
@@ -255,7 +273,7 @@
 					<u-button @click="reset" type="default">清空</u-button>
 				</u-col>
 				<u-col span="6" text-align="center" @click="submit">
-					<u-button @click="submit" type="primary">确定新增</u-button>
+					<u-button @click="submit" type="primary">{{model.btnText}}</u-button>
 				</u-col>
 			</u-row>
 			
@@ -277,6 +295,8 @@
 					floor:'',
 					floorAll:'',
 					roomNo:'',
+					show_agree:true,
+					btnText:'确认新增',
 					houseTitle:'',
 					trade:'',
 					direction:'',
@@ -289,6 +309,7 @@
 					ownerName:'',
 					ownerMobile:'',
 					shareToOutside:false,
+					shareToBroker:false,
 				},
 				optionalModel: {
 					decoration: '',
@@ -576,7 +597,10 @@
 			for (var i = 1970; i <= 2030; i++) {
 				this.builtYearList.push(i);
 			}
-		},
+			this.global_data.global_data.AccountStyle = '独立经纪人';
+			this.model.show_agree = this.global_data.global_data.AccountStyle === '独立经纪人' ? true:false;
+			this.model.btnText = this.global_data.global_data.AccountStyle === '独立经纪人' ? '确认新增':'确认分享';
+		},	
 
 		onReady() {
 			this.$refs.uForm0.setRules(this.rules);
@@ -681,11 +705,56 @@
 			},
 			
 			reset() {
+				this.model.fileList = [];
+				this.model.estate = '';
+				this.model.building = '';
+				this.model.unit = '';
+				this.model.floor = '';
+				this.model.floorAll = '';
+				this.model.roomNo = '';
+				this.model.houseTitle = '';
+				this.model.trade = '';
+				this.model.direction = '';
+				this.model.price = '';
+				this.model.square = '';
+				this.model.countF = '';
+				this.model.countT = '';
+				this.model.countW = '';
+				this.model.countY = '';
+				this.model.ownerName = '';
+				this.model.ownerMobile = '';
+				this.model.shareToOutside = false;
+				this.model.shareToBroker = false;
 				
+				this.optionalModel.decoration = '';
+				this.optionalModel.furniture = '';
+				this.optionalModel.type = '';
+				this.optionalModel.usage = '';
+				this.optionalModel.source = '';
+				this.optionalModel.right = '';
+				this.optionalModel.credentials = '';
+				this.optionalModel.status = '';
+				this.optionalModel.lookWay = '';
+				this.optionalModel.KeyNo = '';
+				this.optionalModel.commissionPay = '';
+				this.optionalModel.payment = '';
+				this.optionalModel.ownership = '';
+				this.optionalModel.entrustDate = '2020/01/01';
+				this.optionalModel.releaseDate = '2020/01/01';
+				this.optionalModel.builtYear = '2020';
+				this.optionalModel.Remark = '';
+				this.optionalModel.PropertyIntroduce = '';
+				this.optionalModel.OwnerIntroduce = '';
+				this.optionalModel.ServiceIntroduce = '';
+				
+				this.optionalModel.FlagMWWY = false;
+				this.optionalModel.FlagWDY = false;
+				this.optionalModel.FlagKDK = false;
+				this.optionalModel.FlagXSFY = false;
 			},
 
 			submit() {
-				this.$refs.uForm.validate(valid => {
+				this.$refs.uForm0.validate(valid => {
 					if (valid) {
 						console.log('验证通过');
 						this.NewHouse();
@@ -748,6 +817,7 @@
 					OwnerMobile2:'',
 					OwnerMobile3:'',
 					FlagWeb:this.model.shareToOutside?"1":"0",
+					FlagShare:this.model.shareToBroker?"1":"0",
 					FlagMWWY:this.optionalModel.FlagMWWY?"1":"0",
 					FlagWDY:this.optionalModel.FlagWDY?"1":"0",
 					FlagKDK:this.optionalModel.FlagKDK?"1":"0",
@@ -759,7 +829,7 @@
 					'content-type': 'application/x-www-form-urlencoded',
 				}).then(res => {
 					console.log(res);
-					if (res.Flag === 'success') {
+					if (res.Flag === 'success' || res.Flag ==='SQLSuccess') {
 						this.$refs.uToast.show({
 											title: '新增房源成功',
 											type: 'success',
@@ -861,10 +931,13 @@
 			},
 
 			//分享到外网
-			checkboxChange(e) {
+			checkboxChange0(e) {
 				this.model.shareToOutside = e.value;
 			},
-			
+			//分享到其他经纪人
+			checkboxChange1(e) {
+				this.model.shareToBroker = e.value;
+			},
 		}
 	};
 </script>

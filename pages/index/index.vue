@@ -183,7 +183,7 @@
 						if(res.Result.AccountStyle === '1'){
 							this.global_data.global_data.AccountStyle = '独立经纪人';
 						}
-						if(res.Result.AccountStyle === '0'){
+						if(res.Result.AccountStyle === '2'){
 							this.global_data.global_data.AccountStyle = '物业管理中心';
 						}
 						

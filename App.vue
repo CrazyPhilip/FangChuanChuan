@@ -10,21 +10,65 @@
 			global_Tel: '',
 			global_EmpNo: '',
 		}, */
+		
 		onLaunch: function() {
 			console.log('App Launch');
+			/* const jyJPush = uni.requireNativePlugin('JY-JPush');
+			jyJPush.setJYJPushTags({
+			userTag: 'testTag1'
+			}, result => {
+			uni.showToast({
+			icon: 'none',
+			title: JSON.stringify(result)
+			})
+			});
+			jyJPush.getRegistrationID(
+			//  返回的数据会有registrationID，errorCode
+			result => {
+			uni.showToast({
+			icon: 'none',
+			title: JSON.stringify(result)
+			})
+			});
+			this.addJYJPushReceiveNotificationListener();
+			this.addJYJPushReceiveOpenNotificationListener(); */
 		},
 		onShow: function() {
 			console.log('App Show');
 		},
 		onHide: function() {
 			console.log('App Hide');
-		}
+		},
+		methods: {
+			/* addJYJPushReceiveNotificationListener() {
+				const jyJPush = uni.requireNativePlugin('JY-JPush');
+				jyJPush.addJYJPushReceiveNotificationListener(result => {
+					//  监听成功后，若收到推送，会在result返回对应的数据；数据格式保持极光返回的安卓/iOS数据一致
+					uni.showToast({
+						icon: 'none',
+						title: JSON.stringify(result)
+					})
+				});
+			},
+
+
+			addJYJPushReceiveOpenNotificationListener() {
+				const jyJPush = uni.requireNativePlugin('JY-JPush');
+				jyJPush.addJYJPushReceiveOpenNotificationListener(result => {
+					//  监听成功后，若点击推送消息，会触发result；数据格式保持极光返回的安卓/iOS数据一致
+					uni.showToast({
+						icon: 'none',
+						title: JSON.stringify(result)
+					})
+				});
+			}, */
+		},
 	};
 </script>
 
 <style lang="scss">
 	@import "uview-ui/index.scss";
-	
+
 	/* 解决头条小程序组件内引入字体不生效的问题 */
 	/* #ifdef MP-TOUTIAO */
 	@font-face {

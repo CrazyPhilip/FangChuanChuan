@@ -2,24 +2,24 @@
 	<view>
 		<view class="wrap">
 			<view class="u-tabs-box">
-				<u-tabs-swiper ref="tabs" :list="[{name:'出售'}, {name:'出租'}]" :current="current" @change="showChange" :is-scroll="false"
+				<u-tabs-swiper ref="tabs" :list="[{name:'出售'}, {name:'出租'},{name:'已抢'}]" :current="current" @change="showChange" :is-scroll="false"
 				 swiperWidth="750"></u-tabs-swiper>
 			</view>
 
 			<swiper class="swiper-box" :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish">
 
-				<swiper-item class="swiper-item">
+				<swiper-item class="swiper-item"> 
 					<view>
 						<u-row gutter="16" justify="center">
-							<u-col span="3">
+							<!-- <u-col span="3">
 								<view>
 									<u-select v-model="show" :default-value="defaultValue" mode="mutil-column-auto" :list="list" @confirm="confirm"
 									 @cancel="cancel"></u-select>
 									<u-button type="primary" shape="square" size="small" :ripple="true" @click="btnClick">{{ result }}</u-button>
 								</view>
-							</u-col>
+							</u-col> -->
 
-							<u-col span="9">
+							<u-col span="12">
 								<u-dropdown ref="uDropdown" activeColor="#2979ff">
 									<u-dropdown-item @change="change02" v-model="value02" :title="options2[value02].label" :options="options2"></u-dropdown-item>
 									<u-dropdown-item @change="change03" v-model="value03" :title="options3[value03].label" :options="options3"></u-dropdown-item>
@@ -64,15 +64,15 @@
 				<swiper-item class="swiper-item">
 					<view>
 						<u-row gutter="16" justify="center">
-							<u-col span="3">
+							<!-- <u-col span="3">
 								<view>
 									<u-select v-model="show" :default-value="defaultValue" mode="mutil-column-auto" :list="list" @confirm="confirm"
 									 @cancel="cancel"></u-select>
 									<u-button type="primary" shape="square" size="small" :ripple="true" @click="btnClick">{{ result }}</u-button>
 								</view>
-							</u-col>
+							</u-col> -->
 
-							<u-col span="9">
+							<u-col span="12">
 								<u-dropdown ref="uDropdown" activeColor="#2979ff">
 									<u-dropdown-item @change="change12" v-model="value12" :title="options2[value12].label" :options="options2"></u-dropdown-item>
 									<u-dropdown-item @change="change13" v-model="value13" :title="options3[value13].label" :options="options3"></u-dropdown-item>
@@ -114,6 +114,58 @@
 					</scroll-view>
 				</swiper-item>
 
+				<swiper-item class="swiper-item">
+					<!-- <view>
+						<u-row gutter="16" justify="center">
+							<u-col span="3">
+								<view>
+									<u-select v-model="show" :default-value="defaultValue" mode="mutil-column-auto" :list="list" @confirm="confirm"
+									 @cancel="cancel"></u-select>
+									<u-button type="primary" shape="square" size="small" :ripple="true" @click="btnClick">{{ result }}</u-button>
+								</view>
+							</u-col>
+				
+							<u-col span="9">
+								<u-dropdown ref="uDropdown" activeColor="#2979ff">
+									<u-dropdown-item @change="change12" v-model="value12" :title="options2[value12].label" :options="options2"></u-dropdown-item>
+									<u-dropdown-item @change="change13" v-model="value13" :title="options3[value13].label" :options="options3"></u-dropdown-item>
+									<u-dropdown-item @change="change14" v-model="value14" :title="options4[value14].label" :options="options4"></u-dropdown-item>
+								</u-dropdown>
+							</u-col>
+						</u-row>
+					</view> -->
+				
+					<scroll-view scroll-y style="height: 100%;width: 100%;">
+						<view class="uni-list">
+							<view class="uni-list-cell" v-for="(item,index) in rentHouseList" :key="index" v-on:click="ToHouseDetail(index)">
+								<u-image v-if="showImg" :width="200" :height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
+								 mode="aspectFill"></u-image>
+				
+								<view style="margin-left: 8rpx;">
+									<view>
+										<text class="BiKan">必看</text>
+										<text class="HouseTitle">{{item.Title}}</text>
+									</view>
+									<view class="">{{item.CountF}}室{{item.CountT}}厅/{{item.Square}}㎡/{{item.PropertyDirection}}/{{item.EstateName}}</view>
+									<view>
+										<text class="HouseTag">满五唯一</text>
+										<text class="HouseTag">无抵押</text>
+										<text class="HouseTag">可带看</text>
+										<text class="HouseTag">新上房源</text>
+									</view>
+									<view>
+										<u-row>
+											<u-col class="HousePrice" span="6">{{item.Price}}万元</u-col>
+											<u-col class="HouseUnitPrice" span="6">{{(item.Price/item.Square).toFixed(2)}}万元/㎡</u-col>
+										</u-row>
+									</view>
+								</view>
+							</view>
+						</view>
+						<u-divider bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
+						<u-back-top :scroll-top="scrollTop"></u-back-top>
+					</scroll-view>
+				</swiper-item>
 			</swiper>
 		</view>
 
@@ -290,12 +342,14 @@
 
 				saleHouseList: [],
 				rentHouseList: [],
+				grabedHouseList:[],
 			}
 		},
 
 		onLoad() {
 			this.GetSaleHouseList();
 			this.GetRentHouseList();
+			this.GetGrabedHouseList();
 			this.showImg = true;
 		},
 
@@ -303,18 +357,21 @@
 			console.log('刷新');
 			if (this.index === 0) {
 				this.GetSaleHouseList();
-			} else {
+			} else if(index === 1){
 				this.GetRentHouseList();
+			}else{
+				this.GetGrabedHouseList();
 			}
 		},
 
 		methods: {
 			ToHouseDetail: function(h) {
 				var obj = this.swiperCurrent === 0 ? this.saleHouseList[h] : this.rentHouseList[h];
+				var flag = this.swiperCurrent === 2 ? 'done':'no';   //已抢房源 和 自己的房源 的标志位
 				uni.navigateTo({
 					url: './HouseDetail',
 					success: (res) => {
-						res.eventChannel.emit('acceptDataFromHouseList', obj);
+						res.eventChannel.emit('acceptDataFromHouseList', {data:obj,ifCanGrab:flag});
 					}
 				})
 			},
@@ -341,8 +398,10 @@
 				this.swiperCurrent = index;
 				if (index === 0) {
 					this.GetSaleHouseList();
-				} else {
+				} else if(index === 1){
 					this.GetRentHouseList();
+				}else{
+					this.GetGrabedHouseList();
 				}
 			},
 
@@ -402,7 +461,7 @@
 					RoomNo: '',
 					SearchContent: '',
 					Page: '',
-					EmpID: '',
+					EmpID: this.global_data.global_data.EmpID,
 				}).then(res => {
 					this.saleHouseList = res.Result;
 					uni.stopPullDownRefresh();
@@ -424,7 +483,28 @@
 					RoomNo: '',
 					SearchContent: '',
 					Page: '',
-					EmpID: '',
+					EmpID: this.global_data.global_data.EmpID,
+				}).then(res => {
+					this.rentHouseList = res.Result;
+					uni.stopPullDownRefresh();
+				})
+			},
+			GetGrabedHouseList(){
+				this.$u.get(this.global_data.global_data.BaseUrl + 'getCanGrabHouses', {
+					DBName: this.global_data.global_data.DBName,
+					EmpNo: this.global_data.global_data.Tel,
+				/* 	DistrictName: '区域',
+					CountF: this.options2[this.value12].label === '全部房型' || this.options2[this.value12].label === ''?'房型':this.options2[this.value12].label,
+					Price: this.options3[this.value13].label === '全部价格' || this.options3[this.value13].label === ''?'价格':this.options3[this.value13].label,
+					Square: this.options4[this.value14].label === '全部面积' || this.options4[this.value14].label === ''?'面积':this.options4[this.value14].label,
+					PropertyUsage: '用途',
+					PanType: '有效',
+					EstateName: '',
+					BuildNo: '',
+					RoomNo: '',
+					SearchContent: '',
+					Page: '',
+					EmpID: this.global_data.global_data.EmpID, */
 				}).then(res => {
 					this.rentHouseList = res.Result;
 					uni.stopPullDownRefresh();

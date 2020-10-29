@@ -1,6 +1,10 @@
 <template>
 	<view>
-		<u-navbar is-back="true" title="看跟进"></u-navbar>
+		<u-navbar is-back="true" title="看跟进">
+			<view class="u-m-r-20" slot="right">
+				<u-icon name="plus-circle-fill" color="#2979ff" label="新增" label-pos="right" label-color="#2979ff" size="40" label-size="medium" @click="ToWriteFollow"></u-icon>
+			</view>
+		</u-navbar>
 		<view class="wrap">
 			<u-collapse event-type="close" :arrow="arrow" :accordion="accordion" @change="change">
 				<u-collapse-item class="collapse-item" :index="index" @change="itemChange" :title="item.Content" v-for="(item, index) in list" :key="index">
@@ -51,6 +55,12 @@
 
 			change() {
 
+			},
+			
+			ToWriteFollow() {
+				uni.navigateTo({
+					url: './NewHouseFollowUp?PropertyID=' + this.PropertyID
+				});
 			},
 		}
 

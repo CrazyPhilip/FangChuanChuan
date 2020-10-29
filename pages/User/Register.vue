@@ -269,7 +269,7 @@
 					Tel: this.model.phone,
 					Password: this.model.password,
 					EmpName: this.model.name,
-					AccountStyle: this.model.accountStyle,
+					AccountStyle: this.model.accountStyle === '独立经纪人' ? '1':'2',
 				}).then(res => {
 					console.log(res);
 					this.$u.toast(res.Msg);

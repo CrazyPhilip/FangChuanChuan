@@ -7,7 +7,7 @@
 						<u-tabs :list="[{name:'二手房'}, {name:'租房'}, {name:'新房'}]" :is-scroll="false" :current="current" @change="showChange"
 						 item-width="100"></u-tabs>
 					</view>
-					<view class="slot-right" slot="right">
+					<view class="slot-right" slot="right"> 
 						<u-icon name="search" size="40" @click="toSearch"></u-icon>
 					</view>
 				</u-navbar>

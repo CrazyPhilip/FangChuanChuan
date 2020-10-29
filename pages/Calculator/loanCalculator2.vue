@@ -502,7 +502,7 @@
 								return this.$u.toast('贷款金额格式不对，只能是正浮点数，请重新填写');   
 				            }
 				        }
-				 if(this.model1.rate1==''){
+				 if(this.model1.rate1===''){
 					 return this.$u.toast('公积金利率不能为空');
 				        }else{
 				            var positiveFloat = /^[1-9]\d*.\d*|0.\d*[1-9]\d*$/;
@@ -524,7 +524,7 @@
 				}else{
 				    totalPrice = parseInt(this.model1.loanPrice1);
 				}
-				if(this.model1.payment1 == '等额本息'){
+				if(this.model1.payment1 === '等额本息'){
 				    TotalInterest = ((totalPrice*MonthlyInterest*Math.pow((1+MonthlyInterest),Month))   /(Math.pow((1+MonthlyInterest),Month)-1))*Month-totalPrice;
 				}else{
 				    TotalInterest = Month*((totalPrice*MonthlyInterest)-(MonthlyInterest*(totalPrice/Month)*(Month-1))/2+(totalPrice/Month))-totalPrice;
