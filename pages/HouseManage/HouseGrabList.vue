@@ -70,7 +70,7 @@
 					uni.navigateTo({
 						url: './HouseDetail',
 						success: (res) => {
-							res.eventChannel.emit('acceptDataFromHouseList', obj);
+							res.eventChannel.emit('acceptDataFromHouseList', {data:obj,ifCanGrab:'yes'});
 						}
 					})
 				},
@@ -114,7 +114,8 @@
 				},
 			
 				GetCanGrabHouseList() {
-					this.$u.get(this.global_data.global_data.BaseUrl + 'getCanGrabHouses', {
+					console.log('this:'+this.grabHouseList.length);
+					this.$u.get(this.global_data.global_data.BaseUrl + 'GetCanGrabHouses', {
 						DBName: this.global_data.global_data.DBName,
 						EmpNo: this.global_data.global_data.EmpID,
 						/* DistrictName: '区域',
@@ -131,7 +132,10 @@
 						EmpID: this.global_data.global_data.EmpID, */
 					}).then(res => {
 						this.grabHouseList = res.Result;
+						console.log('this:'+this.grabHouseList.length);
 						uni.stopPullDownRefresh();
+						
+						
 					})
 				},
 			
@@ -144,4 +148,90 @@
 </script>
 
 <style>
+	/* page不能写带scope的style标签中，否则无效 */
+	page {
+		background-color: rgb(240, 240, 240);
+	}
+</style>
+
+<style>
+	/* #ifndef H5 */
+	page {
+		height: 100%;
+		background-color: #f2f2f2;
+	}
+
+	/* #endif */
+</style>
+
+<style lang="scss" scoped>
+	.wrap {
+		display: flex;
+		flex-direction: column;
+		height: calc(100vh - var(--window-top));
+		width: 100%;
+	}
+
+	.swiper-box {
+		flex: 1;
+	}
+
+	.swiper-item {
+		height: 100%;
+	}
+
+	.uni-list .uni-list-cell {
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		border-radius: 8px;
+		margin: 5px;
+		background-color: #ffffff;
+		padding: 8px;
+		position: relative;
+
+		.BiKan {
+			font-size: xx-small;
+			padding: 2rpx;
+			background-color: #FA3534;
+			border-radius: 10rpx;
+			color: white;
+		}
+
+		.HouseTitle {
+			font-weight: bolder;
+			font-size: large;
+			max-lines: 2;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			/*设置成弹性盒子 */
+			display: -webkit-box;
+			/*显示的个数 */
+			-webkit-line-clamp: 2;
+			/* 属性规定框的子元素应该被水平或垂直排列。 */
+			-webkit-box-orient: vertical;
+		}
+
+		.HouseTag {
+			max-lines: 1;
+			font-weight: lighter;
+			font-size: xx-small;
+			background-color: #A0CFFF;
+			border-radius: 10rpx;
+			color: white;
+			padding: 2rpx;
+			margin-right: 4rpx;
+		}
+
+		.HousePrice {
+			font-weight: bolder;
+			font-size: large;
+			color: #FA3534;
+		}
+
+		.HouseUnitPrice {
+			font-size: x-small;
+		}
+
+	}
 </style>

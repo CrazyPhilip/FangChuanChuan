@@ -3,7 +3,7 @@
 		<view class="u-tabs-box">
 			<u-navbar is-back="true" title="关注区域"></u-navbar>
 		</view>
-			
+
 		<view>
 			<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition0"
 			 label="区域列表" prop="myLocation" label-width="170">
@@ -26,10 +26,10 @@
 		</view> -->
 		<u-divider v-if="showNone" bg-color="rgb(240, 240, 240)">未关注区域！</u-divider>
 		<scroll-view scroll-y style="height: 100%;width: 100%;">
-			
+
 			<view class="uni-list">
-				<view class="uni-list-cell" v-for="(item,index) in focusAreaList" :key="item.area">
-					<view class="tag"  style = "border-radius:2em / 5em ;">
+				<view class="uni-list-cell" v-for="(item,index) in focusAreaList" :key="index">
+					<view class="tag" style="border-radius:2em / 5em ;">
 						<view class="tagText">{{item.location}}</view>
 						<u-icon type="success" name="close" color="#18B566" :index="index" @click="closeTag"></u-icon>
 					</view>
@@ -127,10 +127,12 @@
 				},
 				//dBList: '', // cd_xipu,cd_wenxingzhen 字串
 				//addressList: '', //成都>郫都>犀浦,成都>双流>文星镇 字串
+				dbArray: [this.global_data.global_data.DBName], //用于判重，初始化 为所在数据库
 				cityList: [],
 				districtList: [],
 				areaList: [],
-				focusAreaList: [],
+				focusAreaList: [], //数据显示绑定
+				focusAreaListSource: [], //数据源 绑定，不用于显示
 				districtListShow: false,
 				areaListShow: false,
 				cityListShow: false,
@@ -144,9 +146,7 @@
 
 		onLoad() {
 			this.getDistrictsByCity('cd');
-			var FollowArea = 'cd_xipu,cd_wenxingzhen;成都>郫都>犀浦,成都>双流>文星镇';
-			this.focusAreaList = this.getFocusLocationList(FollowArea); //初始参数 this.global_data.global_data.FollowArea
-			this.showNone = this.focusAreaList.length > 0 ? false : true;
+			this.getFollowArea();
 			this.showImg = true;
 		},
 
@@ -163,30 +163,32 @@
 
 			add() {
 				console.log(this.global_data.global_data.FollowArea);
-				console.log('count' + this.focusAreaList.length);
-				if (this.focusAreaList.length < 3) //最多只能添加3个
+
+				if (this.focusAreaList.length >= 3) //最多只能添加3个
 				{
-					this.submit();
-				} else {
 					this.$u.toast('最多只能添加3个关注区域！');
+				} else if (this.dbArray.indexOf(this.model.dBName) > -1) { //已存在
+					this.$u.toast('已关注该区域！');
+				} else {
+					this.submit();
 				}
 
 			},
 			closeTag(index) {
 				console.log(index);
-				
+
 				uni.showModal({
-				    title: '提示',
-				    content: '是否删除\"' + this.focusAreaList[index].location + '\"？',
-				    success: function (res) {
+					title: '提示',
+					content: '是否删除\"' + this.focusAreaList[index].location + '\"？',
+					success: function(res) {
 						var that = this;
-				        if (res.confirm) {
-							
-				          this.deleteFollowArea(index);
-				        } else if (res.cancel) {
-				            console.log('用户点击取消');
-				        }
-				    }.bind(this)
+						if (res.confirm) {
+
+							this.deleteFollowArea(index);
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}.bind(this)
 				});
 			},
 
@@ -196,24 +198,21 @@
 			},
 
 			deleteFollowArea(index) {
-				//this.checkDelFocusArea(this.focusAreaList[index].dbName);
-				this.focusAreaList.splice(index, 1); //页面先改，再去后台改FollowArea ，通过focusAreaList数据源拼接FollowArea字段
-
-			},
-			checkDelFocusArea(dbName) {
 				this.$u.get(this.global_data.global_data.BaseUrl + 'CheckDelFocusArea', {
-					DBName: dbName, //待删除 关注区域的 数据库名
+					DBName: this.focusAreaList[index].dbName, //待删除 关注区域的 数据库名
 					EmpNo: this.global_data.global_data.EmpID,
 				}).then(res => {
 					this.$u.toast(res.Msg);
 					if (res.Flag === 'success') { //可删除
-						
+						this.focusAreaListSource.splice(index, 1); //更新数据源，但不更新view
+						var followAreaString = this.getFollowAreaString();
+						this.updateFollowArea(followAreaString);
 					} else {
 						this.$u.toast('该区域存在已抢房房源,不可删除！');
 					}
 				});
-
 			},
+
 
 			confirm(e) {
 				this.result = '';
@@ -226,44 +225,73 @@
 				console.log(e);
 			},
 			submit() {
-				console.log('error:'+this.model.district +"1");
-				if (this.model.city != '' && this.model.district != ''  && this.model.area !='') {
+				
+				if (this.model.city === '' || this.model.district === '' || this.model.area === '') {
+					this.$u.toast('请选择区域');
+				} else if (this.dbArray.indexOf(this.model.dBName) > -1) { //已存在
+					this.$u.toast('已关注该区域！');
+				} else {
 					var newFollowArea = {};
 					newFollowArea['city'] = this.model.city;
 					newFollowArea['district'] = this.model.district;
 					newFollowArea['area'] = this.model.area;
 					newFollowArea['dbName'] = this.model.dBName;
-					this.focusAreaList.push(newFollowArea); //先更新界面视图，再更新后台
+					this.focusAreaListSource.push(newFollowArea); //先更新界面视图，再更新后台
 
 					var followAreaString = this.getFollowAreaString();
-				} else {
-					this.$u.toast('请选择区域');
+					this.updateFollowArea(followAreaString);
 				}
 
-				//this.updateFollowArea(followArea);
-				//添加成功后
-				//this.global_data.global_data.FollowArea = followArea;
-				//this.focusAreaList = this.getFocusLocationList(followArea);
-				//this.$forceUpdate();
-				this.show_select = false;
 			},
 
-			getFollowAreaString() { //通过focusAreaList 字段拼接 followArea字符串
+			getFollowAreaString() { //通过focusAreaListSource 字段拼接 followArea字符串
 				var dBList = '';
 				var addressList = '';
-				for (var i in this.focusAreaList) {
-					dBList = dBList + this.focusAreaList[i]['dbName'] + ',';
-					addressList = addressList + this.focusAreaList[i]['city'] + '>' + this.focusAreaList[i]['district'] + '>' + this.focusAreaList[
-						i]['area'] + ',';
+				for (var i in this.focusAreaListSource) {
+					dBList = dBList + this.focusAreaListSource[i]['dbName'] + ',';
+					addressList = addressList + this.focusAreaListSource[i]['city'] + '>' + this.focusAreaListSource[i]['district'] +
+						'>' + this.focusAreaListSource[
+							i]['area'] + ',';
 				}
 				dBList = dBList.slice(0, -1); //去掉最后一个逗号 
-				addressList = addressList.slice(0, -1); //去掉最后一个逗号 
+				//addressList = addressList.slice(0, -1); //去掉最后一个逗号 
 				var followAreaString = dBList + ";" + addressList;
-
-				console.log('string is:' + followAreaString);
+				followAreaString = followAreaString.slice(0, -1); //去掉最后一个逗号 
 				return followAreaString;
 			},
 
+			getFollowArea() {
+				this.$u.get(this.global_data.global_data.BaseUrl + 'GetFocusAreas', {
+					DBName: this.global_data.global_data.DBName,
+					EmpNo: this.global_data.global_data.EmpID,
+				}).then(res => {
+					this.$u.toast(res.Msg);
+					if (res.Flag === 'success') {
+						var content = res.Result;
+						var FollowArea = content[0]['FollowArea'];
+						this.focusAreaListSource = FollowArea === '' ? []:this.getFocusLocationList(FollowArea);
+						this.focusAreaList = FollowArea === '' ? []:this.getFocusLocationList(FollowArea);
+						this.showNone = this.focusAreaList.length > 0 ? false : true;
+						this.reset();
+
+						//设置关注区域和所在区域为Tag
+						var tagList = [];
+						for (var i in this.focusAreaList) {
+							tagList.push(this.focusAreaList[i].dbName);
+						}
+						tagList.push(this.global_data.global_data.DBName);
+						const jyJPush = uni.requireNativePlugin('JY-JPush');
+						jyJPush.addJYJPushTagsWithArr({ //以数组方式设置
+							userTags: tagList
+						}, result => {
+							/* uni.showToast({
+								icon: 'none',
+								title: JSON.stringify(result)
+							}) */
+						});
+					}
+				});
+			},
 			districtListCallback(index) {
 				this.district = this.districtList[index].town;
 				this.model.district = this.districtList[index].town;
@@ -277,9 +305,12 @@
 					EmpNo: this.global_data.global_data.EmpID,
 					FollowArea: followArea,
 				}).then(res => {
-					this.$u.toast(res.Msg);
 					if (res.Flag === 'success') {
+						console.log('更新成功');
 						this.$u.toast('更新成功');
+						this.getFollowArea(); //刷新视图
+					} else {
+						this.$u.toast('更新失败');
 					}
 				});
 			},
@@ -302,6 +333,7 @@
 
 			//根据城区名获取街道列表
 			getAreaByDistrict(district) {
+				this.model.area = '';
 				this.$u.get(this.global_data.global_data.BaseUrl + 'GetAllAreaByDistrict', {
 					DistrictName: district
 				}).then(res => {
@@ -315,6 +347,8 @@
 					var dbArray = location[0].split(",");
 					var areas = location[1].split(",");
 					var list = [];
+					this.dbArray = [];  //清空
+					this.dbArray.push(this.global_data.global_data.DBName);
 					for (var i in areas) {
 
 						var array = areas[i].split(">");
@@ -323,6 +357,7 @@
 						item['district'] = array[1];
 						item['area'] = array[2];
 						item['dbName'] = dbArray[i];
+						this.dbArray.push(item['dbName']); //加入判重数组
 						item['location'] = item['city'] + " --> " + item['district'] + " --> " + item['area'];
 						list.push(item);
 					}
@@ -427,8 +462,8 @@
 
 	}
 
-	
-	.tag{
+
+	.tag {
 		border: 1rpx solid #18B566;
 		border-radius: 8rpx;
 		background-color: #c0ffbc;
@@ -436,8 +471,8 @@
 		flex-direction: row;
 		padding: 8rpx;
 	}
-	
-	.tagText{
+
+	.tagText {
 		color: #18B566;
 	}
 </style>

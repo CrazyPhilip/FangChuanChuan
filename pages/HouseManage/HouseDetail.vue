@@ -318,12 +318,16 @@
 
 		onLoad: function(params) {
 			const eventChannel = this.getOpenerEventChannel();
+			this.ifCanGrab = 'yes';   //通知 接口 进入的 为可抢房源
 			eventChannel.on('acceptDataFromHouseList', (data) => {
 				this.house = data.data;
 				this.ifCanGrab = data.ifCanGrab;
-				//console.log(data);
 			});
+			var DBName = params.DBName;
+			var PropertyId  = params.PropertyId;
+			this.getCanGrabHouseDetail(DBName,PropertyId);
 			this.btnGrabText = this.ifCanGrab == 'yes' ? '抢该房源' : '取消抢房';
+			
 		},
 
 		onReady() {
@@ -408,6 +412,7 @@
 
 			GrabFunction() {
 				if (this.ifCanGrab == 'yes') { //抢该房源
+					console.log('prpperidL:'+this.house.PropertyID + ' '+this.house.DistrictName);
 					this.$u.get(this.global_data.global_data.BaseUrl + 'GrabbingHouse', {
 						DistrictName: this.house.DistrictName,
 						EmpNo: this.global_data.global_data.EmpID,
@@ -453,6 +458,16 @@
 					}).then(res => {
 					console.log(res);
 					this.recommendedList = res.data.list;
+				});
+			},
+			getCanGrabHouseDetail(DBName,PropertyId){
+				console.log('detail-2:'+DBName+' '+PropertyId);
+				this.$u.get(this.global_data.global_data.BaseUrl + 'GetPropertyById', {
+					DBName: DBName,
+					PropertyId: PropertyId,
+				}).then(res => {
+					this.house = res.Result[0];
+					console.log('detail-3:'+this.house);
 				});
 			},
 		

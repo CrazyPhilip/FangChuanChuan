@@ -770,7 +770,10 @@
 				console.log(this.global_data.global_data.DBName);
 				console.log(this.model);
 				console.log(this.optionalModel);
-				
+				if(this.global_data.global_data.AccountStyle === '物业管理中心')
+				{
+					this.model.shareToBroker = true;
+				}
 				this.$u.post(this.global_data.global_data.BaseUrl + 'NewHouseData', {
 					DBName:this.global_data.global_data.DBName,
 					CityName:this.estateObject.CityName,

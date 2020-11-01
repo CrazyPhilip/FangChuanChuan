@@ -13,25 +13,7 @@
 		
 		onLaunch: function() {
 			console.log('App Launch');
-			/* const jyJPush = uni.requireNativePlugin('JY-JPush');
-			jyJPush.setJYJPushTags({
-			userTag: 'testTag1'
-			}, result => {
-			uni.showToast({
-			icon: 'none',
-			title: JSON.stringify(result)
-			})
-			});
-			jyJPush.getRegistrationID(
-			//  返回的数据会有registrationID，errorCode
-			result => {
-			uni.showToast({
-			icon: 'none',
-			title: JSON.stringify(result)
-			})
-			});
-			this.addJYJPushReceiveNotificationListener();
-			this.addJYJPushReceiveOpenNotificationListener(); */
+			this.addJYJPushReceiveOpenNotificationListener();
 		},
 		onShow: function() {
 			console.log('App Show');
@@ -40,28 +22,24 @@
 			console.log('App Hide');
 		},
 		methods: {
-			/* addJYJPushReceiveNotificationListener() {
-				const jyJPush = uni.requireNativePlugin('JY-JPush');
-				jyJPush.addJYJPushReceiveNotificationListener(result => {
-					//  监听成功后，若收到推送，会在result返回对应的数据；数据格式保持极光返回的安卓/iOS数据一致
-					uni.showToast({
-						icon: 'none',
-						title: JSON.stringify(result)
-					})
-				});
-			},
-
-
 			addJYJPushReceiveOpenNotificationListener() {
 				const jyJPush = uni.requireNativePlugin('JY-JPush');
 				jyJPush.addJYJPushReceiveOpenNotificationListener(result => {
 					//  监听成功后，若点击推送消息，会触发result；数据格式保持极光返回的安卓/iOS数据一致
-					uni.showToast({
-						icon: 'none',
-						title: JSON.stringify(result)
-					})
+					var content = result['notificationExtras'];
+					content = JSON.parse(content);
+					var DBName = content.DBName;
+					var PropertyId = content.PropertyId;
+					var path = '../HouseManage/HouseDetail?DBName='+DBName+'&PropertyId='+PropertyId;
+				
+					//在起始页面跳转到指定页面并传递参数
+					setTimeout(function(){
+						uni.navigateTo({
+						    url: path
+						});
+					},1000);
 				});
-			}, */
+			},
 		},
 	};
 </script>

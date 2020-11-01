@@ -18,7 +18,7 @@
 			</view>
 		</view>
 
-		<view class="section">
+		<!-- <view class="section">
 			<view class="sectionBar">
 				<view class="sectionTitle u-p-b-20">新手任务</view>
 				<u-icon name="arrow-right" label="做任务" label-pos="left"></u-icon>
@@ -38,7 +38,7 @@
 					<view class="option">待评价</view>
 				</u-col>
 			</u-row>
-		</view>
+		</view> -->
 
 		<view class="section" @click="toFollowArea">
 			<view class="sectionBar">
@@ -47,7 +47,7 @@
 			</view>
 			<view>查看或新增自己的关注区域</view>
 		</view>
-
+<!-- 
 		<view class="section">
 			<view class="sectionBar">
 				<view class="sectionTitle u-p-b-20">我的钱包</view>
@@ -75,9 +75,9 @@
 					<view class="grid-text">实名认证</view>
 				</u-grid-item>
 			</u-grid>
-		</view>
+		</view> -->
 
-		<view class="section">
+		<!-- <view class="section">
 			<view class="sectionBar">
 				<view class="sectionTitle">我的客服</view>
 				<u-icon name="arrow-right"></u-icon>
@@ -101,7 +101,7 @@
 				</u-grid-item>
 			</u-grid>
 		</view>
-
+ -->
 		<view class="section" @click="ToSetting">
 			<view class="sectionBar">
 				<view class="sectionTitle">更多设置</view>
