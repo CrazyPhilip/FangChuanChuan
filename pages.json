@@ -22,7 +22,14 @@
 			"style": {
 				"navigationBarTitleText": "房源管理",
 				"navigationStyle": "custom", // 隐藏系统导航栏
-				"enablePullDownRefresh": true
+				//"enablePullDownRefresh": true
+				 "app-plus": {  
+						"bounce": true,  
+						"pullToRefresh": {  
+									"support": true,  
+									"style": "circle"
+									}
+							}
 			}
 		},
 		{
@@ -43,6 +50,21 @@
 			"path": "pages/HouseManage/HouseGrabList",
 			"style": {
 				"navigationBarTitleText": "抢房列表",
+				"navigationStyle": "custom", // 隐藏系统导航栏
+				//"enablePullDownRefresh": true
+				"app-plus": {
+										"bounce": true,  
+										"pullToRefresh": {  
+													"support": true,  
+													"style": "circle"
+													}
+											}
+			}
+		},
+		{
+			"path": "pages/HouseManage/GrabHouseDetail",
+			"style": {
+				"navigationBarTitleText": "抢房列表房源详情",
 				"navigationStyle": "custom" // 隐藏系统导航栏
 			}
 		},

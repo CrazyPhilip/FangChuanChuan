@@ -30,7 +30,7 @@
 					content = JSON.parse(content);
 					var DBName = content.DBName;
 					var PropertyId = content.PropertyId;
-					var path = '../HouseManage/HouseDetail?DBName='+DBName+'&PropertyId='+PropertyId;
+					var path = '../HouseManage/GrabHouseDetail?DBName='+DBName+'&PropertyId='+PropertyId+'&ifRequest=true';
 				
 					//在起始页面跳转到指定页面并传递参数
 					setTimeout(function(){

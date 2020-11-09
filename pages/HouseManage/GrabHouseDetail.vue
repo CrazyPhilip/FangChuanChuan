@@ -123,9 +123,9 @@
 								</view>
 							</view>
 						</view>
-					</view>
+					</view> -->
 
-					<view class="section">
+					<!-- <view class="section">
 						<view class="sectionTitle">推荐房源</view>
 						<view class="uni-list">
 							<view class="uni-list-cell" v-for="(item,index) in recommendedList" :key="index">
@@ -161,25 +161,29 @@
 							</view>
 						</view>
 
-					</view> -->
-
+					</view>
+ -->
 					<u-gap bg-color="#eeeeee" height="100"></u-gap>
 				</scroll-view>
 
 				<view class="navigation">
-					<view class="left">
-						<u-row>
-							<u-col span="3">
+					<view class="center">
+						<u-row style="margin: 30rpx 0;">
+							<u-col span="6">
 								<u-button type="success" @click="Call">致电</u-button>
 							</u-col>
-							<u-col  span="3">
+							<!--  抢到的房子 可以看跟进吗？
+							<u-col v-if="this.ifCanGrab == 'no'" span="3">
 								<u-button type="primary" @click="ToFollowUp">看跟进</u-button>
 							</u-col>
-							<u-col  span="3">
+							<u-col v-if="this.ifCanGrab == 'no'" span="3">
 								<u-button type="primary" @click="ToWriteFollow">写跟进</u-button>
 							</u-col>
-							<u-col  span="3">
+							<u-col v-if="this.ifCanGrab == 'no'" span="3">
 								<u-button type="warning" @click="Call">修改房源</u-button>
+							</u-col> -->
+							<u-col  span="6">
+								<u-button type="primary" @click="GrabFunction">{{this.btnGrabText}}</u-button>
 							</u-col>
 						</u-row>
 
@@ -297,6 +301,8 @@
 				commentList: [],
 				recommendedList: [],
 				house: Object,
+				ifCanGrab: '', // yes：可抢，从可抢房源列表页进；no：普通状态，非可抢房源；done：已抢，从已抢房源列表页进
+				btnGrabText: '',
 				photoList: [],
 				
 				followUpList:[],
@@ -313,9 +319,24 @@
 
 		onLoad: function(params) {
 			const eventChannel = this.getOpenerEventChannel();
-			eventChannel.on('acceptDataFromHouseList', (data) => {
-				this.house = data;
+			this.ifCanGrab = 'yes';   //通知 接口 进入的 为可抢房源
+			eventChannel.on('acceptDataFromHouseList', (data) => {  //耗时任务？
+				this.house = data.data;
+				this.ifCanGrab = data.ifCanGrab;
+				console.log('this-ifcangrab1:'+this.ifCanGrab);
+				this.btnGrabText = this.ifCanGrab == 'yes' ? '抢该房源' : '取消抢房';
 			});
+			var DBName = params.DBName;
+			var PropertyId  = params.PropertyId;
+			var ifRequest = params.ifRequest;
+			if(ifRequest === 'true')
+			{
+				this.getCanGrabHouseDetail(DBName,PropertyId);
+				this.btnGrabText = this.ifCanGrab == 'yes' ? '抢该房源' : '取消抢房';
+			}
+			console.log('this-ifcangrab:'+this.ifCanGrab);   //比监听内事件先执行
+			
+			
 		},
 
 		onReady() {
@@ -398,6 +419,41 @@
 				});
 			},
 
+			GrabFunction() {
+				if (this.ifCanGrab == 'yes') { //抢该房源
+					console.log('prpperidL:'+this.house.PropertyID + ' '+this.house.DBName);
+					this.$u.get(this.global_data.global_data.BaseUrl + 'GrabbingHouse', {
+						DbName: this.house.DBName,
+						EmpNo: this.global_data.global_data.EmpID,
+						PropertyID: this.house.PropertyID,
+					}).then(res => {
+						this.$u.toast(res.Msg);
+						if (res.Flag === 'success') {
+							this.$u.toast('抢房成功');
+							this.ifCanGrab = 'no';
+							this.btnGrabText = '取消抢房';
+						} else {
+							this.$u.toast('抢房失败');
+						}
+					});
+				} else if (this.ifCanGrab == 'no') //取消抢房
+				{
+					this.$u.get(this.global_data.global_data.BaseUrl + 'UndoGrabbingHouse', {
+						DbName: this.house.DBName,
+						PropertyID: this.house.PropertyID,
+					}).then(res => {
+						this.$u.toast(res.Msg);
+						if (res.Flag === 'success') {
+							this.$u.toast('取消成功');
+							this.ifCanGrab = 'yes';
+							this.btnGrabText = '抢该房源';
+						} else {
+							this.$u.toast('取消失败');
+						}
+					});
+				}
+			},
+
 			getCommentList() {
 				this.$u.get('http://47.108.202.57:8090/property/getCommentsByPropertyId?propId=45&cityPinYin=' +
 					this.cityPinYin, {
@@ -415,6 +471,16 @@
 					}).then(res => {
 					console.log(res);
 					this.recommendedList = res.data.list;
+				});
+			},
+			getCanGrabHouseDetail(DBName,PropertyId){
+				console.log('detail-2:'+DBName+' '+PropertyId);
+				this.$u.get(this.global_data.global_data.BaseUrl + 'GetPropertyById', {
+					DBName: DBName,
+					PropertyId: PropertyId,
+				}).then(res => {
+					this.house = res.Result[0];
+					console.log('detail-3:'+this.house);
 				});
 			},
 		
@@ -545,7 +611,7 @@
 
 		.HousePrice {
 			font-weight: bolder;
-			font-size: large;
+			font-size: medium;
 			color: #FA3534;
 		}
 

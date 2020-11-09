@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<u-navbar is-back="true" title="违法和不良信息举报" title-width="200rpx"></u-navbar>
+		<u-navbar is-back="true" title="违法和不良信息举报"></u-navbar>
 	
 		<view>
 			<u-cell-group class="u-m-t-20" :border="true">

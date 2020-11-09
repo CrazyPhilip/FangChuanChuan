@@ -44,7 +44,8 @@
 			<view class="agreement">
 				<u-checkbox v-model="check" @change="checkboxChange"></u-checkbox>
 				<view class="agreement-text">
-					勾选代表同意军军房产的用户协议
+					勾选代表同意军军房产的
+					<u-tag text="用户协议" type="info" size="default" mode="light" bg-color="white" border-color="white" @click="toShow" />
 				</view>
 			</view>
 			<u-button @click="submit" type="primary">注册</u-button>
@@ -56,6 +57,13 @@
 			<u-verification-code seconds="60" ref="uCode" @change="codeChange"></u-verification-code>
 		</view>
 
+		<u-mask :show="model.maskShow" @click="model.maskShow = false">
+			<view class="warp">
+				<view class="rect">
+					<u-swiper :list="model.sourceList" mode="number" height="1000" :autoplay="false"></u-swiper>
+				</view>
+			</view>
+		</u-mask>
 	</view>
 </template>
 
@@ -75,6 +83,10 @@
 					password: '',
 					rePassword: '',
 					accountStyle: '',
+
+					maskShow: false,
+					source: '',
+					sourceList: [],
 				},
 				rules: {
 					name: [{
@@ -205,7 +217,7 @@
 				border: false,
 				check: false,
 				codeTips: '',
-				authCode:'',
+				authCode: '',
 
 				district: '',
 				area: '',
@@ -260,7 +272,14 @@
 					}
 				});
 			},
-			
+
+			toShow() {
+				this.model.maskShow = true;
+				this.model.sourceList = [];
+				for (var i = 1; i <= 10; i++) {
+					this.model.sourceList.push("http://www.junjunhouse.com/files/service/service_" + i + ".png");
+				}
+			},
 			//注册
 			register() {
 				this.$u.get(this.global_data.global_data.BaseUrl + 'ApplyForRegister', {
@@ -269,7 +288,7 @@
 					Tel: this.model.phone,
 					Password: this.model.password,
 					EmpName: this.model.name,
-					AccountStyle: this.model.accountStyle === '独立经纪人' ? '1':'2',
+					AccountStyle: this.model.accountStyle === '独立经纪人' ? '1' : '2',
 				}).then(res => {
 					console.log(res);
 					this.$u.toast(res.Msg);
@@ -290,7 +309,7 @@
 					this.districtList = res.Result;
 				});
 			},
-			
+
 			//根据城区名获取街道列表
 			getAreaByDistrict(district) {
 				console.log(district);
@@ -359,5 +378,19 @@
 			padding-left: 8rpx;
 			color: $u-tips-color;
 		}
+	}
+
+	.warp {
+		display: flex;
+		padding: 40rpx;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+	}
+
+	.rect {
+		width: 750rpx;
+		height: 1000rpx;
+		background-color: #fff;
 	}
 </style>

@@ -265,7 +265,7 @@
 					DBName: this.global_data.global_data.DBName,
 					EmpNo: this.global_data.global_data.EmpID,
 				}).then(res => {
-					this.$u.toast(res.Msg);
+					//this.$u.toast(res.Msg);
 					if (res.Flag === 'success') {
 						var content = res.Result;
 						var FollowArea = content[0]['FollowArea'];

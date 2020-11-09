@@ -45,14 +45,14 @@
                 "ad" : {},
                 "maps" : {
                     "amap" : {
-                        "appkey_ios" : "",
+                        "appkey_ios" : "244478e40a1a3407e001e2b74b0b4e06",
                         "appkey_android" : "becc4df616a528eabf920294b4f66150"
                     }
                 },
                 "geolocation" : {
                     "amap" : {
                         "__platform__" : [ "ios", "android" ],
-                        "appkey_ios" : "",
+                        "appkey_ios" : "244478e40a1a3407e001e2b74b0b4e06",
                         "appkey_android" : "becc4df616a528eabf920294b4f66150"
                     }
                 }
@@ -101,7 +101,7 @@
         "nativePlugins" : {
             "JY-JPush" : {
                 "ios_channel" : "",
-                "ios_appkey" : "",
+                "ios_appkey" : "e54030936fd926d5fe311851",
                 "android_channel" : "android",
                 "android_appkey" : "e54030936fd926d5fe311851",
                 "__plugin_info__" : {

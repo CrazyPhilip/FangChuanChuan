@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<u-navbar is-back="true" title="证照资质中心" title-width="200rpx"></u-navbar>
+		<u-navbar is-back="true" title="证照资质中心" ></u-navbar>
 
 		<view>
 			<u-cell-group class="u-m-t-20" :border="true">

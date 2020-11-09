@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<u-navbar is-back="true" title="证照资质中心" title-width="200rpx"></u-navbar>
+		<u-navbar is-back="true" title="用户隐私与规则中心" ></u-navbar>
 
 		<view>
 			<u-cell-group class="u-m-t-20" :border="true">
@@ -12,10 +12,11 @@
 
 		<u-mask :show="maskShow" @click="maskShow = false">
 			<view class="warp">
-				<view class="rect" @tap.stop>
-					<!-- <web-view :webview-styles="webviewStyles" :src="source"></web-view> -->
+				<view class="rect" >					
+					<u-swiper :list="sourceList"  mode="number" height="1000" :autoplay="false"></u-swiper>
 				</view>
 			</view>
+			
 		</u-mask>
 
 	</view>
@@ -28,6 +29,8 @@
 				maskShow: false,
 
 				source: '',
+				
+				sourceList:[],
 
 				webviewStyles: {
 					progress: {
@@ -50,13 +53,21 @@
 
 				switch (index) {
 					case 1:
-						{
-							this.source = "http://junjunhouse.com/files/" + encodeURIComponent("四川军军房产信息咨询平台隐私政策") + ".pdf";
+						{	
+							this.sourceList = [];
+							for (var i = 1; i <= 10; i++) {
+								this.sourceList.push("http://www.junjunhouse.com/files/service/service_" + i +".png");
+							}
+							//this.source = "http://junjunhouse.com/files/" + encodeURIComponent("四川军军房产信息咨询平台隐私政策") + ".pdf";
 						}
 						break;
 					case 2:
 						{
-							this.source = "http://junjunhouse.com/files/" + encodeURIComponent("四川军军房产信息咨询平台服务协议") + ".pdf";
+							this.sourceList = [];
+							for (var i = 1; i <= 3; i++) {
+								this.sourceList.push("http://www.junjunhouse.com/files/privacy/privacy_" + i +".png");
+							}
+							//this.source = "http://junjunhouse.com/files/" + encodeURIComponent("四川军军房产信息咨询平台服务协议") + ".pdf";
 						}
 						break;
 					case 3:
@@ -97,6 +108,7 @@
 <style lang="scss" scoped>
 	.warp {
 		display: flex;
+		padding: 40rpx;
 		align-items: center;
 		justify-content: center;
 		height: 100%;

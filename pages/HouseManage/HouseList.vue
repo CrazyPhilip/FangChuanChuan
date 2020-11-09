@@ -60,18 +60,17 @@
 					</scroll-view>
 				</swiper-item>
 
-
 				<swiper-item class="swiper-item">
 					<view>
 						<u-row gutter="16" justify="center">
-							<!-- <u-col span="3">
+						<!-- 	<u-col span="3">
 								<view>
 									<u-select v-model="show" :default-value="defaultValue" mode="mutil-column-auto" :list="list" @confirm="confirm"
 									 @cancel="cancel"></u-select>
 									<u-button type="primary" shape="square" size="small" :ripple="true" @click="btnClick">{{ result }}</u-button>
 								</view>
 							</u-col> -->
-
+				
 							<u-col span="12">
 								<u-dropdown ref="uDropdown" activeColor="#2979ff">
 									<u-dropdown-item @change="change12" v-model="value12" :title="options2[value12].label" :options="options2"></u-dropdown-item>
@@ -81,13 +80,13 @@
 							</u-col>
 						</u-row>
 					</view>
-
+				
 					<scroll-view scroll-y style="height: 100%;width: 100%;">
 						<view class="uni-list">
 							<view class="uni-list-cell" v-for="(item,index) in rentHouseList" :key="index" v-on:click="ToHouseDetail(index)">
 								<u-image v-if="showImg" :width="200" :height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
 								 mode="aspectFill"></u-image>
-
+				
 								<view style="margin-left: 8rpx;">
 									<view>
 										<text class="BiKan">必看</text>
@@ -113,7 +112,7 @@
 						<u-back-top :scroll-top="scrollTop"></u-back-top>
 					</scroll-view>
 				</swiper-item>
-
+				
 				<swiper-item class="swiper-item">
 					<!-- <view>
 						<u-row gutter="16" justify="center">
@@ -125,7 +124,7 @@
 								</view>
 							</u-col>
 				
-							<u-col span="9">
+							<u-col span="12">
 								<u-dropdown ref="uDropdown" activeColor="#2979ff">
 									<u-dropdown-item @change="change12" v-model="value12" :title="options2[value12].label" :options="options2"></u-dropdown-item>
 									<u-dropdown-item @change="change13" v-model="value13" :title="options3[value13].label" :options="options3"></u-dropdown-item>
@@ -137,7 +136,7 @@
 				
 					<scroll-view scroll-y style="height: 100%;width: 100%;">
 						<view class="uni-list">
-							<view class="uni-list-cell" v-for="(item,index) in rentHouseList" :key="index" v-on:click="ToHouseDetail(index)">
+							<view class="uni-list-cell" v-for="(item,index) in grabedHouseList" :key="index" v-on:click="ToGrabHouseDetail(index)">
 								<u-image v-if="showImg" :width="200" :height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
 								 mode="aspectFill"></u-image>
 				
@@ -166,6 +165,7 @@
 						<u-back-top :scroll-top="scrollTop"></u-back-top>
 					</scroll-view>
 				</swiper-item>
+				
 			</swiper>
 		</view>
 
@@ -354,10 +354,12 @@
 		},
 
 		onPullDownRefresh() {
+			
 			console.log('刷新');
-			if (this.index === 0) {
+			console.log('swiper :'+this.swiperCurrent);
+			if (this.swiperCurrent === 0) {
 				this.GetSaleHouseList();
-			} else if(index === 1){
+			} else if(this.swiperCurrent === 1){
 				this.GetRentHouseList();
 			}else{
 				this.GetGrabedHouseList();
@@ -367,11 +369,19 @@
 		methods: {
 			ToHouseDetail: function(h) {
 				var obj = this.swiperCurrent === 0 ? this.saleHouseList[h] : this.rentHouseList[h];
-				var flag = this.swiperCurrent === 2 ? 'done':'no';   //已抢房源 和 自己的房源 的标志位
 				uni.navigateTo({
 					url: './HouseDetail',
 					success: (res) => {
-						res.eventChannel.emit('acceptDataFromHouseList', {data:obj,ifCanGrab:flag});
+						res.eventChannel.emit('acceptDataFromHouseList', obj);
+					}
+				})
+			},
+			ToGrabHouseDetail:function(h) {
+				var obj = this.grabedHouseList[h];
+				uni.navigateTo({
+					url: './GrabHouseDetail',
+					success: (res) => {
+						res.eventChannel.emit('acceptDataFromHouseList', {data:obj,ifCanGrab:'no'});
 					}
 				})
 			},
@@ -396,6 +406,7 @@
 
 			showChange(index) {
 				this.swiperCurrent = index;
+				console.log('showchange'+this.swiperCurrent);
 				if (index === 0) {
 					this.GetSaleHouseList();
 				} else if(index === 1){
@@ -447,6 +458,7 @@
 			},
 
 			GetSaleHouseList() {
+				console.log('正在请求 sale');
 				this.$u.get(this.global_data.global_data.BaseUrl + 'QuerySaleHouseSource', {
 					DBName: this.global_data.global_data.DBName,
 					EmpNo: this.global_data.global_data.Tel,
@@ -490,9 +502,9 @@
 				})
 			},
 			GetGrabedHouseList(){
-				this.$u.get(this.global_data.global_data.BaseUrl + 'getCanGrabHouses', {
+				this.$u.get(this.global_data.global_data.BaseUrl + 'GetGrabbedHouses', {
 					DBName: this.global_data.global_data.DBName,
-					EmpNo: this.global_data.global_data.Tel,
+					EmpNo: this.global_data.global_data.EmpID,
 				/* 	DistrictName: '区域',
 					CountF: this.options2[this.value12].label === '全部房型' || this.options2[this.value12].label === ''?'房型':this.options2[this.value12].label,
 					Price: this.options3[this.value13].label === '全部价格' || this.options3[this.value13].label === ''?'价格':this.options3[this.value13].label,
@@ -506,7 +518,7 @@
 					Page: '',
 					EmpID: this.global_data.global_data.EmpID, */
 				}).then(res => {
-					this.rentHouseList = res.Result;
+					this.grabedHouseList = res.Result;
 					uni.stopPullDownRefresh();
 				})
 			},
@@ -515,8 +527,10 @@
 				this.scrollTop = e.scrollTop;
 				if (this.swiperCurrent === 0) {
 					this.GetSaleHouseList();
-				} else {
+				} else if(this.swiperCurrent === 1){
 					this.GetRentHouseList();
+				}else{
+					this.GetGrabedHouseList();
 				}
 			},
 		},
@@ -624,7 +638,7 @@
 
 		.HousePrice {
 			font-weight: bolder;
-			font-size: large;
+			font-size: medium;
 			color: #FA3534;
 		}
 

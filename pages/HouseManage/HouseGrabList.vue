@@ -1,5 +1,6 @@
 <template>
 	<view>
+		<view class="wrap">
 		<view>
 			<u-navbar is-back="true" title="可抢房源列表"></u-navbar>
 		</view>
@@ -36,6 +37,7 @@
 				</scroll-view>
 			</swiper-item>
 		</swiper>
+		</view>
 	</view>
 </template>
 
@@ -68,7 +70,7 @@
 				ToHouseDetail: function(h) {
 					var obj =  this.grabHouseList[h];
 					uni.navigateTo({
-						url: './HouseDetail',
+						url: './GrabHouseDetail',
 						success: (res) => {
 							res.eventChannel.emit('acceptDataFromHouseList', {data:obj,ifCanGrab:'yes'});
 						}
@@ -225,7 +227,7 @@
 
 		.HousePrice {
 			font-weight: bolder;
-			font-size: large;
+			font-size: medium;
 			color: #FA3534;
 		}
 
