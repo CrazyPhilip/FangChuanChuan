@@ -252,7 +252,7 @@
 				// #ifdef APP-PLUS
 				console.log('这是app');
 				uni.navigateTo({
-					url: '../HouseManage/map',
+					url: '../HouseManage/map4',
 				});
 				// #endif
 			},

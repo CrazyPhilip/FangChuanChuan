@@ -7,7 +7,7 @@
 				<view style="font-size: x-large;font-weight: bold;">登录</view>
 				<view>欢迎使用房串串经纪人版</view>
 			</view>
-	
+
 			<u-form :model="model" :rules="rules" ref="uForm" :errorType="['message']">
 				<!-- <u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="120" :label-position="labelPosition" label="姓名" prop="name">
 					<u-input :border="border" placeholder="请输入姓名" v-model="model.name" type="text"></u-input>
@@ -87,37 +87,37 @@
 		// 必须要在onReady生命周期，因为onLoad生命周期组件可能尚未创建完毕
 		onReady() {
 			this.$refs.uForm.setRules(this.rules);
-			
+
 			this.getCache();
 		},
 
 		methods: {
-			getCache(){
+			getCache() {
 				try {
-				    const value1 = uni.getStorageSync('result');
+					const value1 = uni.getStorageSync('result');
 					const value2 = uni.getStorageSync('phone');
 					const value3 = uni.getStorageSync('password');
-					
-					if(value2){
-				    console.log(value2);
+
+					if (value2) {
+						console.log(value2);
 						this.model.phone = value2;
 					}
-					
-					if(value3){
-				    console.log(value3);
+
+					if (value3) {
+						console.log(value3);
 						this.model.password = value3;
 					}
-					
+
 					this.login();
 				} catch (e) {
-				    // error
+					// error
 				}
 			},
-			
+
 			change(status) {
 
 			},
-			
+
 			submit() {
 				this.$refs.uForm.validate(valid => {
 					if (valid) {
@@ -127,12 +127,12 @@
 						console.log('验证失败');
 					}
 				});
-				
+
 			},
-			
+
 			//登录
 			login() {
-				this.$u.get( this.global_data.global_data.BaseUrl + 'Login', {
+				this.$u.get(this.global_data.global_data.BaseUrl + 'Login', {
 					TelOrEmpNo: this.model.phone,
 					Password: this.model.password
 				}).then(res => {
@@ -154,7 +154,7 @@
 									console.log('保存成功');
 								}
 							});
-							
+
 							uni.setStorage({
 								key: 'phone',
 								data: this.model.phone,
@@ -162,7 +162,7 @@
 									console.log('phone保存成功');
 								}
 							});
-							
+
 							uni.setStorage({
 								key: 'password',
 								data: this.model.password,
@@ -171,36 +171,36 @@
 								}
 							});
 						} else {
- 
+
 						};
-						
+
 						this.global_data.global_data.DBName = res.Result.DBName;
-						this.global_data.global_data.EmpID= res.Result.EmpID;
+						this.global_data.global_data.EmpID = res.Result.EmpID;
 						this.global_data.global_data.EmpName = res.Result.EmpName;
 						this.global_data.global_data.PhotoUrl = res.Result.PhotoUrl;
 						this.global_data.global_data.Tel = this.model.phone;
 						this.global_data.global_data.AccountStyle = res.Result.AccountStyle;
-						if(res.Result.AccountStyle === '1'){
+						if (res.Result.AccountStyle === '1') {
 							this.global_data.global_data.AccountStyle = '独立经纪人';
 						}
-						if(res.Result.AccountStyle === '2'){
+						if (res.Result.AccountStyle === '2') {
 							this.global_data.global_data.AccountStyle = '物业管理中心';
 						}
-						
+
 						console.log(this.global_data.global_data.DBName);
 						console.log(this.global_data.global_data.EmpID);
 						console.log(this.global_data.global_data.EmpName);
 						console.log(this.global_data.global_data.Tel);
-						
-						const jyJPush = uni.requireNativePlugin('JY-JPush');
-						jyJPush.addJYJPushTags({
-						userTag: this.global_data.global_data.DBName
-						}, result => {
-						/* uni.showToast({
-						icon: 'none',
-						title: JSON.stringify(result)
-						}) */
-						});
+
+						// const jyJPush = uni.requireNativePlugin('JY-JPush');
+						// jyJPush.addJYJPushTags({
+						// 	userTag: this.global_data.global_data.DBName
+						// }, result => {
+						// 	/* uni.showToast({
+						// 	icon: 'none',
+						// 	title: JSON.stringify(result)
+						// 	}) */
+						// });
 
 						uni.switchTab({
 							url: '../Home/Home'

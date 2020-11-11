@@ -280,15 +280,15 @@
 							tagList.push(this.focusAreaList[i].dbName);
 						}
 						tagList.push(this.global_data.global_data.DBName);
-						const jyJPush = uni.requireNativePlugin('JY-JPush');
-						jyJPush.addJYJPushTagsWithArr({ //以数组方式设置
-							userTags: tagList
-						}, result => {
-							/* uni.showToast({
-								icon: 'none',
-								title: JSON.stringify(result)
-							}) */
-						});
+						// const jyJPush = uni.requireNativePlugin('JY-JPush');
+						// jyJPush.addJYJPushTagsWithArr({ //以数组方式设置
+						// 	userTags: tagList
+						// }, result => {
+						// 	/* uni.showToast({
+						// 		icon: 'none',
+						// 		title: JSON.stringify(result)
+						// 	}) */
+						// });
 					}
 				});
 			},

@@ -3,6 +3,13 @@
 		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
 	},
 
+	"globalStyle": {
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "房串串",
+		"navigationBarBackgroundColor": "#007AFF",
+		"backgroundColor": "#FFFFFF"
+	},
+
 	"pages": [{
 			"path": "pages/index/index",
 			"style": {
@@ -23,13 +30,13 @@
 				"navigationBarTitleText": "房源管理",
 				"navigationStyle": "custom", // 隐藏系统导航栏
 				//"enablePullDownRefresh": true
-				 "app-plus": {  
-						"bounce": true,  
-						"pullToRefresh": {  
-									"support": true,  
-									"style": "circle"
-									}
-							}
+				"app-plus": {
+					"bounce": true,
+					"pullToRefresh": {
+						"support": true,
+						"style": "circle"
+					}
+				}
 			}
 		},
 		{
@@ -53,12 +60,12 @@
 				"navigationStyle": "custom", // 隐藏系统导航栏
 				//"enablePullDownRefresh": true
 				"app-plus": {
-										"bounce": true,  
-										"pullToRefresh": {  
-													"support": true,  
-													"style": "circle"
-													}
-											}
+					"bounce": true,
+					"pullToRefresh": {
+						"support": true,
+						"style": "circle"
+					}
+				}
 			}
 		},
 		{
@@ -108,6 +115,32 @@
 			"style": {
 				"navigationBarTitleText": "地图找房",
 				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/HouseManage/map4",
+			"style": {
+				"disableScroll": true,
+				"navigationBarTitleText": "地图找房",
+				"app-plus": {
+					"bounce": "none", //关闭窗口回弹效果
+					"titleNView": {
+						// "buttons": [ //原生标题栏按钮配置,
+						// 	{
+						// 		"text": "分享" //原生标题栏增加分享按钮，点击事件可通过页面的 onNavigationBarButtonTap 函数进行监听
+						// 	}
+						// ],
+						"searchInput": {
+							"backgroundColor": "#fff",
+							"borderRadius": "8px", //输入框圆角
+							"placeholder": "搜索房源",
+							"disabled": true //disable时点击输入框不置焦，可以跳到新页面搜索
+						},
+						"backButton": { //自定义 backButton
+							"background": "#00FF00"
+						}
+					}
+				}
 			}
 		},
 		{
@@ -226,7 +259,14 @@
 		{
 			"path": "pages/Message/MessageList",
 			"style": {
-				"navigationBarTitleText": "消息",
+				"navigationBarTitleText": "消息列表",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Message/MessageDetail",
+			"style": {
+				"navigationBarTitleText": "消息详情",
 				"navigationStyle": "custom" // 隐藏系统导航栏
 			}
 		},
@@ -280,13 +320,6 @@
 			}
 		}
 	],
-
-	"globalStyle": {
-		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "JunJun",
-		"navigationBarBackgroundColor": "#007AFF",
-		"backgroundColor": "#FFFFFF"
-	},
 
 	"tabBar": {
 		"color": "#8a8a8a",

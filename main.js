@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App'
 import uView from "uview-ui"
 import global_data from './store/index.js'
- 
+
 Vue.config.productionTip = false
 Vue.use(uView);
 

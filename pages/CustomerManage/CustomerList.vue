@@ -1,5 +1,9 @@
 <template>
 	<view>
+		<view class="status_bar">
+			<!-- 这里是状态栏 -->
+		</view>
+		
 		<view class="wrap">
 			<view class="u-tabs-box">
 				<u-tabs-swiper ref="tabs" :list="[{name:'求购'}, {name:'求租'}]" :current="current" @change="showChange" :is-scroll="false"
@@ -430,6 +434,15 @@
 		flex-direction: column;
 		height: calc(100vh - var(--window-top));
 		width: 100%;
+		padding-top: var(--status-bar-height);
+	}
+	
+	.status_bar {
+		height: var(--status-bar-height);
+		width: 100%;
+		background-color: #808080;
+		z-index: 10;
+		position: fixed;
 	}
 
 	.swiper-box {

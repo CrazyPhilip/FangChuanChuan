@@ -423,9 +423,10 @@
 			},
 
 			showHouseList(e) {
+				console.log(e.detail.markerId);
 				for (var i = 0; i < this.districts.length; i++) {
 					if (this.districts[i].areaId === e.detail.markerId) {
-						
+						console.log(e.detail.markerId);
 					}
 				}
 			},

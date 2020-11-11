@@ -23,7 +23,30 @@
 
 		<view class="uni-list">
 			<view class="uni-list-cell" v-for="(item,index) in houseList" :key="index" @tap="ToHouseDetail(index)">
-				<u-row @tap="ToHouseDetail(index)">
+				<view class="left">
+					<u-image width="250" height="200" border-radius="8" :src="item.proCoverUrl" error-icon="/static/icon/NullPic.png"
+					 mode="aspectFill"></u-image>
+				</view>
+				
+				<view class="right">
+					<text class="BiKan">必看</text>
+					<view class="title">{{item.proTitle}}</view>
+					<view>
+						<text class="HouseTag">{{item.proDistrict}}</text>
+						<text class="HouseTag">{{item.proArea}}</text>
+						<text class="HouseTag">VR</text>
+						<text class="HouseTag">随时看房</text>
+					</view>
+					<view class="">{{item.proCountF}}室{{item.proCountT}}厅/{{item.proSquare}}㎡/{{item.proDirection}}/{{item.EstateName}}</view>
+					<view>
+						<u-row>
+							<u-col class="HousePrice" span="6">{{item.proPrice}}{{item.proPriceType}}</u-col>
+							<u-col class="HouseUnitPrice" span="6">{{item.proUnitPrice}}{{item.proUnitPriceType}}</u-col>
+						</u-row>
+					</view>
+				</view>
+				
+				<!-- <u-row @tap="ToHouseDetail(index)">
 					<u-col span="4" @tap="ToHouseDetail(index)">
 						<u-image width="200" height="200" border-radius="8" :src="item.proCoverUrl" error-icon="/static/icon/NullPic.png"
 						 mode="aspectFill"></u-image>
@@ -50,7 +73,8 @@
 							</view>
 						</view>
 					</u-col>
-				</u-row>
+				</u-row> -->
+			
 			</view>
 		</view>
 
@@ -331,55 +355,65 @@
 </style>
 
 <style lang="scss" scoped>
-	.uni-list .uni-list-cell {
+.uni-list-cell {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
 		border-radius: 8px;
 		margin: 5px;
 		background-color: #ffffff;
 		padding: 8px;
-
-		.BiKan {
-			font-size: xx-small;
-			padding: 2rpx;
-			background-color: #FA3534;
-			border-radius: 10rpx;
-			color: white;
-		}
-
-		.HouseTitle {
-			font-weight: bolder;
-			font-size: large;
-			max-lines: 2;
-
-			overflow: hidden;
-			text-overflow: ellipsis;
-			/*设置成弹性盒子 */
-			display: -webkit-box;
-			/*显示的个数 */
-			-webkit-line-clamp: 2;
-			/* 属性规定框的子元素应该被水平或垂直排列。 */
-			-webkit-box-orient: vertical;
-		}
-
-		.HouseTag {
-			max-lines: 1;
-			font-weight: lighter;
-			font-size: xx-small;
-			background-color: #A0CFFF;
-			border-radius: 10rpx;
-			color: white;
-			padding: 2rpx;
-			margin-right: 4rpx;
-		}
-
-		.HousePrice {
-			font-weight: bolder;
-			font-size: large;
-			color: #FA3534;
-		}
-
-		.HouseUnitPrice {
-			font-size: x-small;
-		}
-
+	}
+	
+	.left{
+		width: 250rpx;
+	}
+	
+	.right{
+		width: 430rpx;
+		margin-left: 20rpx;
+	}
+	
+	.title{
+		font-weight: bolder;
+		font-size: large;
+		max-lines: 2;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		/*设置成弹性盒子 */
+		display: -webkit-box;
+		/*显示的个数 */
+		-webkit-line-clamp: 2;
+		/* 属性规定框的子元素应该被水平或垂直排列。 */
+		-webkit-box-orient: vertical;
+	}
+	
+	.BiKan {
+		font-size: small;
+		padding: 2rpx;
+		background-color: #FA3534;
+		border-radius: 10rpx 10rpx 10rpx 0;
+		color: white;
+	}
+	
+	.HouseTag {
+		max-lines: 1;
+		font-weight: lighter;
+		font-size: small;
+		background-color: #A0CFFF;
+		border-radius: 10rpx;
+		color: white;
+		padding: 2rpx;
+		margin-right: 4rpx;
+	}
+	
+	.HousePrice {
+		font-weight: bolder;
+		font-size: large;
+		color: #FA3534;
+	}
+	
+	.HouseUnitPrice {
+		font-size: small;
 	}
 </style>
