@@ -11,5 +11,17 @@ export default {
 	   EmpNo: '',
 	   cityName:'成都',
 	   cityPinYin:'chengdu',
+	   user:{
+		   DBName: '',
+		   EmpID: '',
+		   EmpName: '',
+		   PhotoUrl: '',
+		   AccountStyle: '',
+		   FollowArea:'',
+		   Tel: '',
+		   EmpNo: '',
+		   cityName:'成都',
+		   cityPinYin:'chengdu',
+	   }
    }
 }

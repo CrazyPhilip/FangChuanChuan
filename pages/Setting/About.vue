@@ -11,7 +11,7 @@
 
 			<view class="bottom">
 				<view class="paragraph">房串串独立经纪人版APP是军军房页为全国独立经纪人提供的手机客户端，为独立经纪人提供房源、客源信息管理等功能。</view>
-				<view class="paragraph">官方网址：www.junjunhouse.com</view>
+				<view class="paragraph">官方网址：www.fangchuanchuan.com</view>
 				<view class="paragraph">客服电话：028-61834237</view>
 				<view class="paragraph">邮箱：1770973601@qq.com</view>
 			</view>

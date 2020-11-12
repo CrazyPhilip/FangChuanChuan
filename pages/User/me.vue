@@ -52,6 +52,14 @@
 				</view>
 				<view>查看或新增自己的关注区域</view>
 			</view>
+			
+			<view class="section" @click="toScan">
+				<view class="sectionBar">
+					<view class="sectionTitle u-p-b-20">扫一扫</view>
+					<u-icon name="arrow-right"></u-icon>
+				</view>
+				<view>扫一扫，快捷添加客户信息</view>
+			</view>
 			<!-- 
 				<view class="section">
 					<view class="sectionBar">
@@ -157,6 +165,17 @@
 			ToSetting() {
 				uni.navigateTo({
 					url: '../Setting/Setting'
+				});
+			},
+			
+			toScan(){
+				// 允许从相机和相册扫码
+				uni.scanCode({
+					scanType: ['qrCode'],
+				    success: function (res) {
+				        console.log('条码类型：' + res.scanType);
+				        console.log('条码内容：' + res.result);
+				    }
 				});
 			}
 		}

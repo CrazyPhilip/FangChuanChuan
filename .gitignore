@@ -1,2 +1,4 @@
 /node_modules/
-/unpackage/
+/unpackage/debug/
+/unpackage/dist/
+/unpackage/release/
