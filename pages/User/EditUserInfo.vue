@@ -89,6 +89,7 @@
 		},
 
 		methods: {
+			// 修改用户名
 			changeUserName() {
 				this.$u.get(this.global_data.global_data.BaseUrl + 'user/updateName', {
 					name: this.username,
@@ -107,11 +108,13 @@
 					}
 				});
 			},
-
+			
+			// 上传头像
 			uploadAvatar() {
 				this.$refs.uUpload.upload();
 			},
 
+			// 上传头像完成回调函数
 			avatarUploaded(res) {
 				console.log(res);
 				if (res[0].response.code === 200) {
@@ -123,14 +126,16 @@
 					this.getUserInfo();
 				}
 			},
-
+			
+			// 退出登录
 			quit() {
 				uni.reLaunch({
 					url: './me'
 				});
 				uni.clearStorage();
 			},
-
+			
+			// 获取用户信息
 			getUserInfo() {
 				this.$u.get(this.global_data.global_data.BaseUrl + 'user/getUserInfo', {}, {
 					Authorization: this.user.tokenHead + this.user.token
@@ -156,6 +161,7 @@
 				});
 			},
 			
+			// 保存二维码
 			saveQrCode(){
 				this.$refs.qrcode._saveCode();
 			}
