@@ -38,6 +38,7 @@
 		},
 
 		methods: {
+			// 暗黑模式
 			darkModeChange(){
 				this.$refs.uToast.show({
 					title: '一日不见兮，思之如狂。',
@@ -48,34 +49,40 @@
 				})
 			},
 			
+			// 跳转到关于页面
 			toAbout() {
 				uni.navigateTo({
 					url: './About'
 				});
 			},
 			
+			// 跳转到不良信息举报页面
 			toBadInfoReport() {
 				uni.navigateTo({
 					url: './BadInfoReport'
 				});
 			},
 			
+			// 跳转到隐私页面
 			toPrivacy() {
 				uni.navigateTo({
 					url: './Privacy'
 				});
 			},
 			
+			// 跳转到认证页面
 			toCredentials() {
 				uni.navigateTo({
 					url: './Credentials'
 				});
 			},
 
+			// 显示清理缓存弹窗
 			toClearCache() {
 				this.modalShow = true;
 			},
 
+			// 确认清理缓存
 			confirm() {
 				setTimeout(() => {
 					// 3秒后自动关闭
