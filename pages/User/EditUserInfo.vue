@@ -72,7 +72,7 @@
 				action: '',
 				header: Object,
 
-				value: 'http://www.baidu.com',
+				value: '',
 				size: 200,
 				qrcode: ''
 			}
@@ -81,6 +81,13 @@
 		onLoad() {
 			this.user = this.global_data.global_data.user;
 			//this.getUserInfo();
+			
+			let v = {
+				dataSource: this.global_data.global_data.DBName,
+				brokerId: this.global_data.global_data.EmpID,
+				brokerTel: this.global_data.global_data.Tel
+			}
+			this.value = JSON.stringify(v);
 		},
 
 		onReady() {
