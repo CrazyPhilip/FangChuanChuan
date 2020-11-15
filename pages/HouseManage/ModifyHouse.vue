@@ -600,14 +600,14 @@
 				this.model.building = arr[0];
 				this.propertyID = data.PropertyID;
 				this.model.unit = arr[1];; //和building 在一起，需分开
-				this.model.floor = data.Floor;
+				this.model.floor = data.Floor+'';   //传过来位数字
 				this.model.floorAll = data.FloorAll;
 				this.model.roomNo = data.RoomNo;
 				this.model.houseTitle = data.Title;
 				this.model.trade = data.Trade;
 				this.model.direction = data.PropertyDirection;
-				this.model.price = data.Price;
-				this.model.square = data.Square;
+				this.model.price = data.Price+'';
+				this.model.square = data.Square+'';
 				this.model.countF = data.CountF;
 				this.model.countT = data.CountT;
 				this.model.countW = data.CountW;
@@ -886,7 +886,7 @@
 					FlagKDK: this.optionalModel.FlagKDK ? "1" : "0",
 					FlagXSFY: this.optionalModel.FlagXSFY ? "1" : "0",
 					ChangeLog: '',
-					Status: ''
+					Status: '有效'
 				}, {
 					'content-type': 'application/x-www-form-urlencoded',
 				}).then(res => {
