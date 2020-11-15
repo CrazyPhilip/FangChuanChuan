@@ -179,7 +179,7 @@
 								<u-button type="primary" @click="ToWriteFollow">写跟进</u-button>
 							</u-col>
 							<u-col  span="3">
-								<u-button type="warning" @click="Call">修改房源</u-button>
+								<u-button type="warning" @click="ModifyHouse">修改房源</u-button>
 							</u-col>
 						</u-row>
 
@@ -352,6 +352,16 @@
 					delta: 1
 				});
 			},
+			
+			ModifyHouse(){
+							uni.navigateTo({
+								url: './ModifyHouse',
+								success: (res) => {
+									res.eventChannel.emit('acceptDataFromHouseList',this.house);
+								}
+							})
+						},
+
 
 			Call() {
 				this.callActionSheetShow = true;
