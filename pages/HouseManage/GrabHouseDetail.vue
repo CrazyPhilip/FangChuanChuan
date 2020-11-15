@@ -7,7 +7,7 @@
 				 :is-scroll="false"></u-tabs-swiper>
 			</view>
 			<view class="right">
-				<u-icon class="rightIcon" pros="1" name="heart" size="50rpx" color="#ffffff" @click="goBack"></u-icon>
+				<u-icon class="rightIcon" pros="1" name="heart" size="50rpx" :color="collectColor" @click="CollectHouse"></u-icon>
 				<u-icon class="rightIcon" pros="2" name="zhuanfa" size="50rpx" color="#ffffff" @click="goBack"></u-icon>
 			</view>
 		</view>
@@ -293,6 +293,8 @@
 			return {
 				swiperCurrent: 0,
 				current: 0,
+				collectColor:'#ffffff',
+				ifCollected:false,
 
 				cityPinYin: '',
 				proId: '',
@@ -336,7 +338,7 @@
 			}
 			console.log('this-ifcangrab:'+this.ifCanGrab);   //比监听内事件先执行
 			
-			
+			this.CheckIfCollected();
 		},
 
 		onReady() {
@@ -373,7 +375,62 @@
 					delta: 1
 				});
 			},
-
+			CheckIfCollected(){
+				console.log('PropertyID：'+this.house.PropertyID);
+				this.$u.get(this.global_data.global_data.BaseUrl + 'IfPropertyCollectted', {
+					DBName: this.global_data.global_data.DBName,
+					EmpID: this.global_data.global_data.EmpID,
+					PropertyID: this.house.PropertyID,
+				}).then(res => {
+					if (res.Flag === 'Collected') {
+						this.ifCollected = true;
+						this.collectColor = '#ffff01';
+					}else{
+						this.ifCollected = false;
+						this.collectColor = '#ffffff';
+					}
+				})
+			},
+			CollectHouse(){
+				this.$u.get(this.global_data.global_data.BaseUrl + 'CollectProperty', {
+					DBName: this.global_data.global_data.DBName,
+					EmpID: this.global_data.global_data.EmpID,
+					PropertyID: this.house.PropertyID,
+				}).then(res => {
+					if(this.ifCollected === true){   //本次为取消收藏
+						if(res.Flag === 'CancelSuccess'){
+							this.$refs.uToast.show({
+								title: '取消收藏成功',
+								type: 'success'
+							});
+							this.ifCollected = false;
+							this.collectColor = '#ffffff';
+						}
+						else{
+							this.$refs.uToast.show({
+								title: '取消收藏失败',
+								type: 'error'
+							});
+						}		
+					}
+					else{    //本次为收藏房源
+						if(res.Flag === 'CollectSuccess'){
+							this.$refs.uToast.show({
+								title: '收藏成功',
+								type: 'success'
+							});
+							this.ifCollected = true;
+							this.collectColor = '#ffff01';
+						}
+						else{
+							this.$refs.uToast.show({
+								title: '收藏失败',
+								type: 'error'
+							});
+						}
+					}
+				})
+			},
 			Call() {
 				this.callActionSheetShow = true;
 			},
