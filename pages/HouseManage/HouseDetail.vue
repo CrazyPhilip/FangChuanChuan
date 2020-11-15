@@ -26,7 +26,7 @@
 						<!-- <u-tag text="随时看房" mode="dark" shape="circle"></u-tag> -->
 						<view class="title">{{house.Title}}</view>
 
-						<view>
+						<view @click="ToWarning">
 							<u-icon name="question-circle-fill" size="30"></u-icon>
 							<text class="tips">风险提示</text>
 						</view>
@@ -424,6 +424,12 @@
 					PropertyID: this.house.PropertyID,
 				}).then(res => {
 					this.followUpList = res.Result;
+				});
+			},
+			
+			ToWarning(){
+				uni.navigateTo({
+					url:"../Setting/Warning"
 				});
 			}
 		},

@@ -23,7 +23,7 @@
 			<!-- <u-tag text="随时看房" mode="dark" shape="circle"></u-tag> -->
 			<view class="title">{{this.house.proTitle}}</view>
 
-			<view>
+			<view @click="ToWarning">
 				<u-icon name="question-circle-fill" size="30"></u-icon>
 				<text class="tips">风险提示</text>
 			</view>
@@ -284,6 +284,12 @@
 					this.recommendedList = res.data.list;
 				});
 			},
+			
+			ToWarning(){
+				uni.navigateTo({
+					url:"../Setting/Warning"
+				});
+			}
 		},
 	}
 </script>

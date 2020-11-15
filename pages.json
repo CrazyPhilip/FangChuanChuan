@@ -318,6 +318,13 @@
 				"navigationBarTitleText": "违法和不良信息举报",
 				"navigationStyle": "custom" // 隐藏系统导航栏
 			}
+		},
+		{
+			"path": "pages/Setting/Warning",
+			"style": {
+				"navigationBarTitleText": "风险提示",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
 		}
 	],
 
