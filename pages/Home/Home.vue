@@ -185,10 +185,9 @@
 
 					case 4:
 						{
-							/* uni.navigateTo({
-								url: "../HouseManage/HouseGrabList"
-							}); */
-
+							uni.switchTab({
+								url: "../Message/MessageList"
+							});
 						}
 						break;
 

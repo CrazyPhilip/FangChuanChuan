@@ -4,12 +4,12 @@
 
 		<view>
 			<u-cell-group class="u-m-t-20" :border="true">
-				<u-cell-item icon="level" title="uid" :value="user.uid" :arrow="false"></u-cell-item>
+				<u-cell-item icon="level" title="编号" :value="user.EmpID" :arrow="false"></u-cell-item>
 				<u-cell-item icon="scan" title="二维码" value="展示二维码" @click="maskShow = true"></u-cell-item>
-				<u-cell-item icon="account-fill" title="用户名" :value="user.username" @click="userNameModalShow = true"></u-cell-item>
-				<u-cell-item icon="phone-fill" title="电话" :value="user.telephone" :arrow="false"></u-cell-item>
+				<u-cell-item icon="account-fill" title="用户名" :value="user.EmpName" @click="userNameModalShow = true"></u-cell-item>
+				<u-cell-item icon="phone-fill" title="电话" :value="user.Tel" :arrow="false"></u-cell-item>
 				<u-cell-item icon="account-fill" title="头像" @click="avatarModalShow = true">
-					<u-avatar :src="'http://47.99.169.155:8090' + user.imgUrl" size="140" bg-color="white" mode="square"></u-avatar>
+					<u-avatar :src="user.PhotoUrl" size="140" bg-color="white" mode="square"></u-avatar>
 				</u-cell-item>
 				<!-- <u-cell-item icon="man" title="性别" :value="user.gender"></u-cell-item> -->
 			</u-cell-group>
@@ -33,7 +33,7 @@
 			</view>
 		</u-modal>
 
-		<u-modal v-model="quitModalShow" content="您要退出登录吗？" @confirm="quit"></u-modal>
+		<u-modal v-model="quitModalShow" content="您要退出登录吗？" :show-cancel-button="true" @confirm="quit"></u-modal>
 
 		<u-toast ref="uToast" />
 
@@ -93,6 +93,16 @@
 		onReady() {
 			this.action = this.global_data.global_data.BaseUrl + 'user/uploadImg?telephone=' + this.user.telephone;
 			
+		},
+		
+		onBackPress(options) {
+			if(this.userNameModalShow || this.avatarModalShow || this.quitModalShow || this.maskShow){
+				this.userNameModalShow = false;
+				this.avatarModalShow = false;
+				this.quitModalShow = false;
+				this.maskShow = false;
+				return true;
+			}
 		},
 
 		methods: {

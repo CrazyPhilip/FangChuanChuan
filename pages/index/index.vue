@@ -186,11 +186,24 @@
 						if (res.Result.AccountStyle === '2') {
 							this.global_data.global_data.AccountStyle = '物业管理中心';
 						}
+						
+						this.global_data.global_data.user = {
+							DBName: res.Result.DBName,
+							EmpID: res.Result.EmpID,
+							EmpName: res.Result.EmpName,
+							PhotoUrl: res.Result.PhotoUrl,
+							AccountStyle: this.global_data.global_data.AccountStyle,
+							FollowArea:'',
+							Tel: this.model.phone,
+							EmpNo: '',
+							cityName:'成都',
+							cityPinYin:'chengdu',
+						};
 
-						console.log(this.global_data.global_data.DBName);
-						console.log(this.global_data.global_data.EmpID);
-						console.log(this.global_data.global_data.EmpName);
-						console.log(this.global_data.global_data.Tel);
+						// console.log(this.global_data.global_data.DBName);
+						// console.log(this.global_data.global_data.EmpID);
+						// console.log(this.global_data.global_data.EmpName);
+						// console.log(this.global_data.global_data.Tel);
 
 						// const jyJPush = uni.requireNativePlugin('JY-JPush');
 						// jyJPush.addJYJPushTags({

@@ -41,7 +41,7 @@
 			// 暗黑模式
 			darkModeChange(){
 				this.$refs.uToast.show({
-					title: '一日不见兮，思之如狂。',
+					title: '抱歉，功能暂未开放',
 					type: 'error', 
 					callback: function(){
 						this.checked = false;

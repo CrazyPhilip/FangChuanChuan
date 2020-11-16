@@ -415,7 +415,7 @@
 
 			getAreaList() {
 				this.$u.get("https://gl.junjunhouse.com/area/getAreaByPCode", {
-					cityPinYin: this.global_data.global_data.city.cityPinYin,
+					cityPinYin: this.global_data.global_data.user.cityPinYin,
 					pAreaCode: 1
 				}).then(res => {
 					let data = res.data;

@@ -122,7 +122,9 @@
 				</view>
 			</view>
 		</view>
-
+		
+		<u-modal v-model="modalShow" :content="modalContent" @confirm="modalConfirm" ref="uModal" :show-cancel-button="true" :mask-close-able="true" :async-close="true"></u-modal>
+		<u-toast ref="uToast" />
 	</view>
 </template>
 
@@ -131,7 +133,11 @@
 		data() {
 			return {
 				pic: '/static/icon/avatar.png',
-
+				
+				modalShow: false,
+				modalContent: '',
+				checked: false,
+				scannedCustomer: Object,
 			}
 		},
 
@@ -172,12 +178,69 @@
 				// 允许从相机和相册扫码
 				uni.scanCode({
 					scanType: ['qrCode'],
-				    success: function (res) {
-				        console.log('条码类型：' + res.scanType);
-				        console.log('条码内容：' + res.result);
-				    }
+					success: (res) => {
+						console.log(res.result);
+						if (res.result.indexOf("CustMobile") != -1) {
+							this.scannedCustomer = JSON.parse(res.result);
+							this.modalContent = '是否添加' + this.scannedCustomer.CustName + '（' + this.scannedCustomer.CustMobile + '）？';
+							this.modalShow = true;
+						} else {
+							this.modalContent = '二维码错误';
+							this.modalShow = true;
+						}
+					}
 				});
-			}
+			},
+			
+			modalConfirm() {
+				this.$u.get(this.global_data.global_data.BaseUrl + 'NewSimpleInquiry',{
+					DBName: this.global_data.global_data.DBName,
+					CustName: this.scannedCustomer.CustName,
+					CustMobile: this.scannedCustomer.CustMobile,
+					EmpTel: this.global_data.global_data.Tel
+				}).then((res) => {
+					console.log(res);
+					this.modalShow = false;
+					if (res.Flag === 'failed') {
+						this.$refs.uToast.show({
+							title: '发生错误',
+							type: 'error'
+						});
+					} else {
+						this.$refs.uToast.show({
+							title: '添加成功',
+							type: 'success'
+						});
+					}
+				});
+				
+				/* uni.request({
+					url:this.global_data.global_data.BaseUrl + 'NewSimpleInquiry',
+					data:{
+						DBName: this.global_data.global_data.DBName,
+						CustName: this.scannedCustomer.CustName,
+						CustMobile: this.scannedCustomer.CustMobile,
+						EmpTel: this.global_data.global_data.Tel
+					},
+					success:(res) => {
+						console.log(res);
+						let data = res.data;
+						this.modalShow = false;
+						if (data.Flag === 'failed') {
+							this.$refs.uToast.show({
+								title: '添加成功',
+								type: 'success'
+							});
+						} else {
+							this.$refs.uToast.show({
+								title: '发生错误',
+								type: 'erroe'
+							});
+							
+						}
+					}
+				}); */
+			},
 		}
 	}
 </script>
