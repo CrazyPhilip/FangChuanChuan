@@ -1,12 +1,10 @@
 <template>
 	<view>
-		
-
 		<map id="map1" ref="map1" :style="{height: nowMapIndex ? nintyPercentScreenHeight : seventyPercentScreenHeight,width:'750rpx'}"
 		 :latitude="center.lat" :longitude="center.lng" :scale="zoom" :show-compass="false" :markers="bubbles" :polygons="polygons"
 		 @markertap="markerTap" @callouttap="showHouseList" :controls="controls" @controltap="controlTap" @regionchange="regionChange">
 
-			<cover-view style="background-color: white;">
+			<cover-view style="background-color: white;height: 60rpx;">
 				<!-- <view class="navBar">
 					<icon type="cancel" size="30" @click="goBack"></icon>
 					<view style="border-width: 2rpx;border-color: #007AFF;border-radius: 8rpx;padding: 10rpx;background-color: #007AFF;">
@@ -47,7 +45,7 @@
 
 			</cover-view>
 
-			<cover-view>
+			<cover-view style="height: 230rpx;">
 				<!-- <slider min="5" max="16" step="1" value="9" blockSize="20" activeColor="red" background-color="blue" block-color="green" style="transform: rotate(270deg);"></slider> -->
 				<view style="display: flex;flex-direction: row;justify-content: flex-end;">
 					<radio-group @change="radioChange">

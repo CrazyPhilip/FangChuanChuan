@@ -205,15 +205,15 @@
 						// console.log(this.global_data.global_data.EmpName);
 						// console.log(this.global_data.global_data.Tel);
 
-						// const jyJPush = uni.requireNativePlugin('JY-JPush');
-						// jyJPush.addJYJPushTags({
-						// 	userTag: this.global_data.global_data.DBName
-						// }, result => {
-						// 	/* uni.showToast({
-						// 	icon: 'none',
-						// 	title: JSON.stringify(result)
-						// 	}) */
-						// });
+						const jyJPush = uni.requireNativePlugin('JY-JPush');
+						jyJPush.addJYJPushTags({
+							userTag: this.global_data.global_data.DBName
+						}, result => {
+							/* uni.showToast({
+							icon: 'none',
+							title: JSON.stringify(result)
+							}) */
+						});
 
 						uni.switchTab({
 							url: '../Home/Home'
