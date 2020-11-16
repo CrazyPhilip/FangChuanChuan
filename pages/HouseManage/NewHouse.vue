@@ -36,8 +36,8 @@
 				</u-form-item>
 				
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
-				 :label-position="labelPosition" label="房号" prop="RoomNo">
-					<u-input :border="border" placeholder="请输入房号" v-model="model.RoomNo" type="number"></u-input>
+				 :label-position="labelPosition" label="房号" prop="roomNo">
+					<u-input :border="border" placeholder="请输入房号" v-model="model.roomNo" type="number"></u-input>
 				</u-form-item>
 				
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
@@ -827,7 +827,7 @@
 					FlagXSFY:this.optionalModel.FlagXSFY?"1":"0",
 					PropertyID:'',
 					ChangeLog:'',
-					Status:''
+					Status:''  //后台接口默认设置为 有效
 				},{
 					'content-type': 'application/x-www-form-urlencoded',
 				}).then(res => {
