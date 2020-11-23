@@ -3,7 +3,7 @@
 		<view class="topNav">
 			<u-icon class="leftIcon" pros="0" name="arrow-leftward" size="50rpx" color="#ffffff" @click="goBack"></u-icon>
 			<view>
-				<u-tabs-swiper class="u-tabs-box" ref="tabs" :list="[{name:'求购'}, {name:'求租'}]" :current="current" @change="showChange"
+				<u-tabs-swiper class="u-tabs-box" ref="tabs" :list="[{name:'详情'}, {name:'流程'}]" :current="current" @change="showChange"
 				 :is-scroll="false"></u-tabs-swiper>
 			</view>
 			<view class="right">
@@ -88,16 +88,16 @@
 					<view class="section">
 						<view class="sectionTitle">交易属性</view>
 						<u-row justify="center">
-							<u-col span="6">委托时间：{{}}</u-col>
-							<u-col span="6">刷新时间：{{}}</u-col>
+							<u-col span="6">委托时间：</u-col>
+							<u-col span="6">刷新时间：</u-col>
 						</u-row>
 						<u-row justify="center">
-							<u-col span="6">属性：{{}}</u-col>
-							<u-col span="6">产权日期：{{}}</u-col>
+							<u-col span="6">属性：</u-col>
+							<u-col span="6">产权日期：</u-col>
 						</u-row>
 						<u-row justify="center">
-							<u-col span="6">产权所属：{{}}</u-col>
-							<u-col span="6">抵押状态：{{}}</u-col>
+							<u-col span="6">产权所属：</u-col>
+							<u-col span="6">抵押状态：</u-col>
 						</u-row>
 					</view>
 

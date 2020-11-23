@@ -23,7 +23,7 @@
 				</u-form-item>
 
 				<!-- 此处switch的slot为right，如果不填写slot名，也即<u-switch v-model="model.remember"></u-switch>，将会左对齐 -->
-				<u-form-item :label-position="labelPosition" label="记住密码" prop="remember" label-width="150">
+				<u-form-item :label-position="labelPosition" label="免密登录" prop="remember" label-width="150">
 					<u-switch v-model="model.remember" slot="right" size="30"></u-switch>
 				</u-form-item>
 			</u-form>

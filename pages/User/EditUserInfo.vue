@@ -146,10 +146,11 @@
 			
 			// 退出登录
 			quit() {
+				uni.clearStorage();
+				
 				uni.reLaunch({
 					url: './me'
 				});
-				uni.clearStorage();
 			},
 			
 			// 获取用户信息

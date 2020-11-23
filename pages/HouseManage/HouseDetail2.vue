@@ -262,6 +262,9 @@
 						var list = this.house.proPhotoUrl.split(',');
 						this.photoList = list;
 					}
+					this.house.proTrustDate = this.house.proTrustDate.substring(0, 10);
+					this.house.proDate = this.house.proDate.substring(0, 10);
+					this.house.proModDate = this.house.proModDate.substring(0, 10);
 				});
 			},
 
