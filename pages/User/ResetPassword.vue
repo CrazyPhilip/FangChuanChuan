@@ -2,7 +2,7 @@
 	<view>
 		<view class="content">
 			<u-navbar is-back="true" title="重置密码"></u-navbar>
-				<u-form :model="model" :rules="rules" ref="uForm" errorType="message">
+			<u-form :model="model" :rules="rules" ref="uForm" errorType="message">
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="phone-fill" :label-position="labelPosition"
 				 label="手机号码" prop="phone" label-width="170">
 					<u-input :border="border" placeholder="请输入手机号" v-model="model.phone" type="number"></u-input>
@@ -28,6 +28,12 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
 	export default {
 		data() {
 			let that = this;
@@ -57,7 +63,7 @@
 						// 校验用户是否已存在
 						{
 							asyncValidator: (rule, value, callback) => {
-								this.$u.get(this.global_data.global_data.BaseUrl + 'IfTelRegistered', {
+								this.$u.get(config.server + '/IfTelRegistered', {
 									Tel: value,
 								}).then(res => {
 									//console.log(res);
@@ -121,7 +127,7 @@
 				border: false,
 				check: false,
 				codeTips: '',
-				authCode:'',
+				authCode: '',
 
 				districtList: [],
 				areaList: [],
@@ -131,17 +137,21 @@
 				accountStyleListShow: false,
 			};
 		},
-	
+
 		onLoad() {
-			
+
 		},
-	
+
 		onReady() {
 			this.$refs.uForm.setRules(this.rules);
 		},
-	
+
+		computed: {
+			...mapState(['user'])
+		},
+
 		methods: {
-	
+
 			submit() {
 				this.$refs.uForm.validate(valid => {
 					if (valid) {
@@ -152,10 +162,10 @@
 					}
 				});
 			},
-			
+
 			//修改密码
 			modifyPassword() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'ModTelPassword', {
+				this.$u.get(config.server + '/ModTelPassword', {
 					Tel: this.model.phone,
 					NewPassWord: this.model.password,
 				}).then(res => {
@@ -169,15 +179,15 @@
 					}
 				});
 			},
-	
+
 			codeChange(text) {
 				this.codeTips = text;
 			},
-	
+
 			// 获取验证码
 			getCode() {
 				if (this.$refs.uCode.canGetCode) {
-					this.$u.get(this.global_data.global_data.BaseUrl + 'GetTelCode', {
+					this.$u.get(config.server + '/GetTelCode', {
 						Tel: this.model.phone
 					}).then(res => {
 						this.authCode = res.Result;
@@ -198,7 +208,7 @@
 					this.$u.toast('倒计时结束后再发送');
 				}
 			},
-	
+
 		}
 	};
 </script>

@@ -41,7 +41,7 @@
 					<u-image width="250" height="200" border-radius="8" :src="item.proCoverUrl" error-icon="/static/icon/NullPic.png"
 					 mode="aspectFill"></u-image>
 				</view>
-				
+
 				<view class="right">
 					<text class="BiKan">必看</text>
 					<view class="title">{{item.proTitle}}</view>
@@ -59,7 +59,7 @@
 						</u-row>
 					</view>
 				</view>
-			
+
 			</view>
 		</view>
 
@@ -69,6 +69,13 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
+
 	export default {
 		data() {
 			return {
@@ -288,6 +295,12 @@
 			this.GetHouseList();
 		},
 
+
+		computed: {
+			...mapState(['city'])
+		},
+
+
 		methods: {
 			ToHouseDetail: function(index) {
 				//console.log(JSON.stringify(this.houseList[index]));
@@ -405,7 +418,7 @@
 						this.status = 'loadmore';
 					}
 				})
-			 */ 
+			 */
 			},
 
 			loadmore() {
@@ -414,8 +427,8 @@
 			},
 
 			getAreaList() {
-				this.$u.get("https://gl.junjunhouse.com/area/getAreaByPCode", {
-					cityPinYin: this.global_data.global_data.user.cityPinYin,
+				this.$u.get(config.outerServer + "/area/getAreaByPCode", {
+					cityPinYin: this.city.cityPinYin,
 					pAreaCode: 1
 				}).then(res => {
 					let data = res.data;
@@ -459,7 +472,7 @@
 </style>
 
 <style lang="scss" scoped>
-.uni-list-cell {
+	.uni-list-cell {
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
@@ -468,17 +481,17 @@
 		background-color: #ffffff;
 		padding: 8px;
 	}
-	
-	.left{
+
+	.left {
 		width: 250rpx;
 	}
-	
-	.right{
+
+	.right {
 		width: 430rpx;
 		margin-left: 20rpx;
 	}
-	
-	.title{
+
+	.title {
 		font-weight: bolder;
 		font-size: large;
 		max-lines: 2;
@@ -491,7 +504,7 @@
 		/* 属性规定框的子元素应该被水平或垂直排列。 */
 		-webkit-box-orient: vertical;
 	}
-	
+
 	.BiKan {
 		font-size: small;
 		padding: 2rpx;
@@ -499,7 +512,7 @@
 		border-radius: 10rpx 10rpx 10rpx 0;
 		color: white;
 	}
-	
+
 	.HouseTag {
 		max-lines: 1;
 		font-weight: lighter;
@@ -510,13 +523,13 @@
 		padding: 2rpx;
 		margin-right: 4rpx;
 	}
-	
+
 	.HousePrice {
 		font-weight: bolder;
 		font-size: large;
 		color: #FA3534;
 	}
-	
+
 	.HouseUnitPrice {
 		font-size: small;
 	}

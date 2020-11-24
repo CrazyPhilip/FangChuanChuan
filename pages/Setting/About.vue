@@ -43,7 +43,6 @@
 	}
 </script>
 
-
 <style>
 	page {
 		background-color: #f0f0f0;

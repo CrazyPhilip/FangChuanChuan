@@ -21,6 +21,8 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	
 	export default{
 		data(){
 			return{
@@ -35,7 +37,7 @@
 		
 		methods:{
 			getMessageList(){
-				this.$u.get(this.global_data.global_data.BaseUrl + 'QueryNews', {}).then(res => {
+				this.$u.get(config.server + '/QueryNews', {}).then(res => {
 					this.list = res.Result;
 				});
 			},

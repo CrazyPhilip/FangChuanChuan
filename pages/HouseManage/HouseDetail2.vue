@@ -126,37 +126,30 @@
 		<view class="section">
 			<view class="sectionTitle">推荐房源</view>
 			<view class="uni-list">
-				<view class="uni-list-cell" v-for="(item,index) in recommendedList" :key="index">
-					<view class="HouseItem" v-on:click="ToHouseDetail(index)">
-						<u-row>
-							<u-col span="4">
-								<u-image width="200" height="200" border-radius="8" :src="item.proCoverUrl" error-icon="error-circle"
-								 mode="aspectFill"></u-image>
-							</u-col>
-						
-							<u-col span="8">
-								<view style="margin-left: 8rpx;">
-									<view>
-										<text class="BiKan">必看</text>
-										<text class="HouseTitle">{{item.proTitle}}</text>
-									</view>
-									<view>
-										<text class="HouseTag">{{item.proDistrict}}</text>
-										<text class="HouseTag">{{item.proArea}}</text>
-										<text class="HouseTag">VR</text>
-										<text class="HouseTag">随时看房</text>
-									</view>
-									<view class="">{{item.proCountF}}室{{item.proCountT}}厅/{{item.proSquare}}㎡/{{item.proDirection}}/{{item.EstateName}}</view>
-									<view>
-										<u-row>
-											<u-col class="HousePrice" span="6">{{item.proPrice}}{{item.proPriceType}}</u-col>
-											<u-col class="HouseUnitPrice" span="6">{{item.proUnitPrice}}{{item.proUnitPriceType}}</u-col>
-										</u-row>
-									</view>
-								</view>
-							</u-col>
-						</u-row>
+				<view class="uni-list-cell" v-for="(item,index) in recommendedList" :key="index" @tap="ToHouseDetail(index)">
+					<view class="left">
+						<u-image width="250" height="200" border-radius="8" :src="item.proCoverUrl" error-icon="/static/icon/NullPic.png"
+						 mode="aspectFill"></u-image>
 					</view>
+					
+					<view class="right">
+						<text class="BiKan">必看</text>
+						<view class="title">{{item.proTitle}}</view>
+						<view>
+							<text class="HouseTag">{{item.proDistrict}}</text>
+							<text class="HouseTag">{{item.proArea}}</text>
+							<text class="HouseTag">VR</text>
+							<text class="HouseTag">随时看房</text>
+						</view>
+						<view class="">{{item.proCountF}}室{{item.proCountT}}厅/{{item.proSquare}}㎡/{{item.proDirection}}/{{item.EstateName}}</view>
+						<view>
+							<u-row>
+								<u-col class="HousePrice" span="6">{{item.proPrice}}{{item.proPriceType}}</u-col>
+								<u-col class="HouseUnitPrice" span="6">{{item.proUnitPrice}}{{item.proUnitPriceType}}</u-col>
+							</u-row>
+						</view>
+					</view>
+				
 				</view>
 			</view>
 		</view>
@@ -185,6 +178,8 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	
 	export default {
 		data() {
 			return {
@@ -248,7 +243,7 @@
 			},
 
 			getHouseDetail() {
-				this.$u.get('http://47.108.202.57:8090/property/getProDetail?proId=' + this.proId + '&cityPinYin=' + this.cityPinYin, {
+				this.$u.get(config.outerServer + '/property/getProDetail?proId=' + this.proId + '&cityPinYin=' + this.cityPinYin, {
 
 				}).then(res => {
 					this.house = res.data;
@@ -269,7 +264,7 @@
 			},
 
 			getCommentList() {
-				this.$u.get('http://47.108.202.57:8090/property/getCommentsByPropertyId?propId=45&cityPinYin=' +
+				this.$u.get(config.outerServer + '/property/getCommentsByPropertyId?propId=45&cityPinYin=' +
 					this.cityPinYin, {
 
 					}).then(res => {
@@ -279,12 +274,18 @@
 			},
 
 			getRecommendedList() {
-				this.$u.get('http://47.108.202.57:8090/property/getRecommend?trade=%E5%87%BA%E5%94%AE&cityPinYin=' + this.cityPinYin +
+				this.$u.get(config.outerServer + '/property/getRecommend?trade=%E5%87%BA%E5%94%AE&cityPinYin=' + this.cityPinYin +
 					'&pageNum=1&pageSize=4', {
 
 					}).then(res => {
 					//console.log(res);
 					this.recommendedList = res.data.list;
+				});
+			},
+			
+			ToHouseDetail(index) {
+				uni.navigateTo({
+					url: 'HouseDetail2?proId=' + this.recommendedList[index].proId + "&cityPinYin=" + "chengdu"
 				});
 			},
 			
@@ -378,40 +379,67 @@
 	}
 
 	.section .uni-list .uni-list-cell {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		border-radius: 8px;
+		margin: 5px;
+		background-color: #ffffff;
+		padding: 8px;
+		
+		.left{
+			width: 250rpx;
+		}
+		
+		.right{
+			width: 430rpx;
+			margin-left: 20rpx;
+		}
+		
+		.title{
+			font-weight: bolder;
+			font-size: large;
+			max-lines: 2;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			/*设置成弹性盒子 */
+			display: -webkit-box;
+			/*显示的个数 */
+			-webkit-line-clamp: 2;
+			/* 属性规定框的子元素应该被水平或垂直排列。 */
+			-webkit-box-orient: vertical;
+		}
+		
 		.BiKan {
-			font-size: xx-small;
+			font-size: small;
 			padding: 2rpx;
 			background-color: #FA3534;
-			border-radius: 10rpx;
+			border-radius: 10rpx 10rpx 10rpx 0;
 			color: white;
 		}
-
-		.HouseTitle {
-			font-weight: bold;
-			max-lines: 2;
-		}
-
+		
 		.HouseTag {
 			max-lines: 1;
 			font-weight: lighter;
-			font-size: xx-small;
+			font-size: small;
 			background-color: #A0CFFF;
 			border-radius: 10rpx;
 			color: white;
 			padding: 2rpx;
 			margin-right: 4rpx;
 		}
-
+		
 		.HousePrice {
 			font-weight: bolder;
 			font-size: large;
 			color: #FA3534;
 		}
-
+		
 		.HouseUnitPrice {
-			font-size: x-small;
+			font-size: small;
 		}
 	}
+
 	
 	.section .uni-list .uni-list-cell {
 		margin-top: 10rpx;

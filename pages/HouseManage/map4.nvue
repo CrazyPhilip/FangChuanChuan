@@ -62,6 +62,9 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {mapState, mapMutations} from 'vuex';
+	
 	export default {
 		name: "Map",
 
@@ -191,7 +194,7 @@
 			console.log('这是vue');
 
 			uni.request({
-				url: 'http://47.108.202.57:8090/map/getDistrictsV2?cityPinyin=chengdu',
+				url: config.outerServer + '/map/getDistrictsV2?cityPinyin=chengdu',
 				success: (res) => {
 					this.districts = res.data.data;
 					var b = [];
@@ -227,14 +230,14 @@
 			});
 
 			uni.request({
-				url: 'http://47.108.202.57:8090/map/getZonesV2?cityPinyin=chengdu',
+				url: config.outerServer + '/map/getZonesV2?cityPinyin=chengdu',
 				success: (res) => {
 					this.zones = res.data.data;
 				}
 			});
 
 			uni.request({
-				url: 'http://47.108.202.57:8090/map/getCityV2?cityPinyin=chengdu',
+				url: config.outerServer + '/map/getCityV2?cityPinyin=chengdu',
 				success: (res) => {
 					const data = res.data;
 					this.center.lng = data.lng;
@@ -250,8 +253,6 @@
 			radioChange(e) {
 				console.log(e);
 				this.zoom = e.detail.value;
-
-
 			},
 
 			goBack() {
@@ -323,7 +324,7 @@
 					}
 				} else if (this.scale >= 12 && this.scale < 14) {
 					uni.request({
-						url: 'http://47.108.202.57:8090/map/getEstatesByZoneIdAndConditionV2?cityPinyin=chengdu&zoneId=' + this.polygonId,
+						url: config.outerServer + '/map/getEstatesByZoneIdAndConditionV2?cityPinyin=chengdu&zoneId=' + this.polygonId,
 						data: {},
 						method: 'POST',
 						success: (res) => {

@@ -182,7 +182,7 @@
 							<u-col v-if="this.ifCanGrab == 'no'" span="3">
 								<u-button type="warning" @click="Call">修改房源</u-button>
 							</u-col> -->
-							<u-col  span="6">
+							<u-col span="6">
 								<u-button type="primary" @click="GrabFunction">{{this.btnGrabText}}</u-button>
 							</u-col>
 						</u-row>
@@ -288,13 +288,19 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
 	export default {
 		data() {
 			return {
 				swiperCurrent: 0,
 				current: 0,
-				collectColor:'#ffffff',
-				ifCollected:false,
+				collectColor: '#ffffff',
+				ifCollected: false,
 
 				cityPinYin: '',
 				proId: '',
@@ -306,8 +312,8 @@
 				ifCanGrab: '', // yes：可抢，从可抢房源列表页进；no：普通状态，非可抢房源；done：已抢，从已抢房源列表页进
 				btnGrabText: '',
 				photoList: [],
-				
-				followUpList:[],
+
+				followUpList: [],
 
 				callActionSheetShow: false,
 				callActionSheet: [{
@@ -321,23 +327,22 @@
 
 		onLoad: function(params) {
 			const eventChannel = this.getOpenerEventChannel();
-			this.ifCanGrab = 'yes';   //通知 接口 进入的 为可抢房源
-			eventChannel.on('acceptDataFromHouseList', (data) => {  //耗时任务？
+			this.ifCanGrab = 'yes'; //通知 接口 进入的 为可抢房源
+			eventChannel.on('acceptDataFromHouseList', (data) => { //耗时任务？
 				this.house = data.data;
 				this.ifCanGrab = data.ifCanGrab;
-				console.log('this-ifcangrab1:'+this.ifCanGrab);
+				console.log('this-ifcangrab1:' + this.ifCanGrab);
 				this.btnGrabText = this.ifCanGrab == 'yes' ? '抢该房源' : '取消抢房';
 			});
 			var DBName = params.DBName;
-			var PropertyId  = params.PropertyId;
+			var PropertyId = params.PropertyId;
 			var ifRequest = params.ifRequest;
-			if(ifRequest === 'true')
-			{
-				this.getCanGrabHouseDetail(DBName,PropertyId);
+			if (ifRequest === 'true') {
+				this.getCanGrabHouseDetail(DBName, PropertyId);
 				this.btnGrabText = this.ifCanGrab == 'yes' ? '抢该房源' : '取消抢房';
 			}
-			console.log('this-ifcangrab:'+this.ifCanGrab);   //比监听内事件先执行
-			
+			console.log('this-ifcangrab:' + this.ifCanGrab); //比监听内事件先执行
+
 			this.CheckIfCollected();
 		},
 
@@ -375,54 +380,51 @@
 					delta: 1
 				});
 			},
-			CheckIfCollected(){
-				console.log('PropertyID：'+this.house.PropertyID);
-				this.$u.get(this.global_data.global_data.BaseUrl + 'IfPropertyCollectted', {
-					DBName: this.global_data.global_data.DBName,
-					EmpID: this.global_data.global_data.EmpID,
+			CheckIfCollected() {
+				console.log('PropertyID：' + this.house.PropertyID);
+				this.$u.get(config.server + '/IfPropertyCollectted', {
+					DBName: this.user.DBName,
+					EmpID: this.user.EmpID,
 					PropertyID: this.house.PropertyID,
 				}).then(res => {
 					if (res.Flag === 'Collected') {
 						this.ifCollected = true;
 						this.collectColor = '#ffff01';
-					}else{
+					} else {
 						this.ifCollected = false;
 						this.collectColor = '#ffffff';
 					}
 				})
 			},
-			CollectHouse(){
-				this.$u.get(this.global_data.global_data.BaseUrl + 'CollectProperty', {
-					DBName: this.global_data.global_data.DBName,
-					EmpID: this.global_data.global_data.EmpID,
+			CollectHouse() {
+				this.$u.get(config.server + '/CollectProperty', {
+					DBName: this.user.DBName,
+					EmpID: this.user.EmpID,
 					PropertyID: this.house.PropertyID,
 				}).then(res => {
-					if(this.ifCollected === true){   //本次为取消收藏
-						if(res.Flag === 'CancelSuccess'){
+					if (this.ifCollected === true) { //本次为取消收藏
+						if (res.Flag === 'CancelSuccess') {
 							this.$refs.uToast.show({
 								title: '取消收藏成功',
 								type: 'success'
 							});
 							this.ifCollected = false;
 							this.collectColor = '#ffffff';
-						}
-						else{
+						} else {
 							this.$refs.uToast.show({
 								title: '取消收藏失败',
 								type: 'error'
 							});
-						}		
-					}
-					else{    //本次为收藏房源
-						if(res.Flag === 'CollectSuccess'){
+						}
+					} else { //本次为收藏房源
+						if (res.Flag === 'CollectSuccess') {
 							this.$refs.uToast.show({
 								title: '收藏成功',
 								type: 'success'
 							});
 							this.ifCollected = true;
 							this.collectColor = '#ffff01';
-						}
-						else{
+						} else {
 							this.$refs.uToast.show({
 								title: '收藏失败',
 								type: 'error'
@@ -464,8 +466,8 @@
 			},
 
 			getPhotos() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetPhotoUrlByPropertyID', {
-					DBName: this.global_data.global_data.DBName,
+				this.$u.get(config.server + '/GetPhotoUrlByPropertyID', {
+					DBName: this.user.DBName,
 					PropertyID: this.house.PropertyID
 				}).then(res => {
 					if (res.Flag === 'success') {
@@ -478,10 +480,10 @@
 
 			GrabFunction() {
 				if (this.ifCanGrab == 'yes') { //抢该房源
-					console.log('prpperidL:'+this.house.PropertyID + ' '+this.house.DBName);
-					this.$u.get(this.global_data.global_data.BaseUrl + 'GrabbingHouse', {
+					console.log('prpperidL:' + this.house.PropertyID + ' ' + this.house.DBName);
+					this.$u.get(config.server + '/GrabbingHouse', {
 						DbName: this.house.DBName,
-						EmpNo: this.global_data.global_data.EmpID,
+						EmpNo: this.user.EmpID,
 						PropertyID: this.house.PropertyID,
 					}).then(res => {
 						this.$u.toast(res.Msg);
@@ -495,7 +497,7 @@
 					});
 				} else if (this.ifCanGrab == 'no') //取消抢房
 				{
-					this.$u.get(this.global_data.global_data.BaseUrl + 'UndoGrabbingHouse', {
+					this.$u.get(config.server + '/UndoGrabbingHouse', {
 						DbName: this.house.DBName,
 						PropertyID: this.house.PropertyID,
 					}).then(res => {
@@ -512,7 +514,7 @@
 			},
 
 			getCommentList() {
-				this.$u.get('http://47.108.202.57:8090/property/getCommentsByPropertyId?propId=45&cityPinYin=' +
+				this.$u.get(config.outerServer + '/property/getCommentsByPropertyId?propId=45&cityPinYin=' +
 					this.cityPinYin, {
 
 					}).then(res => {
@@ -522,7 +524,7 @@
 			},
 
 			getRecommendedList() {
-				this.$u.get('http://47.108.202.57:8090/property/getRecommend?trade=%E5%87%BA%E5%94%AE&cityPinYin=' + this.cityPinYin +
+				this.$u.get(config.outerServer + '/property/getRecommend?trade=%E5%87%BA%E5%94%AE&cityPinYin=' + this.cityPinYin +
 					'&pageNum=1&pageSize=4', {
 
 					}).then(res => {
@@ -530,20 +532,20 @@
 					this.recommendedList = res.data.list;
 				});
 			},
-			getCanGrabHouseDetail(DBName,PropertyId){
-				console.log('detail-2:'+DBName+' '+PropertyId);
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetPropertyById', {
+			getCanGrabHouseDetail(DBName, PropertyId) {
+				console.log('detail-2:' + DBName + ' ' + PropertyId);
+				this.$u.get(config.server + '/GetPropertyById', {
 					DBName: DBName,
 					PropertyId: PropertyId,
 				}).then(res => {
 					this.house = res.Result[0];
-					console.log('detail-3:'+this.house);
+					console.log('detail-3:' + this.house);
 				});
 			},
-		
+
 			getHouseFollowInfo() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetHouseFollowInfo', {
-					DBName: this.global_data.global_data.DBName,
+				this.$u.get(config.server + '/GetHouseFollowInfo', {
+					DBName: this.user.DBName,
 					PropertyID: this.house.PropertyID,
 				}).then(res => {
 					this.followUpList = res.Result;
@@ -740,8 +742,8 @@
 		color: rgb(200, 200, 200);
 		font-size: 26rpx;
 	}
-	
-	.timeLineBox{
+
+	.timeLineBox {
 		padding: 200rpx 24rpx 24rpx 40rpx;
 	}
 </style>

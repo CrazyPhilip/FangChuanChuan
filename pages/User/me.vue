@@ -3,17 +3,17 @@
 		<view class="status_bar">
 			<!-- 这里是状态栏 -->
 		</view>
-		
+
 		<view class="wrap">
 
 			<view class="u-flex user-box" v-on:click="toEditUserInfo">
 				<view class="u-m-r-20">
-					<u-avatar :src="pic" size="140" bg-color="white" mode="square" :show-level="true"></u-avatar>
+					<u-avatar :src="user.PhotoUrl" size="140" bg-color="white" mode="square" :show-level="true"></u-avatar>
 				</view>
 				<view class="u-flex-1">
-					<view class="u-font-18 u-p-b-20">{{this.global_data.global_data.EmpName}}</view>
-					<view class="u-font-14">{{this.global_data.global_data.Tel}}</view>
-					<view class="u-font-14">{{this.global_data.global_data.AccountStyle}}</view>
+					<view class="u-font-18 u-p-b-20">{{user.EmpName}}</view>
+					<view class="u-font-14">{{user.Tel}}</view>
+					<view class="u-font-14">{{user.AccountStyle}}</view>
 				</view>
 				<view class="u-m-l-10">
 					<u-icon name="scan" color="white"></u-icon>
@@ -52,7 +52,7 @@
 				</view>
 				<view>查看或新增自己的关注区域</view>
 			</view>
-			
+
 			<view class="section" @click="toScan">
 				<view class="sectionBar">
 					<view class="sectionTitle u-p-b-20">扫一扫</view>
@@ -122,18 +122,25 @@
 				</view>
 			</view>
 		</view>
-		
-		<u-modal v-model="modalShow" :content="modalContent" @confirm="modalConfirm" ref="uModal" :show-cancel-button="true" :mask-close-able="true" :async-close="true"></u-modal>
+
+		<u-modal v-model="modalShow" :content="modalContent" @confirm="modalConfirm" ref="uModal" :show-cancel-button="true"
+		 :mask-close-able="true" :async-close="true"></u-modal>
 		<u-toast ref="uToast" />
 	</view>
 </template>
 
 <script>
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+	import config from '../../api/config.js';
+
 	export default {
 		data() {
 			return {
 				pic: '/static/icon/avatar.png',
-				
+
 				modalShow: false,
 				modalContent: '',
 				checked: false,
@@ -143,10 +150,12 @@
 
 		onLoad() {},
 
+		computed: {
+			...mapState(['user'])
+		},
+
 		methods: {
 			toEditUserInfo() {
-				console.log(this.global_data.global_data.EmpName);
-				console.log(this.global_data.global_data.Tel);
 				uni.navigateTo({
 					url: './EditUserInfo'
 				});
@@ -173,8 +182,8 @@
 					url: '../Setting/Setting'
 				});
 			},
-			
-			toScan(){
+
+			toScan() {
 				// 允许从相机和相册扫码
 				uni.scanCode({
 					scanType: ['qrCode'],
@@ -191,15 +200,14 @@
 					}
 				});
 			},
-			
+
 			modalConfirm() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'NewSimpleInquiry',{
-					DBName: this.global_data.global_data.DBName,
+				this.$u.get(config.server + '/NewSimpleInquiry', {
+					DBName: this.user.DBName,
 					CustName: this.scannedCustomer.CustName,
 					CustMobile: this.scannedCustomer.CustMobile,
-					EmpTel: this.global_data.global_data.Tel
+					EmpTel: this.user.Tel
 				}).then((res) => {
-					console.log(res);
 					this.modalShow = false;
 					if (res.Flag === 'failed') {
 						this.$refs.uToast.show({
@@ -213,7 +221,7 @@
 						});
 					}
 				});
-				
+
 				/* uni.request({
 					url:this.global_data.global_data.BaseUrl + 'NewSimpleInquiry',
 					data:{
@@ -253,10 +261,10 @@
 </style>
 
 <style lang="scss" scoped>
-	.wrap{
+	.wrap {
 		padding: 60rpx 20rpx 20rpx;
 	}
-	
+
 	.status_bar {
 		height: var(--status-bar-height);
 		width: 100%;

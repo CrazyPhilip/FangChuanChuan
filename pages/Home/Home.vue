@@ -88,6 +88,12 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
 	export default {
 		data() {
 			return {
@@ -111,12 +117,12 @@
 				iconName: '/static/icon/map_white.png',
 				changeClass: false,
 
-				current: 0,
+				current: 0
 			}
 		},
 
 		onLoad() {
-			this.cityName = this.global_data.global_data.cityName;
+			this.cityName = this.city.cityName;
 
 		},
 
@@ -151,11 +157,17 @@
 			}
 		},
 
+
+		computed: {
+			...mapState(['city'])
+		},
+
+
 		methods: {
 			change(e) {
 				this.current = e.detail.current;
 			},
-			
+
 			IconClick: function IconClick(index) {
 				console.log(index);
 				switch (index) {
@@ -229,7 +241,7 @@
 							});
 						}
 						break;
-						
+
 					case 10:
 						{
 							uni.navigateTo({

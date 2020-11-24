@@ -77,30 +77,38 @@
 
 						<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
 						 :label-position="labelPosition" label="预算范围(万元)" prop="minBudget">
-							<u-input :border="border" placeholder="最低预算" v-model="optionalModel.minBudget" type="number" inputAlign="center" :clearable="false"></u-input>
+							<u-input :border="border" placeholder="最低预算" v-model="optionalModel.minBudget" type="number" inputAlign="center"
+							 :clearable="false"></u-input>
 							<view>~</view>
-							<u-input :border="border" placeholder="最高预算" v-model="optionalModel.maxBudget" type="number" inputAlign="center" :clearable="false"></u-input>
+							<u-input :border="border" placeholder="最高预算" v-model="optionalModel.maxBudget" type="number" inputAlign="center"
+							 :clearable="false"></u-input>
 						</u-form-item>
 
 						<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
 						 :label-position="labelPosition" label="面积范围(平米)" prop="minSquare">
-							<u-input :border="border" placeholder="最小面积" v-model="optionalModel.minSquare" type="number" inputAlign="center" :clearable="false"></u-input>
+							<u-input :border="border" placeholder="最小面积" v-model="optionalModel.minSquare" type="number" inputAlign="center"
+							 :clearable="false"></u-input>
 							<view>~</view>
-							<u-input :border="border" placeholder="最大面积" v-model="optionalModel.maxSquare" type="number" inputAlign="center" :clearable="false"></u-input>
+							<u-input :border="border" placeholder="最大面积" v-model="optionalModel.maxSquare" type="number" inputAlign="center"
+							 :clearable="false"></u-input>
 						</u-form-item>
 
 						<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
 						 :label-position="labelPosition" label="楼层范围(楼)" prop="minFloor">
-							<u-input :border="border" placeholder="最低楼层" v-model="optionalModel.minFloor" type="number" inputAlign="center" :clearable="false"></u-input>
+							<u-input :border="border" placeholder="最低楼层" v-model="optionalModel.minFloor" type="number" inputAlign="center"
+							 :clearable="false"></u-input>
 							<view>~</view>
-							<u-input :border="border" placeholder="最高楼层" v-model="optionalModel.maxFloor" type="number" inputAlign="center" :clearable="false"></u-input>
+							<u-input :border="border" placeholder="最高楼层" v-model="optionalModel.maxFloor" type="number" inputAlign="center"
+							 :clearable="false"></u-input>
 						</u-form-item>
 
 						<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
 						 :label-position="labelPosition" label="户型范围(室)" prop="minRoom">
-							<u-input :border="border" placeholder="最小房数" v-model="optionalModel.minRoom" type="number" inputAlign="center" :clearable="false"></u-input>
+							<u-input :border="border" placeholder="最小房数" v-model="optionalModel.minRoom" type="number" inputAlign="center"
+							 :clearable="false"></u-input>
 							<view>~</view>
-							<u-input :border="border" placeholder="最大房数" v-model="optionalModel.maxRoom" type="number" inputAlign="center" :clearable="false"></u-input>
+							<u-input :border="border" placeholder="最大房数" v-model="optionalModel.maxRoom" type="number" inputAlign="center"
+							 :clearable="false"></u-input>
 						</u-form-item>
 					</u-form>
 
@@ -120,15 +128,17 @@
 			<u-picker mode="selector" v-model="marrigeListShow" :default-selector="[0]" :range="marrigeList" @confirm="marrigeListCallback"></u-picker>
 			<u-picker mode="selector" v-model="tradeListShow" :default-selector="[0]" :range="tradeList" @confirm="tradeListCallback"></u-picker>
 			<u-picker mode="selector" v-model="usageListShow" :default-selector="[0]" :range="usageList" @confirm="usageListCallback"></u-picker>
-			
-			<u-picker mode="selector" v-model="districtListShow" :default-selector="[0]" range-key="town" :range="districtList" @confirm="districtListCallback"></u-picker>
-			<u-picker mode="selector" v-model="areaListShow" :default-selector="[0]" range-key="village" :range="areaList" @confirm="areaListCallback"></u-picker>
+
+			<u-picker mode="selector" v-model="districtListShow" :default-selector="[0]" range-key="town" :range="districtList"
+			 @confirm="districtListCallback"></u-picker>
+			<u-picker mode="selector" v-model="areaListShow" :default-selector="[0]" range-key="village" :range="areaList"
+			 @confirm="areaListCallback"></u-picker>
 
 			<u-picker mode="selector" v-model="levelListShow" :default-selector="[0]" :range="levelList" @confirm="levelListCallback"></u-picker>
 			<u-picker mode="selector" v-model="decorationListShow" :default-selector="[0]" :range="decorationList" @confirm="decorationListCallback"></u-picker>
 			<u-picker mode="selector" v-model="typeListShow" :default-selector="[0]" :range="typeList" @confirm="typeListCallback"></u-picker>
-			
-			<u-toast ref="uToast"/>
+
+			<u-toast ref="uToast" />
 		</view>
 
 	</view>
@@ -148,13 +158,13 @@
 					marrige: '',
 					trade: '',
 					usage: '',
-					areaId:'',
+					areaId: '',
 				},
 				optionalModel: {
 					level: '',
 					decoration: '',
 					type: '',
-					
+
 					minBudget: '',
 					minFloor: '',
 					minRoom: '',
@@ -217,26 +227,23 @@
 							// 触发器可以同时用blur和change，二者之间用英文逗号隔开
 							trigger: ['change', 'blur'],
 						},
-						
+
 					],
 					marrige: [{
-							required: true,
-							message: '请选择婚姻状态',
-							trigger: ['change', 'blur'],
-						}
-					],
+						required: true,
+						message: '请选择婚姻状态',
+						trigger: ['change', 'blur'],
+					}],
 					trade: [{
-							required: true,
-							message: '请选择交易类型',
-							trigger: ['change', 'blur'],
-						}
-					],
+						required: true,
+						message: '请选择交易类型',
+						trigger: ['change', 'blur'],
+					}],
 					usage: [{
-							required: true,
-							message: '请选择用途',
-							trigger: ['change', 'blur'],
-						}
-					],
+						required: true,
+						message: '请选择用途',
+						trigger: ['change', 'blur'],
+					}],
 					minBudget: [{
 						type: 'number',
 						message: '只能为数字',
@@ -302,10 +309,10 @@
 				levelListShow: false,
 				decorationListShow: false,
 				typeListShow: false,
-				
+
 				border: false,
 				labelPosition: 'left',
-				
+
 			};
 		},
 
@@ -317,7 +324,7 @@
 			this.$refs.uForm0.setRules(this.rules);
 			this.$refs.uForm1.setRules(this.rules);
 		},
-		
+
 
 		methods: {
 			districtListCallback(index) {
@@ -360,7 +367,7 @@
 			typeListCallback(index) {
 				this.optionalModel.type = this.typeList[index];
 			},
-			
+
 			reset() {
 				this.model.name = '';
 				this.model.district = '';
@@ -370,7 +377,7 @@
 				this.model.marrige = '';
 				this.model.trade = '';
 				this.model.usage = '';
-				
+
 				this.optionalModel.level = '';
 				this.optionalModel.decoration = '';
 				this.optionalModel.type = '';
@@ -396,67 +403,73 @@
 			},
 
 			NewHouse() {
-				console.log(1);
-				console.log(this.model);
-				console.log(this.optionalModel);
-				
-				this.$u.post(this.global_data.global_data.BaseUrl + 'NewInquiry', {
-					DBName:this.global_data.global_data.DBName,
+				this.$u.post(config.server + '/NewInquiry', {
+					DBName: this.user.DBName,
 					CustName: this.model.name,
 					Trade: this.model.trade,
-					PropertyUsage:this.optionalModel.usage,
+					PropertyUsage: this.optionalModel.usage,
 					Country: this.model.district,
 					CustMobile: this.model.phone,
 					PropertyFloor: this.model.marrige,
 					DistrictName: this.model.district,
-					AreaID: this.model.areaId === null || this.model.areaId === undefined || this.model.areaId === '' ? '*' : this.model.areaId,
-					CountF: this.optionalModel.maxSquare === null || this.optionalModel.maxSquare === undefined || this.optionalModel.maxSquare === '' ? '*' : this.optionalModel.maxSquare,
-					PropertyType: this.optionalModel.type === null || this.optionalModel.type === undefined || this.optionalModel.type === '' ? '*' : this.optionalModel.type,
-					SquareMin: this.optionalModel.minSquare === null || this.optionalModel.minSquare === undefined || this.optionalModel.minSquare === '' ? '0' : this.optionalModel.minSquare,
-					SquareMax: this.optionalModel.maxSquare === null || this.optionalModel.maxSquare === undefined || this.optionalModel.maxSquare === '' ? '0' : this.optionalModel.maxSquare,
-					PriceMin: this.optionalModel.minBudget === null || this.optionalModel.minBudget === undefined || this.optionalModel.minBudget === '' ? '0' : this.optionalModel.minBudget,
-					PriceMax: this.optionalModel.maxBudget === null || this.optionalModel.maxBudget === undefined || this.optionalModel.maxBudget === '' ? '0' : this.optionalModel.maxBudget,
-					CustGrade: this.optionalModel.level === null || this.optionalModel.level === undefined || this.optionalModel.level === '' ? '*' : this.optionalModel.level,
-					CountFStart: this.optionalModel.minRoom === null || this.optionalModel.minRoom === undefined || this.optionalModel.minRoom === '' ? '*' : this.optionalModel.minRoom,
-					FoorStart: this.optionalModel.minFloor === null || this.optionalModel.minFloor === undefined || this.optionalModel.minFloor === '' ? '*' : this.optionalModel.minFloor,
-					FoorEnd: this.optionalModel.maxFloor === null || this.optionalModel.maxFloor === undefined || this.optionalModel.maxFloor === '' ? '*' : this.optionalModel.maxFloor,
-					PropertyDecoration: this.optionalModel.decoration === null || this.optionalModel.decoration === undefined || this.optionalModel.decoration === '' ? '*' : this.optionalModel.decoration,
-					EmpNoOrTel: this.global_data.global_data.Tel,
-				},{
+					AreaID: this.model.areaId === null || this.model.areaId === undefined || this.model.areaId === '' ? '*' : this.model
+						.areaId,
+					CountF: this.optionalModel.maxSquare === null || this.optionalModel.maxSquare === undefined || this.optionalModel
+						.maxSquare === '' ? '*' : this.optionalModel.maxSquare,
+					PropertyType: this.optionalModel.type === null || this.optionalModel.type === undefined || this.optionalModel.type ===
+						'' ? '*' : this.optionalModel.type,
+					SquareMin: this.optionalModel.minSquare === null || this.optionalModel.minSquare === undefined || this.optionalModel
+						.minSquare === '' ? '0' : this.optionalModel.minSquare,
+					SquareMax: this.optionalModel.maxSquare === null || this.optionalModel.maxSquare === undefined || this.optionalModel
+						.maxSquare === '' ? '0' : this.optionalModel.maxSquare,
+					PriceMin: this.optionalModel.minBudget === null || this.optionalModel.minBudget === undefined || this.optionalModel
+						.minBudget === '' ? '0' : this.optionalModel.minBudget,
+					PriceMax: this.optionalModel.maxBudget === null || this.optionalModel.maxBudget === undefined || this.optionalModel
+						.maxBudget === '' ? '0' : this.optionalModel.maxBudget,
+					CustGrade: this.optionalModel.level === null || this.optionalModel.level === undefined || this.optionalModel.level ===
+						'' ? '*' : this.optionalModel.level,
+					CountFStart: this.optionalModel.minRoom === null || this.optionalModel.minRoom === undefined || this.optionalModel
+						.minRoom === '' ? '*' : this.optionalModel.minRoom,
+					FoorStart: this.optionalModel.minFloor === null || this.optionalModel.minFloor === undefined || this.optionalModel
+						.minFloor === '' ? '*' : this.optionalModel.minFloor,
+					FoorEnd: this.optionalModel.maxFloor === null || this.optionalModel.maxFloor === undefined || this.optionalModel
+						.maxFloor === '' ? '*' : this.optionalModel.maxFloor,
+					PropertyDecoration: this.optionalModel.decoration === null || this.optionalModel.decoration === undefined ||
+						this.optionalModel.decoration === '' ? '*' : this.optionalModel.decoration,
+					EmpNoOrTel: this.user.Tel,
+				}, {
 					'content-type': 'application/x-www-form-urlencoded'
 				}).then(res => {
 					console.log(res);
 					if (res.Flag === 'success') {
 						this.$refs.uToast.show({
-											title: '新增客源成功',
-											type: 'success',
-											url: '/pages/Home/Home',
-											isTab:true,
-										});
+							title: '新增客源成功',
+							type: 'success',
+							url: '/pages/Home/Home',
+							isTab: true,
+						});
 					}
-				}).catch(res =>{
+				}).catch(res => {
 					console.log(res);
 					this.$refs.uToast.show({
-										title: '错误',
-										type: 'error',
-									});
+						title: '错误',
+						type: 'error',
+					});
 				});
 			},
 
 			//根据城市名获取城区列表
 			getDistrictsByCity(city) {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetAllDistrictByCity', {
+				this.$u.get(config.server + '/GetAllDistrictByCity', {
 					CityName: city
 				}).then(res => {
-					console.log(res);
 					this.districtList = res.Result;
 				});
 			},
 
 			//根据城区名获取街道列表
 			getAreaByDistrict(district) {
-				console.log(district);
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetAllAreaByDistrict', {
+				this.$u.get(config.server + '/GetAllAreaByDistrict', {
 					DistrictName: district
 				}).then(res => {
 					this.areaList = res.Result;
@@ -466,8 +479,7 @@
 			// 选择地区回调
 			regionConfirm(e) {
 				this.model.region = e.province.label + '-' + e.city.label + '-' + e.area.label;
-			},
-
+			}
 		}
 	};
 </script>

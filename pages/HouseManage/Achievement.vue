@@ -113,7 +113,7 @@
 							<view class="itemRank">{{week.companyRank}}</view>
 							<view class="itemName">排名</view>
 						</view>
-			
+
 						<u-row>
 							<u-col span="4">
 								<view>
@@ -142,7 +142,7 @@
 							<view class="itemRank">{{week.companyRank2}}</view>
 							<view class="itemName">排名</view>
 						</view>
-			
+
 						<u-row>
 							<u-col span="3">
 								<view>
@@ -196,10 +196,10 @@
 							</u-col>
 						</u-row>
 					</view>
-			
+
 				</scroll-view>
 			</swiper-item>
-			
+
 			<swiper-item class="swiper-item">
 				<scroll-view scroll-y style="height: 100%;width: 100%;">
 					<!--业绩-->
@@ -209,7 +209,7 @@
 							<view class="itemRank">{{month.companyRank}}</view>
 							<view class="itemName">排名</view>
 						</view>
-			
+
 						<u-row>
 							<u-col span="4">
 								<view>
@@ -238,7 +238,7 @@
 							<view class="itemRank">{{month.companyRank2}}</view>
 							<view class="itemName">排名</view>
 						</view>
-			
+
 						<u-row>
 							<u-col span="3">
 								<view>
@@ -292,76 +292,86 @@
 							</u-col>
 						</u-row>
 					</view>
-			
+
 				</scroll-view>
 			</swiper-item>
-			
+
 		</swiper>
 	</view>
 	</view>
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
 	export default {
 		data() {
 			return {
 				current: 0,
 				swiperCurrent: 0,
-				
-				today:{
-					receivableNum: 0,//应收业绩
-					paidNum: 0,//实收业绩
-					nrNum: 0,//未收业绩
-					companyRank: 0,//公司业绩排名
-					ffzs: 0,//房增
-					kkzs: 0,//客增
-					fgj: 0,//房跟
-					kgj: 0,//客跟
-					ffcs3: 0,//照片
-					ffcs4: 0,//钥匙
-					ffcs: 0,//普通看房（空看）
-					ffcs2: 0,//带看
-					companyRank2: 0,//公司工作量排名
+
+				today: {
+					receivableNum: 0, //应收业绩
+					paidNum: 0, //实收业绩
+					nrNum: 0, //未收业绩
+					companyRank: 0, //公司业绩排名
+					ffzs: 0, //房增
+					kkzs: 0, //客增
+					fgj: 0, //房跟
+					kgj: 0, //客跟
+					ffcs3: 0, //照片
+					ffcs4: 0, //钥匙
+					ffcs: 0, //普通看房（空看）
+					ffcs2: 0, //带看
+					companyRank2: 0, //公司工作量排名
 				},
-				
-				week:{
-					receivableNum: 0,//应收业绩
-					paidNum: 0,//实收业绩
-					nrNum: 0,//未收业绩
-					companyRank: 0,//公司业绩排名
-					ffzs: 0,//房增
-					kkzs: 0,//客增
-					fgj: 0,//房跟
-					kgj: 0,//客跟
-					ffcs3: 0,//照片
-					ffcs4: 0,//钥匙
-					ffcs: 0,//普通看房（空看）
-					ffcs2: 0,//带看
-					companyRank2: 0,//公司工作量排名
+
+				week: {
+					receivableNum: 0, //应收业绩
+					paidNum: 0, //实收业绩
+					nrNum: 0, //未收业绩
+					companyRank: 0, //公司业绩排名
+					ffzs: 0, //房增
+					kkzs: 0, //客增
+					fgj: 0, //房跟
+					kgj: 0, //客跟
+					ffcs3: 0, //照片
+					ffcs4: 0, //钥匙
+					ffcs: 0, //普通看房（空看）
+					ffcs2: 0, //带看
+					companyRank2: 0, //公司工作量排名
 				},
-				
-				month:{
-					receivableNum: 0,//应收业绩
-					paidNum: 0,//实收业绩
-					nrNum: 0,//未收业绩
-					companyRank: 0,//公司业绩排名
-					ffzs: 0,//房增
-					kkzs: 0,//客增
-					fgj: 0,//房跟
-					kgj: 0,//客跟
-					ffcs3: 0,//照片
-					ffcs4: 0,//钥匙
-					ffcs: 0,//普通看房（空看）
-					ffcs2: 0,//带看
-					companyRank2: 0,//公司工作量排名
+
+				month: {
+					receivableNum: 0, //应收业绩
+					paidNum: 0, //实收业绩
+					nrNum: 0, //未收业绩
+					companyRank: 0, //公司业绩排名
+					ffzs: 0, //房增
+					kkzs: 0, //客增
+					fgj: 0, //房跟
+					kgj: 0, //客跟
+					ffcs3: 0, //照片
+					ffcs4: 0, //钥匙
+					ffcs: 0, //普通看房（空看）
+					ffcs2: 0, //带看
+					companyRank2: 0, //公司工作量排名
 				},
 			}
 		},
-		
+
 		onLoad() {
 			this.getAchievement('today');
 			this.getWorkload('today');
 			this.getWorkloadRank('today');
+		},
+
+		computed: {
+			...mapState(['user'])
 		},
 
 		methods: {
@@ -369,29 +379,35 @@
 				this.swiperCurrent = index;
 				this.current = index;
 				console.log(index);
-				
-				switch (index){
-					case 0:{
-						this.getAchievement('today');
-						this.getWorkload('today');
-						this.getWorkloadRank('today');
-					}break;
-					
-					case 1:{
-						this.getAchievement('week');
-						this.getWorkload('week');
-						this.getWorkloadRank('week');
-					}break;
-					
-					case 2:{
-						this.getAchievement('month');
-						this.getWorkload('month');
-						this.getWorkloadRank('month');
-					}break;
+
+				switch (index) {
+					case 0:
+						{
+							this.getAchievement('today');
+							this.getWorkload('today');
+							this.getWorkloadRank('today');
+						}
+						break;
+
+					case 1:
+						{
+							this.getAchievement('week');
+							this.getWorkload('week');
+							this.getWorkloadRank('week');
+						}
+						break;
+
+					case 2:
+						{
+							this.getAchievement('month');
+							this.getWorkload('month');
+							this.getWorkloadRank('month');
+						}
+						break;
 				}
 			},
-			
-			
+
+
 			transition({
 				detail: {
 					dx
@@ -399,7 +415,7 @@
 			}) {
 				this.$refs.tabs.setDx(dx);
 			},
-			
+
 			animationfinish({
 				detail: {
 					current
@@ -408,125 +424,149 @@
 				this.$refs.tabs.setFinishCurrent(current);
 				this.swiperCurrent = current;
 				this.current = current;
-				
-				switch (current){
-					case 0:{
-						this.getAchievement('today');
-						this.getWorkload('today');
-						this.getWorkloadRank('today');
-					}break;
-					
-					case 1:{
-						this.getAchievement('week');
-						this.getWorkload('week');
-						this.getWorkloadRank('week');
-					}break;
-					
-					case 2:{
-						this.getAchievement('month');
-						this.getWorkload('month');
-						this.getWorkloadRank('month');
-					}break;
+
+				switch (current) {
+					case 0:
+						{
+							this.getAchievement('today');
+							this.getWorkload('today');
+							this.getWorkloadRank('today');
+						}
+						break;
+
+					case 1:
+						{
+							this.getAchievement('week');
+							this.getWorkload('week');
+							this.getWorkloadRank('week');
+						}
+						break;
+
+					case 2:
+						{
+							this.getAchievement('month');
+							this.getWorkload('month');
+							this.getWorkloadRank('month');
+						}
+						break;
 				}
 			},
-			
-			getAchievement(time){
-				this.$u.get(this.global_data.global_data.BaseUrl + 'QueryAchievement', {
-					DBName:this.global_data.global_data.DBName,
-					EmpID:this.global_data.global_data.EmpID,
-					TimeOptions:time
+
+			getAchievement(time) {
+				this.$u.get(config.server + '/QueryAchievement', {
+					DBName: this.user.DBName,
+					EmpID: this.user.EmpID,
+					TimeOptions: time
 				}).then(res => {
-					if(res.Flag === 'success'){
-						switch (this.swiperCurrent){
-							case 0:{
-								this.today.receivableNum = res.Result[0].ys;
-								this.today.paidNum = res.Result[0].ss;
-								this.today.nrNum = this.today.receivableNum - this.today.paidNum;
-								this.today.companyRank = res.Result[0].rk;
-							}break;
-							
-							case 1:{
-								this.week.receivableNum = res.Result[0].ys;
-								this.week.paidNum = res.Result[0].ss;
-								this.week.nrNum = this.week.receivableNum - this.week.paidNum;
-								this.week.companyRank = res.Result[0].rk;
-							}break;
-							
-							case 2:{
-								this.month.receivableNum = res.Result[0].ys;
-								this.month.paidNum = res.Result[0].ss;
-								this.month.nrNum = this.month.receivableNum - this.month.paidNum;
-								this.month.companyRank = res.Result[0].rk;
-							}break;
+					if (res.Flag === 'success') {
+						switch (this.swiperCurrent) {
+							case 0:
+								{
+									this.today.receivableNum = res.Result[0].ys;
+									this.today.paidNum = res.Result[0].ss;
+									this.today.nrNum = this.today.receivableNum - this.today.paidNum;
+									this.today.companyRank = res.Result[0].rk;
+								}
+								break;
+
+							case 1:
+								{
+									this.week.receivableNum = res.Result[0].ys;
+									this.week.paidNum = res.Result[0].ss;
+									this.week.nrNum = this.week.receivableNum - this.week.paidNum;
+									this.week.companyRank = res.Result[0].rk;
+								}
+								break;
+
+							case 2:
+								{
+									this.month.receivableNum = res.Result[0].ys;
+									this.month.paidNum = res.Result[0].ss;
+									this.month.nrNum = this.month.receivableNum - this.month.paidNum;
+									this.month.companyRank = res.Result[0].rk;
+								}
+								break;
 						}
 					}
 				});
 			},
-			
-			getWorkload(time){
-				this.$u.get(this.global_data.global_data.BaseUrl + 'QueryWorkload', {
-					DBName:this.global_data.global_data.DBName,
-					EmpID:this.global_data.global_data.EmpID,
-					TimeOptions:time
+
+			getWorkload(time) {
+				this.$u.get(config.server + '/QueryWorkload', {
+					DBName: this.user.DBName,
+					EmpID: this.user.EmpID,
+					TimeOptions: time
 				}).then(res => {
-					if(res.Flag === 'success'){
-						switch (this.swiperCurrent){
-							case 0:{
-								this.today.ffzs  = res.Result[0].ffzs;
-								this.today.kkzs  = res.Result[0].kkzs;
-								this.today.fgj = res.Result[0].fgj;
-								this.today.kgj = res.Result[0].kgj;
-								this.today.ffcs3 = res.Result[0].ffcs3;
-								this.today.ffcs4 = res.Result[0].ffcs4;
-								this.today.ffcs  = res.Result[0].ffcs;
-								this.today.ffcs2 = res.Result[0].ffcs2;
-							}break;
-							
-							case 1:{
-								this.week.ffzs  = res.Result[0].ffzs;
-								this.week.kkzs  = res.Result[0].kkzs;
-								this.week.fgj = res.Result[0].fgj;
-								this.week.kgj = res.Result[0].kgj;
-								this.week.ffcs3 = res.Result[0].ffcs3;
-								this.week.ffcs4 = res.Result[0].ffcs4;
-								this.week.ffcs  = res.Result[0].ffcs;
-								this.week.ffcs2 = res.Result[0].ffcs2;
-							}break;
-							
-							case 2:{
-								this.month.ffzs  = res.Result[0].ffzs;
-								this.month.kkzs  = res.Result[0].kkzs;
-								this.month.fgj = res.Result[0].fgj;
-								this.month.kgj = res.Result[0].kgj;
-								this.month.ffcs3 = res.Result[0].ffcs3;
-								this.month.ffcs4 = res.Result[0].ffcs4;
-								this.month.ffcs  = res.Result[0].ffcs;
-								this.month.ffcs2 = res.Result[0].ffcs2;
-							}break;
+					if (res.Flag === 'success') {
+						switch (this.swiperCurrent) {
+							case 0:
+								{
+									this.today.ffzs = res.Result[0].ffzs;
+									this.today.kkzs = res.Result[0].kkzs;
+									this.today.fgj = res.Result[0].fgj;
+									this.today.kgj = res.Result[0].kgj;
+									this.today.ffcs3 = res.Result[0].ffcs3;
+									this.today.ffcs4 = res.Result[0].ffcs4;
+									this.today.ffcs = res.Result[0].ffcs;
+									this.today.ffcs2 = res.Result[0].ffcs2;
+								}
+								break;
+
+							case 1:
+								{
+									this.week.ffzs = res.Result[0].ffzs;
+									this.week.kkzs = res.Result[0].kkzs;
+									this.week.fgj = res.Result[0].fgj;
+									this.week.kgj = res.Result[0].kgj;
+									this.week.ffcs3 = res.Result[0].ffcs3;
+									this.week.ffcs4 = res.Result[0].ffcs4;
+									this.week.ffcs = res.Result[0].ffcs;
+									this.week.ffcs2 = res.Result[0].ffcs2;
+								}
+								break;
+
+							case 2:
+								{
+									this.month.ffzs = res.Result[0].ffzs;
+									this.month.kkzs = res.Result[0].kkzs;
+									this.month.fgj = res.Result[0].fgj;
+									this.month.kgj = res.Result[0].kgj;
+									this.month.ffcs3 = res.Result[0].ffcs3;
+									this.month.ffcs4 = res.Result[0].ffcs4;
+									this.month.ffcs = res.Result[0].ffcs;
+									this.month.ffcs2 = res.Result[0].ffcs2;
+								}
+								break;
 						}
 					}
 				});
 			},
-			
-			getWorkloadRank(time){
-				this.$u.get(this.global_data.global_data.BaseUrl + 'QueryWorkloadRank', {
-					DBName:this.global_data.global_data.DBName,
-					EmpID:this.global_data.global_data.EmpID,
-					TimeOptions:time
+
+			getWorkloadRank(time) {
+				this.$u.get(config.server + 'QueryWorkloadRank', {
+					DBName: this.user.DBName,
+					EmpID: this.user.EmpID,
+					TimeOptions: time
 				}).then(res => {
-					if(res.Flag === 'success'){
-						switch (this.swiperCurrent){
-							case 0:{
-								this.today.companyRank2  = res.Result[0].RowNum;
-							}break;
-							
-							case 1:{
-								this.week.companyRank2  = res.Result[0].RowNum;
-							}break;
-							
-							case 2:{
-								this.month.companyRank2  = res.Result[0].RowNum;
-							}break;
+					if (res.Flag === 'success') {
+						switch (this.swiperCurrent) {
+							case 0:
+								{
+									this.today.companyRank2 = res.Result[0].RowNum;
+								}
+								break;
+
+							case 1:
+								{
+									this.week.companyRank2 = res.Result[0].RowNum;
+								}
+								break;
+
+							case 2:
+								{
+									this.month.companyRank2 = res.Result[0].RowNum;
+								}
+								break;
 						}
 					}
 				});

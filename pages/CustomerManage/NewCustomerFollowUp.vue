@@ -22,6 +22,9 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {mapState, mapMutations} from 'vuex';
+	
 	export default{
 		data() {
 			return {
@@ -68,6 +71,10 @@
 			this.$refs.uForm.setRules(this.rules);
 		},
 		
+		computed:{
+			...mapState(['user'])
+		},
+		
 		methods:{
 			followTypeListCallback(index) {
 				this.model.followType = this.followTypeList[index];
@@ -76,7 +83,6 @@
 			submit() {
 				this.$refs.uForm.validate(valid => {
 					if (valid) {
-						
 						console.log('验证通过');
 						this.AddCustomerFollowUp();
 					} else {
@@ -86,10 +92,10 @@
 			},
 			
 			AddCustomerFollowUp(){
-				this.$u.get(this.global_data.global_data.BaseUrl + 'NewInquiryFollow',{
-					DBName: this.global_data.global_data.DBName,
+				this.$u.get(config.server + '/NewInquiryFollow',{
+					DBName: this.user.DBName,
 					InquiryID: this.InquiryID,
-					EmpNo: this.global_data.global_data.EmpNo,
+					EmpNo: this.user.EmpNo,
 					Content: this.model.content,
 					FollowType: this.model.followType
 				}).then(res =>{
