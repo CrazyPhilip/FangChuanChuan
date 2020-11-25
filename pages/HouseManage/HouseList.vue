@@ -37,7 +37,7 @@
 						<view class="uni-list">
 							<view class="uni-list-cell" v-for="(item,index) in saleHouseList" :key="index" v-on:click="ToHouseDetail(index)">
 								<view class="left">
-									<u-image v-if="showImg" width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
+									<u-image width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
 									 mode="aspectFill"></u-image>
 								</view>
 								
@@ -92,7 +92,7 @@
 						<view class="uni-list">
 							<view class="uni-list-cell" v-for="(item,index) in rentHouseList" :key="index" v-on:click="ToHouseDetail(index)">
 								<view class="left">
-									<u-image v-if="showImg" width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
+									<u-image width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
 									 mode="aspectFill"></u-image>
 								</view>
 								
@@ -147,7 +147,7 @@
 						<view class="uni-list">
 							<view class="uni-list-cell" v-for="(item,index) in grabedHouseList" :key="index" v-on:click="ToGrabHouseDetail(index)">
 								<view class="left">
-									<u-image v-if="showImg" width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
+									<u-image width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
 									 mode="aspectFill"></u-image>
 								</view>
 								
@@ -181,13 +181,15 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {mapState, mapMutations} from 'vuex';
+	
 	export default {
 		data() {
 			return {
 				swiperCurrent: 0,
 				tabsHeight: 0,
 				current: 0,
-				showImg: false,
 				result: '区域',
 				show: false,
 				scrollTop: 0,
@@ -355,10 +357,13 @@
 		},
 
 		onLoad() {
+			
+		},
+		
+		onReady() {
 			this.GetSaleHouseList();
 			this.GetRentHouseList();
 			this.GetGrabedHouseList();
-			this.showImg = true;
 		},
 
 		onPullDownRefresh() {
@@ -373,7 +378,11 @@
 				this.GetGrabedHouseList();
 			}
 		},
-
+		
+		computed:{
+			...mapState(['user', 'city'])
+		},
+		
 		methods: {
 			ToHouseDetail: function(h) {
 				var obj = this.swiperCurrent === 0 ? this.saleHouseList[h] : this.rentHouseList[h];
@@ -470,9 +479,9 @@
 
 			GetSaleHouseList() {
 				console.log('正在请求 sale');
-				this.$u.get(this.global_data.global_data.BaseUrl + 'QuerySaleHouseSource', {
-					DBName: this.global_data.global_data.DBName,
-					EmpNo: this.global_data.global_data.Tel,
+				this.$u.get(config.server + '/QuerySaleHouseSource', {
+					DBName: this.user.DBName,
+					EmpNo: this.user.Tel,
 					DistrictName: '区域',
 					CountF: this.options2[this.value02].label === '全部房型' || this.options2[this.value02].label === '' ? '房型' : this.options2[
 						this.value02].label,
@@ -487,7 +496,7 @@
 					RoomNo: '',
 					SearchContent: '',
 					Page: '',
-					EmpID: this.global_data.global_data.EmpID,
+					EmpID: this.user.EmpID,
 				}).then(res => {
 					this.saleHouseList = res.Result;
 					uni.stopPullDownRefresh();
@@ -495,9 +504,9 @@
 			},
 
 			GetRentHouseList() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'QueryRentHouseSource', {
-					DBName: this.global_data.global_data.DBName,
-					EmpNo: this.global_data.global_data.Tel,
+				this.$u.get(config.server + '/QueryRentHouseSource', {
+					DBName: this.user.DBName,
+					EmpNo: this.user.Tel,
 					DistrictName: '区域',
 					CountF: this.options2[this.value12].label === '全部房型' || this.options2[this.value12].label === '' ? '房型' : this.options2[
 						this.value12].label,
@@ -512,16 +521,16 @@
 					RoomNo: '',
 					SearchContent: '',
 					Page: '',
-					EmpID: this.global_data.global_data.EmpID,
+					EmpID: this.user.EmpID,
 				}).then(res => {
 					this.rentHouseList = res.Result;
 					uni.stopPullDownRefresh();
 				})
 			},
 			GetGrabedHouseList() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetGrabbedHouses', {
-					DBName: this.global_data.global_data.DBName,
-					EmpNo: this.global_data.global_data.EmpID,
+				this.$u.get(config.server + '/GetGrabbedHouses', {
+					DBName: this.user.DBName,
+					EmpNo: this.user.EmpID,
 					/* 	DistrictName: '区域',
 						CountF: this.options2[this.value12].label === '全部房型' || this.options2[this.value12].label === ''?'房型':this.options2[this.value12].label,
 						Price: this.options3[this.value13].label === '全部价格' || this.options3[this.value13].label === ''?'价格':this.options3[this.value13].label,
@@ -552,18 +561,6 @@
 			},
 		},
 
-		params: {
-			year: true,
-			month: true,
-			day: true,
-			hour: true,
-			minute: true,
-			second: true,
-			province: true,
-			city: true,
-			area: true,
-			timestamp: true
-		}
 	}
 
 	function keepTwo(value) {

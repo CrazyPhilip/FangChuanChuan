@@ -1,16 +1,5 @@
 <script>
 	export default {
-		/* globalData:{
-			global_BaseUrl: 'http://47.108.202.57:8087/WebService.asmx/',
-			global_DBName: '',
-			global_EmpID: '',
-			global_EmpName: '',
-			global_PhotoUrl: '',
-			global_AccountStyle: '',
-			global_Tel: '',
-			global_EmpNo: '',
-		}, */
-		
 		onLaunch: function() {
 			console.log('App Launch');
 			this.addJYJPushReceiveOpenNotificationListener();

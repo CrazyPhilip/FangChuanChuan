@@ -44,7 +44,7 @@
 					<tki-qrcode ref="qrcode" :val="value" :size="400" background="#ffffff" foreground="#000000" pdground="#000000"
 					 :icon="avatar" :iconSize="40" :onval="true" :loadMake="true" @result="qrcode"></tki-qrcode>
 				</view>
-				
+
 				<u-button :plain="true" :ripple="true" shape="circle" @click="saveQrCode">保存二维码</u-button>
 			</view>
 		</u-mask>
@@ -52,7 +52,12 @@
 </template>
 
 <script>
-	import tkiQrcode from "@/components/tki-qrcode/tki-qrcode.vue"
+	import tkiQrcode from "@/components/tki-qrcode/tki-qrcode.vue";
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+	import config from '../../api/config.js';
 
 	export default {
 		components: {
@@ -65,7 +70,6 @@
 				quitModalShow: false,
 				maskShow: false,
 
-				user: Object,
 				username: '',
 				avatar: '/static/icon/logo.png',
 
@@ -79,30 +83,34 @@
 		},
 
 		onLoad() {
-			this.user = this.global_data.global_data.user;
-			//this.getUserInfo();
-			
+			// this.user = this.global_data.global_data.user;
+			// this.getUserInfo();
+
 			let v = {
-				dataSource: this.global_data.global_data.DBName,
-				brokerId: this.global_data.global_data.EmpID,
-				brokerTel: this.global_data.global_data.Tel
+				dataSource: this.user.DBName,
+				brokerId: this.user.EmpID,
+				brokerTel: this.user.Tel
 			}
 			this.value = JSON.stringify(v);
 		},
 
 		onReady() {
-			this.action = this.global_data.global_data.BaseUrl + 'user/uploadImg?telephone=' + this.user.telephone;
-			
+			this.action = config.outerServer + '/user/uploadImg?telephone=' + this.user.telephone;
+
 		},
-		
+
 		onBackPress(options) {
-			if(this.userNameModalShow || this.avatarModalShow || this.quitModalShow || this.maskShow){
+			if (this.userNameModalShow || this.avatarModalShow || this.quitModalShow || this.maskShow) {
 				this.userNameModalShow = false;
 				this.avatarModalShow = false;
 				this.quitModalShow = false;
 				this.maskShow = false;
 				return true;
 			}
+		},
+
+		computed: {
+			...mapState(['user'])
 		},
 
 		methods: {
@@ -125,7 +133,7 @@
 					}
 				});
 			},
-			
+
 			// 上传头像
 			uploadAvatar() {
 				this.$refs.uUpload.upload();
@@ -143,15 +151,17 @@
 					this.getUserInfo();
 				}
 			},
-			
+
 			// 退出登录
 			quit() {
-				uni.reLaunch({
-					url: './me'
-				});
 				uni.clearStorage();
+				this.$store.commit('logout');
+
+				uni.reLaunch({
+					url: '../index/index'
+				});
 			},
-			
+
 			// 获取用户信息
 			getUserInfo() {
 				this.$u.get(this.global_data.global_data.BaseUrl + 'user/getUserInfo', {}, {
@@ -177,9 +187,9 @@
 					}
 				});
 			},
-			
+
 			// 保存二维码
-			saveQrCode(){
+			saveQrCode() {
 				this.$refs.qrcode._saveCode();
 			}
 		}
@@ -200,7 +210,7 @@
 		justify-content: center;
 		height: 100%;
 	}
-	
+
 	.rect {
 		display: flex;
 		align-items: center;

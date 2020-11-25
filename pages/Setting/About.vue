@@ -27,11 +27,13 @@
 			}
 		},
 
-		onReady() {
+		onLoad() {
 			// #ifdef APP-PLUS
-			plus.runtime.getProperty(plus.runtime.appid, function(inf) {
-				this.version = inf.version;
-			});
+			/* plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+				console.log(inf);
+				this.version = inf;
+			}); */
+			this.version = plus.runtime.version;
 			// #endif
 		},
 
@@ -40,7 +42,6 @@
 		}
 	}
 </script>
-
 
 <style>
 	page {

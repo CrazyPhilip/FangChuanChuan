@@ -68,6 +68,12 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
 	export default {
 		data() {
 			let that = this;
@@ -160,7 +166,7 @@
 						// 校验用户是否已存在
 						{
 							asyncValidator: (rule, value, callback) => {
-								this.$u.get(this.global_data.global_data.BaseUrl + 'IfTelRegistered', {
+								this.$u.get(config.server + '/IfTelRegistered', {
 									Tel: value,
 								}).then(res => {
 									//console.log(res);
@@ -240,6 +246,10 @@
 			this.$refs.uForm.setRules(this.rules);
 		},
 
+		computed: {
+			...mapState(['user'])
+		},
+
 		methods: {
 
 			districtListCallback(index) {
@@ -282,7 +292,7 @@
 			},
 			//注册
 			register() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'ApplyForRegister', {
+				this.$u.get(config.server + '/ApplyForRegister', {
 					DBName: this.model.dBName,
 					EmpNo: '',
 					Tel: this.model.phone,
@@ -302,7 +312,7 @@
 
 			//根据城市名获取城区列表
 			getDistrictsByCity(city) {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetAllDistrictByCity', {
+				this.$u.get(config.server + '/GetAllDistrictByCity', {
 					CityName: city
 				}).then(res => {
 					console.log(res);
@@ -313,7 +323,7 @@
 			//根据城区名获取街道列表
 			getAreaByDistrict(district) {
 				console.log(district);
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetAllAreaByDistrict', {
+				this.$u.get(config.server + '/GetAllAreaByDistrict', {
 					DistrictName: district
 				}).then(res => {
 					this.areaList = res.Result;
@@ -337,7 +347,7 @@
 			// 获取验证码
 			getCode() {
 				if (this.$refs.uCode.canGetCode) {
-					this.$u.get(this.global_data.global_data.BaseUrl + 'GetTelCode', {
+					this.$u.get(config.server + '/GetTelCode', {
 						Tel: this.model.phone
 					}).then(res => {
 						this.code = res.Result;

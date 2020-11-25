@@ -105,6 +105,12 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
 	export default {
 		data() {
 			let that = this;
@@ -127,7 +133,7 @@
 				},
 				//dBList: '', // cd_xipu,cd_wenxingzhen 字串
 				//addressList: '', //成都>郫都>犀浦,成都>双流>文星镇 字串
-				dbArray: [this.global_data.global_data.DBName], //用于判重，初始化 为所在数据库
+				dbArray: [this.user.DBName], //用于判重，初始化 为所在数据库
 				cityList: [],
 				districtList: [],
 				areaList: [],
@@ -150,6 +156,9 @@
 			this.showImg = true;
 		},
 
+		computed: {
+			...mapState(['user'])
+		},
 
 		methods: {
 
@@ -162,8 +171,6 @@
 			},
 
 			add() {
-				console.log(this.global_data.global_data.FollowArea);
-
 				if (this.focusAreaList.length >= 3) //最多只能添加3个
 				{
 					this.$u.toast('最多只能添加3个关注区域！');
@@ -198,9 +205,9 @@
 			},
 
 			deleteFollowArea(index) {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'CheckDelFocusArea', {
+				this.$u.get(config.server + '/CheckDelFocusArea', {
 					DBName: this.focusAreaList[index].dbName, //待删除 关注区域的 数据库名
-					EmpNo: this.global_data.global_data.EmpID,
+					EmpNo: this.user.EmpID,
 				}).then(res => {
 					this.$u.toast(res.Msg);
 					if (res.Flag === 'success') { //可删除
@@ -225,7 +232,7 @@
 				console.log(e);
 			},
 			submit() {
-				
+
 				if (this.model.city === '' || this.model.district === '' || this.model.area === '') {
 					this.$u.toast('请选择区域');
 				} else if (this.dbArray.indexOf(this.model.dBName) > -1) { //已存在
@@ -261,16 +268,16 @@
 			},
 
 			getFollowArea() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetFocusAreas', {
-					DBName: this.global_data.global_data.DBName,
-					EmpNo: this.global_data.global_data.EmpID,
+				this.$u.get(config.server + '/GetFocusAreas', {
+					DBName: this.user.DBName,
+					EmpNo: this.user.EmpID,
 				}).then(res => {
 					//this.$u.toast(res.Msg);
 					if (res.Flag === 'success') {
 						var content = res.Result;
 						var FollowArea = content[0]['FollowArea'];
-						this.focusAreaListSource = FollowArea === '' ? []:this.getFocusLocationList(FollowArea);
-						this.focusAreaList = FollowArea === '' ? []:this.getFocusLocationList(FollowArea);
+						this.focusAreaListSource = FollowArea === '' ? [] : this.getFocusLocationList(FollowArea);
+						this.focusAreaList = FollowArea === '' ? [] : this.getFocusLocationList(FollowArea);
 						this.showNone = this.focusAreaList.length > 0 ? false : true;
 						this.reset();
 
@@ -279,7 +286,7 @@
 						for (var i in this.focusAreaList) {
 							tagList.push(this.focusAreaList[i].dbName);
 						}
-						tagList.push(this.global_data.global_data.DBName);
+						tagList.push(this.user.DBName);
 						const jyJPush = uni.requireNativePlugin('JY-JPush');
 						jyJPush.addJYJPushTagsWithArr({ //以数组方式设置
 							userTags: tagList
@@ -300,9 +307,9 @@
 			},
 
 			updateFollowArea(followArea) {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'UpdateFocusArea', {
-					DBName: this.global_data.global_data.DBName,
-					EmpNo: this.global_data.global_data.EmpID,
+				this.$u.get(config.server + '/UpdateFocusArea', {
+					DBName: this.user.DBName,
+					EmpNo: this.user.EmpID,
 					FollowArea: followArea,
 				}).then(res => {
 					if (res.Flag === 'success') {
@@ -324,7 +331,7 @@
 
 			//根据城市名获取城区列表
 			getDistrictsByCity(city) {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetAllDistrictByCity', {
+				this.$u.get(config.server + '/GetAllDistrictByCity', {
 					CityName: city
 				}).then(res => {
 					this.districtList = res.Result;
@@ -334,7 +341,7 @@
 			//根据城区名获取街道列表
 			getAreaByDistrict(district) {
 				this.model.area = '';
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetAllAreaByDistrict', {
+				this.$u.get(config.server + '/GetAllAreaByDistrict', {
 					DistrictName: district
 				}).then(res => {
 					this.areaList = res.Result;
@@ -347,8 +354,8 @@
 					var dbArray = location[0].split(",");
 					var areas = location[1].split(",");
 					var list = [];
-					this.dbArray = [];  //清空
-					this.dbArray.push(this.global_data.global_data.DBName);
+					this.dbArray = []; //清空
+					this.dbArray.push(this.user.DBName);
 					for (var i in areas) {
 
 						var array = areas[i].split(">");

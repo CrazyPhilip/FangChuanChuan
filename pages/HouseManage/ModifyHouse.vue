@@ -291,6 +291,13 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
+
 	export default {
 		data() {
 			return {
@@ -600,14 +607,14 @@
 				this.model.building = arr[0];
 				this.propertyID = data.PropertyID;
 				this.model.unit = arr[1];; //和building 在一起，需分开
-				this.model.floor = data.Floor+'';   //传过来位数字
+				this.model.floor = data.Floor + ''; //传过来位数字
 				this.model.floorAll = data.FloorAll;
 				this.model.roomNo = data.RoomNo;
 				this.model.houseTitle = data.Title;
 				this.model.trade = data.Trade;
 				this.model.direction = data.PropertyDirection;
-				this.model.price = data.Price+'';
-				this.model.square = data.Square+'';
+				this.model.price = data.Price + '';
+				this.model.square = data.Square + '';
 				this.model.countF = data.CountF;
 				this.model.countT = data.CountT;
 				this.model.countW = data.CountW;
@@ -644,13 +651,17 @@
 				this.optionalModel.FlagKDK = data.FlagKDK === '1' ? true : false;
 				this.optionalModel.FlagXSFY = data.FlagXSFY === '1' ? true : false;
 			});
-			this.model.show_agree = this.global_data.global_data.AccountStyle === '独立经纪人' ? true : false;
-			this.model.btnText = this.global_data.global_data.AccountStyle === '独立经纪人' ? '确认新增' : '确认分享';
+			this.model.show_agree = this.user.AccountStyle === '独立经纪人' ? true : false;
+			this.model.btnText = this.user.AccountStyle === '独立经纪人' ? '确认新增' : '确认分享';
 		},
 
 		onReady() {
 			this.$refs.uForm0.setRules(this.rules);
 			this.$refs.uForm1.setRules(this.rules);
+		},
+
+		computed: {
+			...mapState(['user'])
 		},
 
 		methods: {
@@ -817,16 +828,11 @@
 
 
 			ModifyHouse() {
-				console.log(this.propertyID + ' this is');
-				console.log(this.global_data.global_data.DBName);
-				console.log(this.model);
-				console.log(this.optionalModel);
-				console.log(this.model.CityName + ' ' + this.model.DistrictName + ' ' + this.model.EstateID);
-				if (this.global_data.global_data.AccountStyle === '物业管理中心') {
+				if (this.user.AccountStyle === '物业管理中心') {
 					this.model.shareToBroker = true;
 				}
-				this.$u.post(this.global_data.global_data.BaseUrl + 'ModHouseData', {
-					DBName: this.global_data.global_data.DBName,
+				this.$u.post(config.server + '/ModHouseData', {
+					DBName: this.user.DBName,
 					PropertyID: this.propertyID,
 					/* CityName:this.estateObject.CityName,
 					DistrictName:this.estateObject.DistrictName,
@@ -860,7 +866,7 @@
 					BuildNo: this.model.building + this.model.unit,
 					FloorAll: this.model.floorAll,
 					OwnerMobile: this.model.ownerMobile,
-					EmpNoOrTel: this.global_data.global_data.Tel,
+					EmpNoOrTel: this.user.Tel,
 					Privy: '',
 					PropertyOwn: this.optionalModel.right,
 					PropertyCertificate: this.optionalModel.credentials,
@@ -911,9 +917,9 @@
 
 			NewHouseData() {
 				uni.request({
-					url: this.global_data.global_data.BaseUrl + 'NewHouseData',
+					url: config.server + '/NewHouseData',
 					data: {
-						DBName: this.global_data.global_data.DBName,
+						DBName: this.user.DBName,
 						CityName: this.estateObject.CityName,
 						DistrictName: this.estateObject.DistrictName,
 						EstateID: this.estateObject.EstateID,
@@ -943,7 +949,7 @@
 						BuildNo: this.model.building + this.model.unit,
 						FloorAll: this.model.floorAll,
 						OwnerMobile: this.model.ownerMobile,
-						EmpNoOrTel: this.global_data.global_data.Tel,
+						EmpNoOrTel: this.user.Tel,
 						Privy: '',
 						PropertyOwn: this.optionalModel.right,
 						PropertyCertificate: this.optionalModel.credentials,

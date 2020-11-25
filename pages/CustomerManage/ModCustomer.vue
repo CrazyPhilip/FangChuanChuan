@@ -145,6 +145,12 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
 	export default {
 		data() {
 			return {
@@ -353,6 +359,11 @@
 		},
 
 
+		computed: {
+			...mapState(['user'])
+		},
+
+
 		methods: {
 			districtListCallback(index) {
 				this.model.district = this.districtList[index].town;
@@ -434,8 +445,8 @@
 				console.log(this.model);
 				console.log(this.optionalModel);
 
-				this.$u.post(this.global_data.global_data.BaseUrl + 'NewInquiry', {
-					DBName: this.global_data.global_data.DBName,
+				this.$u.post(config.server + +'/NewInquiry', {
+					DBName: this.user.DBName,
 					CustName: this.model.name,
 					Trade: this.model.trade,
 					PropertyUsage: this.optionalModel.usage,
@@ -467,7 +478,7 @@
 						.maxFloor === '' ? '*' : this.optionalModel.maxFloor,
 					PropertyDecoration: this.optionalModel.decoration === null || this.optionalModel.decoration === undefined ||
 						this.optionalModel.decoration === '' ? '*' : this.optionalModel.decoration,
-					EmpNoOrTel: this.global_data.global_data.Tel,
+					EmpNoOrTel: this.user.Tel,
 				}, {
 					'content-type': 'application/x-www-form-urlencoded'
 				}).then(res => {
@@ -491,7 +502,7 @@
 
 			//根据城市名获取城区列表
 			getDistrictsByCity(city) {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetAllDistrictByCity', {
+				this.$u.get(config.server + '/GetAllDistrictByCity', {
 					CityName: city
 				}).then(res => {
 					console.log(res);
@@ -501,8 +512,7 @@
 
 			//根据城区名获取街道列表
 			getAreaByDistrict(district) {
-				console.log(district);
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetAllAreaByDistrict', {
+				this.$u.get(config.server + '/GetAllAreaByDistrict', {
 					DistrictName: district
 				}).then(res => {
 					this.areaList = res.Result;

@@ -42,6 +42,10 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+		import {mapState, mapMutations} from 'vuex';
+	
+	
 	export default {
 		data() {
 			return {
@@ -66,6 +70,10 @@
 				this.GetCanGrabHouseList();
 			},
 			
+					computed:{
+						...mapState(['user'])
+					},
+
 			methods: {
 				ToHouseDetail: function(h) {
 					var obj =  this.grabHouseList[h];
@@ -116,10 +124,9 @@
 				},
 			
 				GetCanGrabHouseList() {
-					console.log('this:'+this.grabHouseList.length);
-					this.$u.get(this.global_data.global_data.BaseUrl + 'GetCanGrabHouses', {
-						DBName: this.global_data.global_data.DBName,
-						EmpNo: this.global_data.global_data.EmpID,
+					this.$u.get(config.server + '/GetCanGrabHouses', {
+						DBName: this.user.DBName,
+						EmpNo: this.user.EmpID,
 						/* DistrictName: '区域',
 						CountF: this.options2[this.value02].label === '全部房型' || this.options2[this.value02].label === ''?'房型':this.options2[this.value02].label,
 						Price: this.options3[this.value03].label === '全部价格' || this.options3[this.value03].label === ''?'价格':this.options3[this.value03].label,
@@ -134,10 +141,7 @@
 						EmpID: this.global_data.global_data.EmpID, */
 					}).then(res => {
 						this.grabHouseList = res.Result;
-						console.log('this:'+this.grabHouseList.length);
 						uni.stopPullDownRefresh();
-						
-						
 					})
 				},
 			

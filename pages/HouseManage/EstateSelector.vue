@@ -2,9 +2,9 @@
 	<view>
 		<view class="wrap">
 			<u-navbar is-back="true" title="搜索小区"></u-navbar>
-			<u-search placeholder="请输入小区名" v-model="keyword" shape="round" :clearabled="true"
-			:show-action="true" :animation="true" :focus="true" @custom="searchEstate" @search="searchEstate"></u-search>
-			
+			<u-search placeholder="请输入小区名" v-model="keyword" shape="round" :clearabled="true" :show-action="true" :animation="true"
+			 :focus="true" @custom="searchEstate" @search="searchEstate"></u-search>
+
 			<view v-for="(item,index) in list">
 				<view class="cell" v-on:click="select(index)">
 					<view class="left">{{item.EstateName}}</view>
@@ -16,22 +16,32 @@
 </template>
 
 <script>
-	export default{
-		data(){
-			return{
-				keyword:'',
-				
-				list:[],
-				
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
+	export default {
+		data() {
+			return {
+				keyword: '',
+
+				list: [],
+
 			}
 		},
-		
-		methods:{
-			searchEstate(){
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetEstateInfoByEstateName', {
-					DBName: this.global_data.global_data.DBName,
-					SelectType:'1',
-					EstateName:this.keyword
+
+		computed: {
+			...mapState(['user'])
+		},
+
+		methods: {
+			searchEstate() {
+				this.$u.get(config.server + '/GetEstateInfoByEstateName', {
+					DBName: this.user.DBName,
+					SelectType: '1',
+					EstateName: this.keyword
 				}).then(res => {
 					console.log(res);
 					this.list = res.Result;
@@ -39,8 +49,8 @@
 					console.log(res);
 				});
 			},
-			
-			select(index){
+
+			select(index) {
 				var pages = getCurrentPages();
 				var prevPage = pages[pages.length - 2]; //上一个页面
 				prevPage.$vm.getEstate(this.list[index]);
@@ -51,11 +61,11 @@
 </script>
 
 <style lang="scss" scoped>
-	.wrap{
+	.wrap {
 		padding: 10rpx;
 	}
-	
-	.cell{
+
+	.cell {
 		height: 100rpx;
 		display: flex;
 		justify-content: space-between;
@@ -65,13 +75,11 @@
 		background-color: #dfdfdf;
 		padding: 8px;
 		position: relative;
-		
-		.left{
+
+		.left {
 			font-weight: bold;
 		}
-		
-		.right{
-			
-		}
+
+		.right {}
 	}
 </style>

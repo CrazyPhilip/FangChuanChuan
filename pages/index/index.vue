@@ -23,7 +23,7 @@
 				</u-form-item>
 
 				<!-- 此处switch的slot为right，如果不填写slot名，也即<u-switch v-model="model.remember"></u-switch>，将会左对齐 -->
-				<u-form-item :label-position="labelPosition" label="记住密码" prop="remember" label-width="150">
+				<u-form-item :label-position="labelPosition" label="免密登录" prop="remember" label-width="150">
 					<u-switch v-model="model.remember" slot="right" size="30"></u-switch>
 				</u-form-item>
 			</u-form>
@@ -42,6 +42,13 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
+
 	export default {
 		data() {
 			return {
@@ -91,10 +98,30 @@
 			this.getCache();
 		},
 
+		computed: {
+			...mapState(['user'])
+		},
+
 		methods: {
 			getCache() {
 				try {
-					const value1 = uni.getStorageSync('result');
+					let status = uni.getStorageSync('loggedWithoutPassword');
+					if (status == true) {
+						let telephone = uni.getStorageSync('telephone');
+						let password = uni.getStorageSync('password');
+						if (telephone) {
+							this.model.phone = telephone;
+							if (password) {
+								this.model.password = password;
+
+								this.login();
+							}
+						}
+					} else {
+						this.$store.commit('changeStatus', false);
+					}
+					/* 
+					const value1 = uni.getStorageSync('user');
 					const value2 = uni.getStorageSync('phone');
 					const value3 = uni.getStorageSync('password');
 
@@ -108,7 +135,7 @@
 						this.model.password = value3;
 					}
 
-					this.login();
+					this.login(); */
 				} catch (e) {
 					// error
 				}
@@ -132,21 +159,46 @@
 
 			//登录
 			login() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'Login', {
+				this.$u.get(config.server + '/Login', {
 					TelOrEmpNo: this.model.phone,
 					Password: this.model.password
 				}).then(res => {
 					if (res.Flag === 'success') {
 
-						this.$refs.uToast.show({
-							title: res.Msg,
-							position: 'bottom',
-							type: 'success',
-							icon: false,
-							url: '',
+						uni.showToast({
+							title: '欢迎你！' + res.Result.EmpName,
+							position: 'bottom'
 						});
 
+						let _user = {
+							DBName: res.Result.DBName,
+							EmpID: res.Result.EmpID,
+							EmpName: res.Result.EmpName,
+							PhotoUrl: res.Result.PhotoUrl,
+							AccountStyle: '',
+							FollowArea: '',
+							Tel: this.model.phone,
+							EmpNo: ''
+						};
+
+						if (res.Result.AccountStyle === '1') {
+							_user.AccountStyle = '独立经纪人';
+						}
+						if (res.Result.AccountStyle === '2') {
+							_user.AccountStyle = '物业管理中心';
+						}
+
 						if (this.model.remember) {
+							try {
+								uni.setStorageSync('user', _user);
+								uni.setStorageSync('telephone', this.model.phone);
+								uni.setStorageSync('password', this.model.password);
+								uni.setStorageSync('loggedWithoutPassword', true);
+							} catch (e) {
+								//TODO handle the exception
+								console.log('setStorageSync异常')
+							}
+							/* 
 							uni.setStorage({
 								key: 'result',
 								data: res.Result,
@@ -169,12 +221,14 @@
 								success: function() {
 									console.log('pwd保存成功');
 								}
-							});
+							}); */
 						} else {
 
 						};
 
-						this.global_data.global_data.DBName = res.Result.DBName;
+						this.$store.commit('login', _user);
+
+						/* this.global_data.global_data.DBName = res.Result.DBName;
 						this.global_data.global_data.EmpID = res.Result.EmpID;
 						this.global_data.global_data.EmpName = res.Result.EmpName;
 						this.global_data.global_data.PhotoUrl = res.Result.PhotoUrl;
@@ -186,19 +240,19 @@
 						if (res.Result.AccountStyle === '2') {
 							this.global_data.global_data.AccountStyle = '物业管理中心';
 						}
-						
+
 						this.global_data.global_data.user = {
 							DBName: res.Result.DBName,
 							EmpID: res.Result.EmpID,
 							EmpName: res.Result.EmpName,
 							PhotoUrl: res.Result.PhotoUrl,
 							AccountStyle: this.global_data.global_data.AccountStyle,
-							FollowArea:'',
+							FollowArea: '',
 							Tel: this.model.phone,
 							EmpNo: '',
-							cityName:'成都',
-							cityPinYin:'chengdu',
-						};
+							cityName: '成都',
+							cityPinYin: 'chengdu',
+						}; */
 
 						// console.log(this.global_data.global_data.DBName);
 						// console.log(this.global_data.global_data.EmpID);
@@ -207,7 +261,7 @@
 
 						const jyJPush = uni.requireNativePlugin('JY-JPush');
 						jyJPush.addJYJPushTags({
-							userTag: this.global_data.global_data.DBName
+							userTag: this.user.DBName
 						}, result => {
 							/* uni.showToast({
 							icon: 'none',

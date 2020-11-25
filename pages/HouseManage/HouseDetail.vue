@@ -3,7 +3,7 @@
 		<view class="topNav">
 			<u-icon class="leftIcon" pros="0" name="arrow-leftward" size="50rpx" color="#ffffff" @click="goBack"></u-icon>
 			<view>
-				<u-tabs-swiper class="u-tabs-box" ref="tabs" :list="[{name:'求购'}, {name:'求租'}]" :current="current" @change="showChange"
+				<u-tabs-swiper class="u-tabs-box" ref="tabs" :list="[{name:'详情'}, {name:'流程'}]" :current="current" @change="showChange"
 				 :is-scroll="false"></u-tabs-swiper>
 			</view>
 			<view class="right">
@@ -88,16 +88,16 @@
 					<view class="section">
 						<view class="sectionTitle">交易属性</view>
 						<u-row justify="center">
-							<u-col span="6">委托时间：{{}}</u-col>
-							<u-col span="6">刷新时间：{{}}</u-col>
+							<u-col span="6">委托时间：</u-col>
+							<u-col span="6">刷新时间：</u-col>
 						</u-row>
 						<u-row justify="center">
-							<u-col span="6">属性：{{}}</u-col>
-							<u-col span="6">产权日期：{{}}</u-col>
+							<u-col span="6">属性：</u-col>
+							<u-col span="6">产权日期：</u-col>
 						</u-row>
 						<u-row justify="center">
-							<u-col span="6">产权所属：{{}}</u-col>
-							<u-col span="6">抵押状态：{{}}</u-col>
+							<u-col span="6">产权所属：</u-col>
+							<u-col span="6">抵押状态：</u-col>
 						</u-row>
 					</view>
 
@@ -172,13 +172,13 @@
 							<u-col span="3">
 								<u-button type="success" @click="Call">致电</u-button>
 							</u-col>
-							<u-col  span="3">
+							<u-col span="3">
 								<u-button type="primary" @click="ToFollowUp">看跟进</u-button>
 							</u-col>
-							<u-col  span="3">
+							<u-col span="3">
 								<u-button type="primary" @click="ToWriteFollow">写跟进</u-button>
 							</u-col>
-							<u-col  span="3">
+							<u-col span="3">
 								<u-button type="warning" @click="ModifyHouse">修改房源</u-button>
 							</u-col>
 						</u-row>
@@ -284,12 +284,18 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
 	export default {
 		data() {
 			return {
 				swiperCurrent: 0,
 				current: 0,
-				collectColor:'#ffffff',
+				collectColor: '#ffffff',
 				cityPinYin: '',
 				proId: '',
 				collectIcon: 'heart',
@@ -298,9 +304,9 @@
 				recommendedList: [],
 				house: Object,
 				photoList: [],
-				ifCollected:false,
-				
-				followUpList:[],
+				ifCollected: false,
+
+				followUpList: [],
 
 				callActionSheetShow: false,
 				callActionSheet: [{
@@ -313,7 +319,7 @@
 		},
 
 		onLoad: function(params) {
-			
+
 			this.getPhotos();
 			const eventChannel = this.getOpenerEventChannel();
 			eventChannel.on('acceptDataFromHouseList', (data) => {
@@ -322,11 +328,15 @@
 		},
 
 		onReady() {
-			
+
 			this.CheckIfCollected();
 			//this.getCommentList();
 			//this.getRecommendedList();
 			//this.getHouseFollowInfo();
+		},
+
+		computed: {
+			...mapState(['user'])
 		},
 
 		methods: {
@@ -356,63 +366,60 @@
 					delta: 1
 				});
 			},
-			CheckIfCollected(){
-				console.log('PropertyID：'+this.house.PropertyID);
-				this.$u.get(this.global_data.global_data.BaseUrl + 'IfPropertyCollectted', {
-					DBName: this.global_data.global_data.DBName,
-					EmpID: this.global_data.global_data.EmpID,
+			CheckIfCollected() {
+				console.log('PropertyID：' + this.house.PropertyID);
+				this.$u.get(config.server + '/IfPropertyCollectted', {
+					DBName: this.user.DBName,
+					EmpID: this.user.EmpID,
 					PropertyID: this.house.PropertyID,
 				}).then(res => {
 					if (res.Flag === 'Collected') {
 						this.ifCollected = true;
 						this.collectColor = '#ffff01';
-					}else{
+					} else {
 						this.ifCollected = false;
 						this.collectColor = '#ffffff';
 					}
 				})
 			},
-			ModifyHouse(){
+			ModifyHouse() {
 				uni.navigateTo({
 					url: './ModifyHouse',
 					success: (res) => {
-						res.eventChannel.emit('acceptDataFromHouseList',this.house);
+						res.eventChannel.emit('acceptDataFromHouseList', this.house);
 					}
 				})
 			},
-			
-			CollectHouse(){
-				this.$u.get(this.global_data.global_data.BaseUrl + 'CollectProperty', {
-					DBName: this.global_data.global_data.DBName,
-					EmpID: this.global_data.global_data.EmpID,
+
+			CollectHouse() {
+				this.$u.get(config.server + '/CollectProperty', {
+					DBName: this.user.DBName,
+					EmpID: this.user.EmpID,
 					PropertyID: this.house.PropertyID,
 				}).then(res => {
-					if(this.ifCollected === true){   //本次为取消收藏
-						if(res.Flag === 'CancelSuccess'){
+					if (this.ifCollected === true) { //本次为取消收藏
+						if (res.Flag === 'CancelSuccess') {
 							this.$refs.uToast.show({
 								title: '取消收藏成功',
 								type: 'success'
 							});
 							this.ifCollected = false;
 							this.collectColor = '#ffffff';
-						}
-						else{
+						} else {
 							this.$refs.uToast.show({
 								title: '取消收藏失败',
 								type: 'error'
 							});
-						}		
-					}
-					else{    //本次为收藏房源
-						if(res.Flag === 'CollectSuccess'){
+						}
+					} else { //本次为收藏房源
+						if (res.Flag === 'CollectSuccess') {
 							this.$refs.uToast.show({
 								title: '收藏成功',
 								type: 'success'
 							});
 							this.ifCollected = true;
 							this.collectColor = '#ffff01';
-						}
-						else{
+						} else {
 							this.$refs.uToast.show({
 								title: '收藏失败',
 								type: 'error'
@@ -455,8 +462,8 @@
 			},
 
 			getPhotos() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetPhotoUrlByPropertyID', {
-					DBName: this.global_data.global_data.DBName,
+				this.$u.get(config.server + '/GetPhotoUrlByPropertyID', {
+					DBName: this.user.DBName,
 					PropertyID: this.house.PropertyID
 				}).then(res => {
 					if (res.Flag === 'success') {
@@ -468,7 +475,7 @@
 			},
 
 			getCommentList() {
-				this.$u.get('http://47.108.202.57:8090/property/getCommentsByPropertyId?propId=45&cityPinYin=' +
+				this.$u.get(config.outerServer + '/property/getCommentsByPropertyId?propId=45&cityPinYin=' +
 					this.cityPinYin, {
 
 					}).then(res => {
@@ -478,7 +485,7 @@
 			},
 
 			getRecommendedList() {
-				this.$u.get('http://47.108.202.57:8090/property/getRecommend?trade=%E5%87%BA%E5%94%AE&cityPinYin=' + this.cityPinYin +
+				this.$u.get(config.outerServer + '/property/getRecommend?trade=%E5%87%BA%E5%94%AE&cityPinYin=' + this.cityPinYin +
 					'&pageNum=1&pageSize=4', {
 
 					}).then(res => {
@@ -486,19 +493,19 @@
 					this.recommendedList = res.data.list;
 				});
 			},
-		
+
 			getHouseFollowInfo() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'GetHouseFollowInfo', {
-					DBName: this.global_data.global_data.DBName,
+				this.$u.get(config.server + '/GetHouseFollowInfo', {
+					DBName: this.user.DBName,
 					PropertyID: this.house.PropertyID,
 				}).then(res => {
 					this.followUpList = res.Result;
 				});
 			},
-			
-			ToWarning(){
+
+			ToWarning() {
 				uni.navigateTo({
-					url:"../Setting/Warning"
+					url: "../Setting/Warning"
 				});
 			}
 		},
@@ -692,8 +699,8 @@
 		color: rgb(200, 200, 200);
 		font-size: 26rpx;
 	}
-	
-	.timeLineBox{
+
+	.timeLineBox {
 		padding: 200rpx 24rpx 24rpx 40rpx;
 	}
 </style>

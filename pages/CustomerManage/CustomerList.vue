@@ -89,6 +89,9 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {mapState, mapMutations} from 'vuex';
+	
 	export default {
 		data() {
 			return {
@@ -237,10 +240,9 @@
 			}
 		},
 
-		onLoad() {
+		onReady() {
 			this.GetSaleCustomerList();
 			this.GetRentCustomerList();
-			this.showImg = true;
 		},
 
 		onPullDownRefresh() {
@@ -252,6 +254,10 @@
 			}
 		},
 
+		computed:{
+			...mapState(['user', 'city'])
+		},
+		
 		methods: {
 			ToCustomerDetail: function(h) {
 				var obj = this.swiperCurrent === 0 ? this.saleCustomerList[h] : this.rentCustomerList[h];
@@ -329,12 +335,9 @@
 			},
 
 			GetSaleCustomerList() {
-				console.log(this.global_data.global_data.BaseUrl);
-				console.log(this.global_data.global_data.DBName);
-				console.log(this.global_data.global_data.Tel);
-				this.$u.get(this.global_data.global_data.BaseUrl + 'QuerySaleCustomerSource', {
-					DBName: this.global_data.global_data.DBName,
-					Tel: this.global_data.global_data.Tel,
+				this.$u.get(config.server + '/QuerySaleCustomerSource', {
+					DBName: this.user.DBName,
+					Tel: this.user.Tel,
 					RoomStyle: this.options1[this.value01].label === '全部房型' || this.options1[this.value01].label === ''?'房型':this.options1[this.value01].label,
 					Floor: this.options2[this.value02].label === '全部楼层' || this.options2[this.value02].label === ''?'楼层':this.options2[this.value02].label,
 					Price: this.options3[this.value03].label === '全部价格' || this.options3[this.value03].label === ''?'价格':this.options3[this.value03].label,
@@ -354,9 +357,9 @@
 			},
 
 			GetRentCustomerList() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'QueryRentCustomerSource', {
-					DBName: this.global_data.global_data.DBName,
-					Tel: this.global_data.global_data.Tel,
+				this.$u.get(config.server + '/QueryRentCustomerSource', {
+					DBName: this.user.DBName,
+					Tel: this.user.Tel,
 					RoomStyle: this.options1[this.value11].label === '全部房型' || this.options1[this.value11].label === ''?'房型':this.options1[this.value11].label,
 					Floor: this.options2[this.value12].label === '全部楼层' || this.options2[this.value12].label === ''?'楼层':this.options2[this.value12].label,
 					Price: this.options3[this.value13].label === '全部价格' || this.options3[this.value13].label === ''?'价格':this.options3[this.value13].label,
@@ -384,19 +387,6 @@
 				}
 			},
 
-		},
-
-		params: {
-			year: true,
-			month: true,
-			day: true,
-			hour: true,
-			minute: true,
-			second: true,
-			province: true,
-			city: true,
-			area: true,
-			timestamp: true
 		}
 	}
 
