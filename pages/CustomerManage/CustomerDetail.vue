@@ -72,7 +72,7 @@
 						<u-col span="3"><u-button type="success" @click="Call">联系客户</u-button></u-col>
 						<u-col span="3"><u-button type="primary" @click="ToFollowUp">看跟进</u-button></u-col>
 						<u-col span="3"><u-button type="primary" @click="ToWriteFollow">写跟进</u-button></u-col>
-						<u-col span="3"><u-button type="warning" @click="Call">修改客源</u-button></u-col>
+						<u-col span="3"><u-button type="warning" @click="ToModCustomer">修改客源</u-button></u-col>
 					</u-row>
 					
 				</view>
@@ -127,7 +127,15 @@
 					url: './CustomerFollowUp?InquiryID=' + this.customer.InquiryID
 				});
 			},
-
+			
+			ToModCustomer(){
+				uni.navigateTo({
+					url: './ModCustomer',
+					success: (res) => {
+						res.eventChannel.emit('acceptDataFromHouseList', this.customer);
+					}
+				})
+			},
 			ToWriteFollow() {
 				uni.navigateTo({
 					url: './NewCustomerFollowUp?InquiryID=' + this.customer.InquiryID

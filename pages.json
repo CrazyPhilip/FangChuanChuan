@@ -180,6 +180,13 @@
 			}
 		},
 		{
+			"path": "pages/CustomerManage/ModCustomer",
+			"style": {
+				"navigationBarTitleText": "修改客源",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
 			"path": "pages/CustomerManage/CustomerFollowUp",
 			"style": {
 				"navigationBarTitleText": "看跟进",
