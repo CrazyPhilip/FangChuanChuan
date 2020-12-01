@@ -3,9 +3,9 @@
 		<view class="top" :class="[changeClass?'top2':'top']">
 			<view class="topLeft">
 				<u-button type="primary" size="mini" @click="toLocation">{{cityName}}</u-button>
-				<!-- <u-line color="#82848a" length="50rpx" :hair-line="false" border-style="solid" direction="col"></u-line> -->
-				<u-search placeholder="输入小区名搜索房源" shape="square" bg-color="white" :clearabled="true" :show-action="true"
-				 action-text="搜索" :animation="true" v-model="keyword"></u-search>
+				
+				<u-search placeholder="输入小区名搜索房源" shape="square" bg-color="white"
+				 v-model="keyword" @custom="toSearch" @search="toSearch"></u-search>
 			</view>
 			<u-icon id="mapIcon" v-bind:label-color="iconColor" v-bind:name="iconName" label="地图" size="50" @click="toMap"></u-icon>
 		</view>
@@ -123,7 +123,6 @@
 
 		onLoad() {
 			this.cityName = this.city.cityName;
-
 		},
 
 		onPageScroll(obj) {
@@ -168,7 +167,7 @@
 				this.current = e.detail.current;
 			},
 
-			IconClick: function IconClick(index) {
+			IconClick(index) {
 				console.log(index);
 				switch (index) {
 					case 1:
@@ -272,6 +271,13 @@
 				/* uni.navigateTo({
 					url:'./location',
 				}); */
+			},
+			
+			toSearch(){
+				// console.log(this.keyword);
+				uni.navigateTo({
+					url:'../HouseManage/SearchList?keyword=' + encodeURIComponent(this.keyword)
+				});
 			}
 
 		}
@@ -317,6 +323,7 @@
 		justify-content: space-around;
 		align-items: center;
 		background-color: white;
+		width: 500rpx;
 		padding: 10rpx 20rpx;
 		border-radius: 8rpx;
 	}

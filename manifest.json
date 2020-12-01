@@ -40,7 +40,16 @@
                 ],
                 "abiFilters" : [ "arm64-v8a", "x86" ]
             },
-            "ios" : {},
+            "ios" : {
+                "devices" : "iphone",
+                "privacyDescription" : {
+                    "NSPhotoLibraryUsageDescription" : "App需要您的同意,才能访问相册",
+                    "NSPhotoLibraryAddUsageDescription" : "App需要您的同意,才能访问相册",
+                    "NSCameraUsageDescription" : "App需要您的同意,才能访问相机",
+                    "NSLocationWhenInUseUsageDescription" : "App需要您的同意,才能在使用期间访问位置"
+                },
+                "idfa" : false
+            },
             "sdkConfigs" : {
                 "ad" : {},
                 "maps" : {

@@ -81,7 +81,7 @@
 							<u-col span="12">
 								<u-dropdown ref="uDropdown" activeColor="#2979ff">
 									<u-dropdown-item @change="change12" v-model="value12" :title="options2[value12].label" :options="options2"></u-dropdown-item>
-									<u-dropdown-item @change="change13" v-model="value13" :title="options3[value13].label" :options="options3"></u-dropdown-item>
+									<u-dropdown-item @change="change13" v-model="value13" :title="options5[value13].label" :options="options5"></u-dropdown-item>
 									<u-dropdown-item @change="change14" v-model="value14" :title="options4[value14].label" :options="options4"></u-dropdown-item>
 								</u-dropdown>
 							</u-col>
@@ -108,12 +108,7 @@
 										<text class="HouseTag">可带看</text>
 										<text class="HouseTag">新上房源</text>
 									</view>
-									<view>
-										<u-row>
-											<u-col class="HousePrice" span="6">{{item.Price}}万元</u-col>
-											<u-col class="HouseUnitPrice" span="6">{{(item.Price/item.Square).toFixed(2)}}万元/㎡</u-col>
-										</u-row>
-									</view>
+									<view class="HousePrice">{{item.RentPrice}}{{item.RentUnitName}}</view>
 								</view>
 							</view>
 						</view>
@@ -304,7 +299,41 @@
 						value: 9,
 					},
 				],
-
+				
+				options5: [{
+						label: '全部价格',
+						value: 0,
+					},
+					{
+						label: '500元以下',
+						value: 1,
+					},
+					{
+						label: '500-1000元',
+						value: 2,
+					},
+					{
+						label: '1000-2000元',
+						value: 3,
+					},
+					{
+						label: '2000-3000元',
+						value: 4,
+					},
+					{
+						label: '3000-5000元',
+						value: 5,
+					},
+					{
+						label: '5000-7000元',
+						value: 6,
+					},
+					{
+						label: '7000元以上',
+						value: 7,
+					}
+				],
+				
 				list: [{
 						value: 1,
 						label: '中国',
@@ -510,7 +539,7 @@
 					DistrictName: '区域',
 					CountF: this.options2[this.value12].label === '全部房型' || this.options2[this.value12].label === '' ? '房型' : this.options2[
 						this.value12].label,
-					Price: this.options3[this.value13].label === '全部价格' || this.options3[this.value13].label === '' ? '价格' : this.options3[
+					Price: this.options5[this.value13].label === '全部价格' || this.options5[this.value13].label === '' ? '价格' : this.options5[
 						this.value13].label,
 					Square: this.options4[this.value14].label === '全部面积' || this.options4[this.value14].label === '' ? '面积' : this.options4[
 						this.value14].label,
@@ -523,10 +552,12 @@
 					Page: '',
 					EmpID: this.user.EmpID,
 				}).then(res => {
+					console.log(res);
 					this.rentHouseList = res.Result;
 					uni.stopPullDownRefresh();
 				})
 			},
+			
 			GetGrabedHouseList() {
 				this.$u.get(config.server + '/GetGrabbedHouses', {
 					DBName: this.user.DBName,

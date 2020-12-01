@@ -158,6 +158,13 @@
 			}
 		},
 		{
+			"path": "pages/HouseManage/SearchList",
+			"style": {
+				"navigationBarTitleText": "搜索",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
 			"path": "pages/Home/location",
 			"style": {
 				"navigationBarTitleText": "城市定位",
