@@ -39,7 +39,7 @@
 										<text>{{item.Remark}}</text>
 									</view>
 								</view>
-								<view class="right">{{item.PriceMin}}~{{item.PriceMax}}万元</view>
+								<view class="right">{{item.PriceMin}}~{{item.PriceMax}}{{item.UnitName}}</view>
 							</view>
 						</view>
 						<u-divider bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
@@ -74,7 +74,7 @@
 										<text>{{item.Remark}}</text>
 									</view>
 								</view>
-								<view class="right">{{item.PriceMin}}~{{item.PriceMax}}万元</view>
+								<view class="right">{{item.PriceMin}}~{{item.PriceMax}}{{item.UnitName}}</view>
 							</view>
 						</view>
 						<u-divider bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
@@ -490,7 +490,7 @@
 		.right {
 			width: 200rpx;
 			font-weight: bolder;
-			font-size: large;
+			font-size: medium;
 			color: #FA3534;
 		}
 

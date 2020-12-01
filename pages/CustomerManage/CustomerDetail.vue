@@ -37,7 +37,7 @@
 				<view class="sectionTitle">客户需求</view>
 				<u-row justify="center">
 					<u-col span="6">付佣：{{customer.PropertyCommission}}</u-col>
-					<u-col span="6">价格：{{customer.PriceMin}}~{{customer.PriceMax}}万元</u-col>
+					<u-col span="6">价格：{{customer.PriceMin}}~{{customer.PriceMax}}{{customer.UnitName}}</u-col>
 				</u-row>
 				<u-row justify="center">
 					<u-col span="6">房型：{{customer.CountF}}室{{customer.CountT}}厅{{customer.CountW}}卫{{customer.CountY}}阳</u-col>

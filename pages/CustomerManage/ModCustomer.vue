@@ -16,7 +16,7 @@
 
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
 				 :label-position="labelPosition" label="预算范围" prop="minBudget">
-					<u-input :border="border" placeholder="最低预算" v-model="model.minBudget" type="number" inputAlign="center"
+					<u-input :border="border" placeholder="最低预算" v-model="model.minBudget" type="number" inputAlign="left"
 					 :clearable="false"></u-input>
 					<view>~</view>
 					<u-input :border="border" placeholder="最高预算" v-model="model.maxBudget" type="number" inputAlign="center"
@@ -27,7 +27,7 @@
 
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
 				 :label-position="labelPosition" label="面积范围" prop="minSquare">
-					<u-input :border="border" placeholder="最小面积" v-model="model.minSquare" type="number" inputAlign="center"
+					<u-input :border="border" placeholder="最小面积" v-model="model.minSquare" type="number" inputAlign="left"
 					 :clearable="false"></u-input>
 					<view>~</view>
 					<u-input :border="border" placeholder="最大面积" v-model="model.maxSquare" type="number" inputAlign="center"
@@ -337,21 +337,26 @@
 
 		onLoad() {
 			this.getDistrictsByCity('cd');
-
 			const eventChannel = this.getOpenerEventChannel();
 			eventChannel.on('acceptDataFromHouseList', (data) => {
 					this.model.name = data.CustName;
 					this.model.district = data.DistrictName;
 					this.getAreaByDistrict(this.model.district);
-					this.model.area = this.model.AreaName;
+					this.model.area = data.AreaName;
+					
 					this.model.phone = data.CustMobile;
 					this.model.maxSquare = data.SquareMax;
 					this.model.maxBudget = data.PriceMax;
 					this.model.minBudget = data.PriceMin;
 					this.model.minSquare = data.SquareMin;
 					this.model.trade = data.Trade;
+					this.model.unitName = data.UnitName;
+					if(this.model.unitName === '万')
+						this.model.showUnitName = '('+ this.model.unitName +'元)';
+					else
+						this.model.showUnitName = '('+ this.model.unitName +')';
 					this.model.usage = data.PropertyUsage;
-					this.model.areaId = '';
+					this.model.areaId = data.AreaID;   
 					this.model.InquiryID = data.InquiryID;
 					this.optionalModel.level = data.CustGrade;
 					this.optionalModel.decoration = data.PropertyDecoration;
@@ -361,9 +366,10 @@
 					this.optionalModel.maxFloor = data.FoorEnd;
 					this.optionalModel.maxRoom = data.CountFEnd;
 					
-					this.optionalModel.koseki = '';
-					this.optionalModel.marrige = '';
+					this.optionalModel.koseki = data.Country;
+					this.optionalModel.marrige = data.PropertyFloor;
 					});
+					console.log('area:'+this.model.area);
 				},
 
 				onReady() {
@@ -380,10 +386,11 @@
 					},
 
 					areaListCallback(index) {
-						this.area = this.areaList[index].dbName;
+						//this.area = this.areaList[index].dbName;
 						console.log(index);
 						this.model.dBName = this.areaList[index].dbName;
 						this.model.area = this.areaList[index].village;
+						this.GetAreaIDByAreaName(this.model.area);
 					},
 
 					kosekiCallback(index) {
@@ -446,14 +453,14 @@
 						this.$refs.uForm0.validate(valid => {
 							if (valid) {
 								console.log('验证通过');
-								this.NewInquiry();
+								this.UpdateInquiry();
 							} else {
 								console.log('验证失败');
 							}
 						});
 					},
 
-					NewInquiry() {
+					UpdateInquiry() {
 						console.log('tesUnitNmae:' + this.model.unitName[0]);
 						this.$u.post(config.server + '/UpdateInquiry', {
 							DBName: this.user.DBName,
@@ -529,6 +536,15 @@
 							DistrictName: district
 						}).then(res => {
 							this.areaList = res.Result;
+						});
+					},
+					
+					
+					GetAreaIDByAreaName(areaName) {
+						this.$u.get(config.server + '/GetAreaIDByAreaName', {
+							AreaName: areaName
+						}).then(res => {
+							this.model.areaId = res.Result;
 						});
 					},
 

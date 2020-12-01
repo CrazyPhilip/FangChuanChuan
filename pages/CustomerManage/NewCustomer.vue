@@ -16,7 +16,7 @@
 
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
 				 :label-position="labelPosition" label="预算范围" prop="minBudget">
-					<u-input :border="border" placeholder="最低预算" v-model="model.minBudget" type="number" inputAlign="center"
+					<u-input :border="border" placeholder="最低预算" v-model="model.minBudget" type="number" inputAlign="left"
 					 :clearable="false"></u-input>
 					<view>~</view>
 					<u-input :border="border" placeholder="最高预算" v-model="model.maxBudget" type="number" inputAlign="center"
@@ -27,7 +27,7 @@
 
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
 				 :label-position="labelPosition" label="面积范围" prop="minSquare">
-					<u-input :border="border" placeholder="最小面积" v-model="model.minSquare" type="number" inputAlign="center"
+					<u-input :border="border" placeholder="最小面积" v-model="model.minSquare" type="number" inputAlign="left"
 					 :clearable="false"></u-input>
 					<view>~</view>
 					<u-input :border="border" placeholder="最大面积" v-model="model.maxSquare" type="number" inputAlign="center"
@@ -172,7 +172,7 @@
 					maxSquare: '',
 					minBudget: '',
 					maxBudget: '',
-					unitName:'',
+					unitName:'万',
 					showUnitName:'(万元)',
 				},
 				optionalModel: {
@@ -356,6 +356,7 @@
 				console.log(index);
 				this.model.dBName = this.areaList[index].dbName;
 				this.model.area = this.areaList[index].village;
+				this.GetAreaIDByAreaName(this.model.area);
 			},
 
 			kosekiCallback(index) {
@@ -426,7 +427,7 @@
 			},
 
 			NewInquiry() {
-				console.log('tesUnitNmae:'+this.model.unitName[0]);
+				console.log('tesUnitNmae:'+this.model.areaId);
 				this.$u.post(config.server + '/NewInquiry', {
 					DBName: this.user.DBName,
 					CustName: this.model.name,
@@ -500,6 +501,14 @@
 					this.areaList = res.Result;
 				});
 			},
+			
+			GetAreaIDByAreaName(areaName) {
+				this.$u.get(config.server + '/GetAreaIDByAreaName', {
+					AreaName: areaName
+				}).then(res => {
+					this.model.areaId = res.Result;
+				});
+			},
 
 			// 选择地区回调
 			regionConfirm(e) {
@@ -517,6 +526,7 @@
 
 	.agreement {
 		display: flex;
+		justify-content: left;
 		align-items: center;
 		margin: 40rpx 0;
 

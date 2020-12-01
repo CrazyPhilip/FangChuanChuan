@@ -325,6 +325,73 @@
 					shareToOutside: false,
 					shareToBroker: false,
 				},
+				extranetModel: {
+					proAddr: '',
+					proAreId: 0, //同proAreaId
+					proArea: '',
+					proAreaId: 0,
+					proCity: '',
+					proCityId: 0,
+					proCollectCount: 0,
+					proCompanyName: '',
+					proCompleteYear: 0,
+					proCountF: 0,
+					proCountT: 0,
+					proCountW: 0,
+					proCountY: 0,
+					proCoverUrl: '',
+					proCreateDate: "2020-11-30T07:38:27.732Z", //获取当前时间
+					proDataId: '',
+					proDate: "2020-11-30T07:38:27.732Z",
+					proDbName: '',
+					proDecoration: '',
+					proDetail: '',
+					proDirection: '',
+					proDistrict: '',
+					proDistrictId: 0,
+					proEavgPrice: 0,
+					proElevator: '',
+					proEmployee1Id: '',
+					proEmployee1Img: '',
+					proEmployee1Name: '',
+					proEmployee1Phone: '',
+					proEstId: 0,
+					proEstateName: '',
+					proFirstPay: '',
+					proFloor: '',
+					proFloorAll: 0,
+					proHouseCheck: '',
+					proId: 0,
+					proInnernetId: '',
+					proKey: true,
+					proKeywords: '',
+					proLadderRatio: '',
+					proLat: 0,
+					proLng: 0,
+					proLooknum: 0,
+					proModDate: "2020-11-30T07:38:27.732Z",
+					proMonthPay: '',
+					proMortgate: '',
+					proNo: '',
+					proOwn: '',
+					proOwnership: '',
+					proPhotoUrl: '',
+					proPrice: 0,
+					proPriceType: '',
+					proRentPrice: 0,
+					proRentPriceType: '',
+					proRightYears: 0,
+					proScore: 0,
+					proSquare: 0,
+					proStatus: 0,
+					proTitle: '',
+					proTrade: '',
+					proTrustDate: "2020-11-30T07:38:27.732Z",
+					proType: '',
+					proUnitPrice: 0,
+					proUnitPriceType: '',
+					proUsage: ''
+				},
 				optionalModel: {
 					decoration: '',
 					furniture: '',
@@ -719,6 +786,7 @@
 			},
 
 			reset() {
+				//this.EGetAreaIdByName('郫都');
 				this.model.fileList = [];
 				this.model.estate = '';
 				this.model.building = '';
@@ -772,7 +840,6 @@
 					if (valid) {
 						console.log('验证通过');
 						this.NewHouse();
-						//this.NewHouseData();
 					} else {
 						console.log('验证失败');
 					}
@@ -783,6 +850,7 @@
 				if (this.user.AccountStyle === '物业管理中心') {
 					this.model.shareToBroker = true;
 				}
+				
 				this.$u.post(config.server + '/NewHouseData', {
 					DBName: this.user.DBName,
 					CityName: this.estateObject.CityName,
@@ -842,6 +910,187 @@
 					PropertyID: '',
 					ChangeLog: '',
 					Status: '' //后台接口默认设置为 有效
+				}, {
+					'content-type': 'application/x-www-form-urlencoded',
+				}).then(res => {
+					if (res.Flag === 'success' || res.Flag === 'SQLSuccess') {
+						this.$refs.uToast.show({
+							title: '新增房源成功',
+							type: 'success',
+							url: '/pages/Home/Home',
+							isTab: true,
+						});
+					}
+				}).catch(res => {
+					console.log(res);
+					this.$refs.uToast.show({
+						title: '错误',
+						type: 'error',
+					});
+				});
+			},
+
+			//外网接口，通过areaname获取对应的areaid
+			EGetAreaIdByName(districtName) {
+				uni.request({
+					url: config.outerServer + '/area/getIdByName',
+					method: 'get',
+					data: {
+						"areaName": districtName,
+						"cityPinYin": "chengdu"
+					},
+					success: (res) => {
+						 //console.log(res);
+						 this.extranetModel.proDistrictId = res.data.data.areaId;
+					}
+				});				
+			},
+			//发布到外网
+			ToExtranet() {
+				this.EGetAreaIdByName(this.this.estateObject.DistrictName);
+				uni.request({
+					url: config.outerServer + '/property/addProperty',
+					method: 'post',
+					data: {
+						"proAddr": "",
+						"proAreId": 0, //同proAreaId
+						"proArea": this.estateObject.DistrictName,
+						"proAreaId": this.extranetModel.proAreId,
+						"proCity": "成都",   //以固定
+						"proCityId": 1,   //以固定
+						"proCollectCount": 0,   //?
+						"proCompanyName": "",   //?
+						"proCompleteYear": this.optionalModel.builtYear,
+						"proCountF": this.model.countF,
+						"proCountT": this.model.countT,
+						"proCountW": this.model.countW,
+						"proCountY": this.model.countY,
+						"proCoverUrl": "",
+						"proCreateDate": "2020-11-30T07:38:27.732Z", //获取当前时间
+						"proDataId": "",
+						"proDate": "2020-11-30T07:38:27.732Z",   //当前时间
+						"proDbName": this.user.DBName,
+						"proDecoration": this.optionalModel.decoration === null || this.optionalModel.decoration === undefined ||
+	this.optionalModel.decoration === '' ? '*' : this.optionalModel.decoration,
+						"proDetail": "",
+						"proDirection": this.model.direction === null || this.model.direction === undefined || this.model.direction ===
+	'' ? '*' : this.model.direction,
+						"proDistrict": this.estateObject.DistrictName,
+						"proDistrictId": this.extranetModel.proDistrictId,
+						"proEavgPrice": 0,
+						"proElevator": "",
+						"proEmployee1Id": this.user.EmpID,
+						proEmployee1Img: '',
+						proEmployee1Name: '',
+						proEmployee1Phone: '',
+						proEstId: 0,
+						proEstateName: '',
+						proFirstPay: '',
+						proFloor: '',
+						proFloorAll: 0,
+						proHouseCheck: '',
+						proId: 0,
+						proInnernetId: '',
+						proKey: true,
+						proKeywords: '',
+						proLadderRatio: '',
+						proLat: 0,
+						proLng: 0,
+						proLooknum: 0,
+						proModDate: "2020-11-30T07:38:27.732Z",
+						proMonthPay: '',
+						proMortgate: '',
+						proNo: '',
+						proOwn: '',
+						proOwnership: '',
+						proPhotoUrl: '',
+						proPrice: 0,
+						proPriceType: '',
+						proRentPrice: 0,
+						proRentPriceType: '',
+						proRightYears: 0,
+						proScore: 0,
+						proSquare: 0,
+						proStatus: 0,
+						proTitle: '',
+						proTrade: '',
+						proTrustDate: "2020-11-30T07:38:27.732Z",
+						proType: '',
+						proUnitPrice: 0,
+						proUnitPriceType: '',
+						proUsage: ''
+					},
+					success: (res) => {
+						 console.log(res);
+						
+					}
+				});				
+				this.$u.post(config.outerServer + '/property/addProperty', {
+					proAddr: '',
+					proAreId: 0, //同proAreaId
+					proArea: this.estateObject.DistrictName,
+					proAreaId: this.extranetModel.proAreId,
+					proCity: '成都',   //以固定
+					proCityId: 1,   //以固定
+					proCollectCount: 0,
+					proCompanyName: '',
+					proCompleteYear: 0,
+					proCountF: 0,
+					proCountT: 0,
+					proCountW: 0,
+					proCountY: 0,
+					proCoverUrl: '',
+					proCreateDate: "2020-11-30T07:38:27.732Z", //获取当前时间
+					proDataId: '',
+					proDate: "2020-11-30T07:38:27.732Z",
+					proDbName: '',
+					proDecoration: '',
+					proDetail: '',
+					proDirection: '',
+					proDistrict: '',
+					proDistrictId: 0,
+					proEavgPrice: 0,
+					proElevator: '',
+					proEmployee1Id: '',
+					proEmployee1Img: '',
+					proEmployee1Name: '',
+					proEmployee1Phone: '',
+					proEstId: 0,
+					proEstateName: '',
+					proFirstPay: '',
+					proFloor: '',
+					proFloorAll: 0,
+					proHouseCheck: '',
+					proId: 0,
+					proInnernetId: '',
+					proKey: true,
+					proKeywords: '',
+					proLadderRatio: '',
+					proLat: 0,
+					proLng: 0,
+					proLooknum: 0,
+					proModDate: "2020-11-30T07:38:27.732Z",
+					proMonthPay: '',
+					proMortgate: '',
+					proNo: '',
+					proOwn: '',
+					proOwnership: '',
+					proPhotoUrl: '',
+					proPrice: 0,
+					proPriceType: '',
+					proRentPrice: 0,
+					proRentPriceType: '',
+					proRightYears: 0,
+					proScore: 0,
+					proSquare: 0,
+					proStatus: 0,
+					proTitle: '',
+					proTrade: '',
+					proTrustDate: "2020-11-30T07:38:27.732Z",
+					proType: '',
+					proUnitPrice: 0,
+					proUnitPriceType: '',
+					proUsage: ''
 				}, {
 					'content-type': 'application/x-www-form-urlencoded',
 				}).then(res => {
