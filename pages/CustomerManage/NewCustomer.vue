@@ -14,16 +14,25 @@
 					<u-input :border="border" placeholder="请输入手机号" v-model="model.phone" type="number"></u-input>
 				</u-form-item>
 
-				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
-				 label="户籍类型" prop="koseki" label-width="300">
-					<u-input :border="border" type="select" :select-open="kosekiListShow" v-model="model.koseki" placeholder="请选择户籍类型"
-					 @click="kosekiListShow = true"></u-input>
+				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
+				 :label-position="labelPosition" label="预算范围" prop="minBudget">
+					<u-input :border="border" placeholder="最低预算" v-model="model.minBudget" type="number" inputAlign="left"
+					 :clearable="false"></u-input>
+					<view>~</view>
+					<u-input :border="border" placeholder="最高预算" v-model="model.maxBudget" type="number" inputAlign="center"
+					 :clearable="false"></u-input>
+					 <u-input :border="border" type="select" :select-open="unitNameListShow" v-model="model.showUnitName" placeholder="(万元)"
+					  @click="unitNameListShow = true"></u-input>
 				</u-form-item>
 
-				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
-				 label="婚姻状态" prop="marrige" label-width="300">
-					<u-input :border="border" type="select" :select-open="marrigeListShow" v-model="model.marrige" placeholder="请选择婚姻状态"
-					 @click="marrigeListShow = true"></u-input>
+				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
+				 :label-position="labelPosition" label="面积范围" prop="minSquare">
+					<u-input :border="border" placeholder="最小面积" v-model="model.minSquare" type="number" inputAlign="left"
+					 :clearable="false"></u-input>
+					<view>~</view>
+					<u-input :border="border" placeholder="最大面积" v-model="model.maxSquare" type="number" inputAlign="center"
+					 :clearable="false"></u-input>
+					<view >(平米)</view>
 				</u-form-item>
 
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
@@ -75,23 +84,20 @@
 							 @click="typeListShow = true"></u-input>
 						</u-form-item>
 
-						<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
-						 :label-position="labelPosition" label="预算范围(万元)" prop="minBudget">
-							<u-input :border="border" placeholder="最低预算" v-model="optionalModel.minBudget" type="number" inputAlign="center"
-							 :clearable="false"></u-input>
-							<view>~</view>
-							<u-input :border="border" placeholder="最高预算" v-model="optionalModel.maxBudget" type="number" inputAlign="center"
-							 :clearable="false"></u-input>
+						<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
+						 label="户籍类型" prop="koseki" label-width="300">
+							<u-input :border="border" type="select" :select-open="kosekiListShow" v-model="optionalModel.koseki" placeholder="请选择户籍类型"
+							 @click="kosekiListShow = true"></u-input>
 						</u-form-item>
 
-						<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
-						 :label-position="labelPosition" label="面积范围(平米)" prop="minSquare">
-							<u-input :border="border" placeholder="最小面积" v-model="optionalModel.minSquare" type="number" inputAlign="center"
-							 :clearable="false"></u-input>
-							<view>~</view>
-							<u-input :border="border" placeholder="最大面积" v-model="optionalModel.maxSquare" type="number" inputAlign="center"
-							 :clearable="false"></u-input>
+						<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
+						 label="婚姻状态" prop="marrige" label-width="300">
+							<u-input :border="border" type="select" :select-open="marrigeListShow" v-model="optionalModel.marrige"
+							 placeholder="请选择婚姻状态" @click="marrigeListShow = true"></u-input>
 						</u-form-item>
+
+
+
 
 						<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="account" label-width="300"
 						 :label-position="labelPosition" label="楼层范围(楼)" prop="minFloor">
@@ -137,7 +143,7 @@
 			<u-picker mode="selector" v-model="levelListShow" :default-selector="[0]" :range="levelList" @confirm="levelListCallback"></u-picker>
 			<u-picker mode="selector" v-model="decorationListShow" :default-selector="[0]" :range="decorationList" @confirm="decorationListCallback"></u-picker>
 			<u-picker mode="selector" v-model="typeListShow" :default-selector="[0]" :range="typeList" @confirm="typeListCallback"></u-picker>
-
+			<u-picker mode="selector" v-model="unitNameListShow" :default-selector="[0]" :range="unitNameList" @confirm="unitNameListCallback"></u-picker>
 			<u-toast ref="uToast" />
 		</view>
 
@@ -145,6 +151,11 @@
 </template>
 
 <script>
+	import config from '../../api/config.js';
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
 	export default {
 		data() {
 			return {
@@ -154,25 +165,27 @@
 					area: '',
 					dBName: '',
 					phone: '',
-					koseki: '',
-					marrige: '',
 					trade: '',
 					usage: '',
 					areaId: '',
+					minSquare: '',
+					maxSquare: '',
+					minBudget: '',
+					maxBudget: '',
+					unitName:'万',
+					showUnitName:'(万元)',
 				},
 				optionalModel: {
 					level: '',
 					decoration: '',
 					type: '',
-
-					minBudget: '',
 					minFloor: '',
 					minRoom: '',
-					minSquare: '',
-					maxBudget: '',
 					maxFloor: '',
 					maxRoom: '',
-					maxSquare: ''
+					koseki: '',
+					marrige: '',
+
 				},
 
 				rules: {
@@ -288,6 +301,7 @@
 
 				districtList: [],
 				areaList: [],
+				unitNameList:["元","万元"],
 				kosekiList: ["外地", "本地"],
 				marrigeList: ["未婚", "已婚", "离婚"],
 				tradeList: ["求购", "求租"],
@@ -309,13 +323,17 @@
 				levelListShow: false,
 				decorationListShow: false,
 				typeListShow: false,
-
+				unitNameListShow:false,
 				border: false,
 				labelPosition: 'left',
 
 			};
 		},
-
+		
+		computed: {
+			...mapState(['user'])
+		},
+		
 		onLoad() {
 			this.getDistrictsByCity('cd');
 		},
@@ -338,14 +356,15 @@
 				console.log(index);
 				this.model.dBName = this.areaList[index].dbName;
 				this.model.area = this.areaList[index].village;
+				this.GetAreaIDByAreaName(this.model.area);
 			},
 
 			kosekiCallback(index) {
-				this.model.koseki = this.kosekiList[index];
+				this.optionalModel.koseki = this.kosekiList[index];
 			},
 
 			marrigeListCallback(index) {
-				this.model.marrige = this.marrigeList[index];
+				this.optionalModel.marrige = this.marrigeList[index];
 			},
 
 			tradeListCallback(index) {
@@ -367,65 +386,72 @@
 			typeListCallback(index) {
 				this.optionalModel.type = this.typeList[index];
 			},
+			unitNameListCallback(index){
+				this.model.unitName = this.unitNameList[index];
+				this.model.showUnitName = '(' + this.unitNameList[index] + ')';
+			},
 
 			reset() {
 				this.model.name = '';
 				this.model.district = '';
 				this.model.area = '';
 				this.model.phone = '';
-				this.model.koseki = '';
-				this.model.marrige = '';
+				this.model.minBudget = '';
+				this.model.maxBudget = '';
+				this.model.maxSquare = '';
+				this.model.minSquare = '';
 				this.model.trade = '';
 				this.model.usage = '';
+				this.model.showUnitName = '(万元)';
 
 				this.optionalModel.level = '';
 				this.optionalModel.decoration = '';
 				this.optionalModel.type = '';
-				this.optionalModel.minBudget = '';
 				this.optionalModel.minFloor = '';
 				this.optionalModel.minRoom = '';
-				this.optionalModel.minSquare = '';
-				this.optionalModel.maxBudget = '';
 				this.optionalModel.maxFloor = '';
 				this.optionalModel.maxRoom = '';
-				this.optionalModel.maxSquare = '';
+				this.optionalModel.koseki = '';
+				this.optionalModel.marrige = '';
 			},
 
 			submit() {
 				this.$refs.uForm0.validate(valid => {
 					if (valid) {
 						console.log('验证通过');
-						this.NewHouse();
+						this.NewInquiry();
 					} else {
 						console.log('验证失败');
 					}
 				});
 			},
 
-			NewHouse() {
+			NewInquiry() {
+				console.log('tesUnitNmae:'+this.model.areaId);
 				this.$u.post(config.server + '/NewInquiry', {
 					DBName: this.user.DBName,
 					CustName: this.model.name,
 					Trade: this.model.trade,
-					PropertyUsage: this.optionalModel.usage,
-					Country: this.model.district,
+					PropertyUsage: this.model.usage,
+					Country: this.optionalModel.koseki, //户籍
 					CustMobile: this.model.phone,
-					PropertyFloor: this.model.marrige,
+					PropertyFloor: this.optionalModel.marrige, //婚否
 					DistrictName: this.model.district,
+					UnitName:this.model.unitName[0],  //万元 只取 '万'值
+					SquareMin: this.model.minSquare === null || this.model.minSquare === undefined || this.model
+						.minSquare === '' ? '0' : this.model.minSquare,
+					SquareMax: this.model.maxSquare === null || this.model.maxSquare === undefined || this.model
+						.maxSquare === '' ? '0' : this.model.maxSquare,
+					PriceMin: this.model.minBudget === null || this.model.minBudget === undefined || this.model
+						.minBudget === '' ? '0' : this.model.minBudget,
+					PriceMax: this.model.maxBudget === null || this.model.maxBudget === undefined || this.model
+						.maxBudget === '' ? '0' : this.model.maxBudget,
 					AreaID: this.model.areaId === null || this.model.areaId === undefined || this.model.areaId === '' ? '*' : this.model
 						.areaId,
-					CountF: this.optionalModel.maxSquare === null || this.optionalModel.maxSquare === undefined || this.optionalModel
-						.maxSquare === '' ? '*' : this.optionalModel.maxSquare,
+					CountF: this.model.maxSquare === null || this.model.maxSquare === undefined || this.model
+						.maxSquare === '' ? '*' : this.model.maxSquare,   //该参数 ？
 					PropertyType: this.optionalModel.type === null || this.optionalModel.type === undefined || this.optionalModel.type ===
 						'' ? '*' : this.optionalModel.type,
-					SquareMin: this.optionalModel.minSquare === null || this.optionalModel.minSquare === undefined || this.optionalModel
-						.minSquare === '' ? '0' : this.optionalModel.minSquare,
-					SquareMax: this.optionalModel.maxSquare === null || this.optionalModel.maxSquare === undefined || this.optionalModel
-						.maxSquare === '' ? '0' : this.optionalModel.maxSquare,
-					PriceMin: this.optionalModel.minBudget === null || this.optionalModel.minBudget === undefined || this.optionalModel
-						.minBudget === '' ? '0' : this.optionalModel.minBudget,
-					PriceMax: this.optionalModel.maxBudget === null || this.optionalModel.maxBudget === undefined || this.optionalModel
-						.maxBudget === '' ? '0' : this.optionalModel.maxBudget,
 					CustGrade: this.optionalModel.level === null || this.optionalModel.level === undefined || this.optionalModel.level ===
 						'' ? '*' : this.optionalModel.level,
 					CountFStart: this.optionalModel.minRoom === null || this.optionalModel.minRoom === undefined || this.optionalModel
@@ -475,6 +501,14 @@
 					this.areaList = res.Result;
 				});
 			},
+			
+			GetAreaIDByAreaName(areaName) {
+				this.$u.get(config.server + '/GetAreaIDByAreaName', {
+					AreaName: areaName
+				}).then(res => {
+					this.model.areaId = res.Result;
+				});
+			},
 
 			// 选择地区回调
 			regionConfirm(e) {
@@ -492,6 +526,7 @@
 
 	.agreement {
 		display: flex;
+		justify-content: left;
 		align-items: center;
 		margin: 40rpx 0;
 
