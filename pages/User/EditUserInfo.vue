@@ -29,7 +29,7 @@
 		<u-modal v-model="avatarModalShow" title="头像" :show-cancel-button="true" :mask-close-able="true" :async-close="true"
 		 @confirm="uploadAvatar">
 			<view class="slot-content" style="display: flex;justify-content: center;">
-				<u-upload ref="uUpload" :action="action" :header="header" :auto-upload="false" max-count="1" @on-uploaded="avatarUploaded"></u-upload>
+				<u-upload ref="uUpload" :action="action" :form-data="formData" :auto-upload="false" max-count="1" @on-uploaded="avatarUploaded"></u-upload>
 			</view>
 		</u-modal>
 
@@ -74,7 +74,7 @@
 				avatar: '/static/icon/logo.png',
 
 				action: '',
-				header: Object,
+				formData:Object,
 
 				value: '',
 				size: 200,
@@ -95,7 +95,10 @@
 		},
 
 		onReady() {
-			this.action = config.server + '/UpdateProfile?DBName=' + this.user.DBName;
+			this.action = config.server + '/UpdateProfile';
+			this.formData = {
+				 DBName: this.user.DBName
+			};
 		},
 
 		onBackPress(options) {
@@ -113,9 +116,48 @@
 		},
 
 		methods: {
+			
 			// 修改用户名
 			changeUserName() {
+				if (this.username){
+					uni.request({
+						url: config.server + '/UpdatePerInfo',
+						method:'GET',
+						data:{
+							DBName: this.user.DBName,
+							Tel: this.user.Tel,
+							EmpName: this.username,
+							Sex: '男',
+							PhotoUrl:this.user.PhotoUrl
+						},
+						success: (res) => {
+							// console.log(res);
+							let data = res.data;
+							if (data.Flag === 'success'){
+								this.$refs.uToast.show({
+									title: data.Msg,
+									type: 'success'
+								});
+								this.userNameModalShow = false;
+							} else {
+								this.$refs.uToast.show({
+									title: data.Msg,
+									type: 'error'
+								});
+							}
+						}
+					});
+					
+				} else {
+					this.$refs.uToast.show({
+						title: '用户名不能为空',
+						type: 'error'
+					});
+					
+					return;
+				}
 				
+				this.getUserInfo();
 			},
 
 			// 上传头像
@@ -132,6 +174,35 @@
 						title: res[0].response.Msg,
 						type: 'success'
 					});
+					
+					uni.request({
+						url: config.server + '/UpdatePerInfo',
+						method:'GET',
+						data:{
+							DBName: this.user.DBName,
+							Tel: this.user.Tel,
+							EmpName: this.username,
+							Sex: '男',
+							PhotoUrl:res[0].response.Result
+						},
+						success: (res) => {
+							// console.log(res);
+							let data = res.data;
+							if (data.Flag === 'success'){
+								this.$refs.uToast.show({
+									title: data.Msg,
+									type: 'success'
+								});
+								this.userNameModalShow = false;
+							} else {
+								this.$refs.uToast.show({
+									title: data.Msg,
+									type: 'error'
+								});
+							}
+						}
+					});
+					
 					this.getUserInfo();
 				}
 			},
@@ -148,28 +219,109 @@
 
 			// 获取用户信息
 			getUserInfo() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'user/getUserInfo', {}, {
-					Authorization: this.user.tokenHead + this.user.token
-				}).then(res2 => {
-					console.log(res2);
-					if (res2.code === 200) {
-						var user2 = {
-							telephone: this.user.telephone,
-							tokenHead: this.user.tokenHead,
-							token: this.user.token,
-							imgUrl: res2.data.imgUrl,
-							uid: res2.data.uid,
-							gender: res2.data.gender,
-							rolesName: res2.data.rolesName,
-							username: res2.data.username
-						};
-
-						this.global_data.global_data.user = user2;
-						this.global_data.global_data.logged = true;
-
-						this.user = user2;
+				uni.request({
+					url:config.server + '/GetEmpInfo',
+					data:{
+						DBName: this.user.DBName,
+						Tel: this.user.Tel
+					},
+					success: (res) => {
+						console.log(res);
+						let data = res.data;
+						
+						if (data.Flag === 'success'){
+							let _user = {
+								DBName: this.user.DBName,
+								EmpID: data.Result[0].EmpID,
+								EmpName: data.Result[0].EmpName,
+								PhotoUrl: data.Result[0].PhotoUrl,
+								AccountStyle: '',
+								FollowArea: '',
+								Tel: data.Result[0].Tel,
+								EmpNo: data.Result[0].EmpNo
+							};
+											
+							if (data.Result[0].AccountStyle === '1') {
+								_user.AccountStyle = '独立经纪人';
+							}
+							if (data.Result[0].AccountStyle === '2') {
+								_user.AccountStyle = '物业管理中心';
+							}
+											
+							try {
+								uni.setStorageSync('user', _user);
+								uni.setStorageSync('telephone', data.Result[0].Tel);
+								uni.setStorageSync('password', data.Result[0].password);
+							} catch (e) {
+								//TODO handle the exception
+								console.log('setStorageSync异常')
+							}
+											
+							this.$store.commit('login', _user);
+						}
 					}
-				});
+				})
+				
+/* 				this.$u.get(config.server + '/Login', {
+						TelOrEmpNo: this.user.Tel,
+						Password: this.user.password
+					}).then(res => {
+						if (res.Flag === 'success') {
+							let _user = {
+								DBName: res.Result.DBName,
+								EmpID: res.Result.EmpID,
+								EmpName: res.Result.EmpName,
+								PhotoUrl: res.Result.PhotoUrl,
+								AccountStyle: '',
+								FollowArea: '',
+								Tel: this.model.phone,
+								EmpNo: ''
+							};
+				
+							if (res.Result.AccountStyle === '1') {
+								_user.AccountStyle = '独立经纪人';
+							}
+							if (res.Result.AccountStyle === '2') {
+								_user.AccountStyle = '物业管理中心';
+							}
+				
+							if (this.model.remember) {
+								try {
+									uni.setStorageSync('user', _user);
+									uni.setStorageSync('telephone', this.model.phone);
+									uni.setStorageSync('password', this.model.password);
+									uni.setStorageSync('loggedWithoutPassword', true);
+								} catch (e) {
+									//TODO handle the exception
+									console.log('setStorageSync异常')
+								}
+							} else {
+				
+							};
+				
+							this.$store.commit('login', _user);
+				
+							const jyJPush = uni.requireNativePlugin('JY-JPush');
+							jyJPush.addJYJPushTags({
+								userTag: this.user.DBName
+							}, result => {
+
+							});
+				
+							uni.switchTab({
+								url: '../Home/Home'
+							});
+						} else {
+							this.$refs.uToast.show({
+								title: res.Msg,
+								position: 'bottom',
+								type: 'error',
+								icon: false,
+								url: '',
+							});
+						}
+					}); */
+				
 			},
 
 			// 保存二维码
