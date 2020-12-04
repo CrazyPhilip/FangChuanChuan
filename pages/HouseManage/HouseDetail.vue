@@ -8,7 +8,7 @@
 			</view>
 			<view class="right">
 				<u-icon class="rightIcon" pros="1" name="heart" size="50rpx" :color="collectColor" @click="CollectHouse"></u-icon>
-				<u-icon class="rightIcon" pros="2" name="zhuanfa" size="50rpx" color="#ffffff" @click="goBack"></u-icon>
+				<u-icon class="rightIcon" pros="2" name="zhuanfa" size="50rpx" color="#ffffff"></u-icon>
 			</view>
 		</view>
 
@@ -319,12 +319,12 @@
 		},
 
 		onLoad: function(params) {
-
-			this.getPhotos();
 			const eventChannel = this.getOpenerEventChannel();
 			eventChannel.on('acceptDataFromHouseList', (data) => {
 				this.house = data;
 			});
+			
+			this.getPhotos();
 		},
 
 		onReady() {

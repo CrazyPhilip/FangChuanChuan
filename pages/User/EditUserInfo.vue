@@ -95,8 +95,7 @@
 		},
 
 		onReady() {
-			this.action = config.outerServer + '/user/uploadImg?telephone=' + this.user.telephone;
-
+			this.action = config.server + '/UpdateProfile?DBName=' + this.user.DBName;
 		},
 
 		onBackPress(options) {
@@ -116,22 +115,7 @@
 		methods: {
 			// 修改用户名
 			changeUserName() {
-				this.$u.get(this.global_data.global_data.BaseUrl + 'user/updateName', {
-					name: this.username,
-					telephone: this.user.telephone
-				}, {
-					Authorization: this.user.tokenHead + this.user.token
-				}).then(res => {
-					console.log(res);
-					if (res.code === 200) {
-						this.userNameModalShow = false;
-						this.$refs.uToast.show({
-							title: res.message,
-							type: 'success'
-						});
-						this.getUserInfo();
-					}
-				});
+				
 			},
 
 			// 上传头像
@@ -142,10 +126,10 @@
 			// 上传头像完成回调函数
 			avatarUploaded(res) {
 				console.log(res);
-				if (res[0].response.code === 200) {
+				if (res[0].response.Flag === 'success') {
 					this.avatarModalShow = false;
 					this.$refs.uToast.show({
-						title: res[0].response.message,
+						title: res[0].response.Msg,
 						type: 'success'
 					});
 					this.getUserInfo();

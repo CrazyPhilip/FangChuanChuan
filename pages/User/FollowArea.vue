@@ -133,7 +133,7 @@
 				},
 				//dBList: '', // cd_xipu,cd_wenxingzhen 字串
 				//addressList: '', //成都>郫都>犀浦,成都>双流>文星镇 字串
-				dbArray: [this.user.DBName], //用于判重，初始化 为所在数据库
+				dbArray: [], //用于判重，初始化 为所在数据库
 				cityList: [],
 				districtList: [],
 				areaList: [],
@@ -154,6 +154,8 @@
 			this.getDistrictsByCity('cd');
 			this.getFollowArea();
 			this.showImg = true;
+			
+			this.dbArray = [this.user.DBName];
 		},
 
 		computed: {

@@ -478,7 +478,7 @@
 			.HouseTag {
 				max-lines: 1;
 				font-weight: lighter;
-				font-size: xx-small;
+				font-size: small;
 				background-color: #A0CFFF;
 				border-radius: 10rpx;
 				color: white;
