@@ -552,7 +552,6 @@
 					Page: '',
 					EmpID: this.user.EmpID,
 				}).then(res => {
-					console.log(res);
 					this.rentHouseList = res.Result;
 					uni.stopPullDownRefresh();
 				})

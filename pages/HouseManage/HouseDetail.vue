@@ -35,7 +35,8 @@
 							<u-row justify="center">
 								<u-col span="3">
 									<view>
-										<view class="value">{{house.Price}}万元</view>
+										<view v-if="house.Trade ==='出售'" class="value">{{house.Price}}万元</view>
+										<view v-if="house.Trade ==='出租'" class="value">{{house.RentPrice}}{{house.RentUnitName}}</view>
 										<view class="description">售价</view>
 									</view>
 								</u-col>

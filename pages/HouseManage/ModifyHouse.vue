@@ -328,6 +328,73 @@
 					DistrictName: '',
 					EstateID: '',
 				},
+				extranetModel: {
+					proAddr: '',
+					proAreId: 0, //同proAreaId
+					proArea: '',
+					proAreaId: 0,
+					proCity: '',
+					proCityId: 0,
+					proCollectCount: 0,
+					proCompanyName: '',
+					proCompleteYear: 0,
+					proCountF: 0,
+					proCountT: 0,
+					proCountW: 0,
+					proCountY: 0,
+					proCoverUrl: '',
+					proCreateDate: "2020-11-30T07:38:27.732Z", //获取当前时间
+					proDataId: '',
+					proDate: "2020-11-30T07:38:27.732Z",
+					proDbName: '',
+					proDecoration: '',
+					proDetail: '',
+					proDirection: '',
+					proDistrict: '',
+					proDistrictId: 0,
+					proEavgPrice: 0,
+					proElevator: '',
+					proEmployee1Id: '',
+					proEmployee1Img: '',
+					proEmployee1Name: '',
+					proEmployee1Phone: '',
+					proEstId: 0,
+					proEstateName: '',
+					proFirstPay: '',
+					proFloor: '',
+					proFloorAll: 0,
+					proHouseCheck: '',
+					proId: 0,
+					proInnernetId: '',
+					proKey: true,
+					proKeywords: '',
+					proLadderRatio: '',
+					proLat: 0,
+					proLng: 0,
+					proLooknum: 0,
+					proModDate: "2020-11-30T07:38:27.732Z",
+					proMonthPay: '',
+					proMortgate: '',
+					proNo: '',
+					proOwn: '',
+					proOwnership: '',
+					proPhotoUrl: '',
+					proPrice: 0,
+					proPriceType: '',
+					proRentPrice: 0,
+					proRentPriceType: '',
+					proRightYears: 0,
+					proScore: 0,
+					proSquare: 0,
+					proStatus: 0,
+					proTitle: '',
+					proTrade: '',
+					proTrustDate: "2020-11-30T07:38:27.732Z",
+					proType: '',
+					proUnitPrice: 0,
+					proUnitPriceType: '',
+					proUsage: ''
+				},
 				optionalModel: {
 					decoration: '',
 					furniture: '',
@@ -342,8 +409,8 @@
 					commissionPay: '',
 					payment: '',
 					ownership: '',
-					entrustDate: '2020/01/01',
-					releaseDate: '2020/01/01',
+					entrustDate: '2020-01-01',
+					releaseDate: '2020-01-01',
 					builtYear: '2020',
 					Remark: '',
 					PropertyIntroduce: '',
@@ -612,8 +679,12 @@
 				this.model.roomNo = data.RoomNo;
 				this.model.houseTitle = data.Title;
 				this.model.trade = data.Trade;
+				if (this.model.trade === '出售') {
+					this.model.price = data.Price + '';
+				} else {
+					this.model.price = data.RentPrice + '';
+				}
 				this.model.direction = data.PropertyDirection;
-				this.model.price = data.Price + '';
 				this.model.square = data.Square + '';
 				this.model.countF = data.CountF;
 				this.model.countT = data.CountT;
@@ -650,9 +721,11 @@
 				this.optionalModel.FlagWDY = data.FlagWDY === '1' ? true : false;
 				this.optionalModel.FlagKDK = data.FlagKDK === '1' ? true : false;
 				this.optionalModel.FlagXSFY = data.FlagXSFY === '1' ? true : false;
+				this.EGetEstateIdByName(this.model.estate);
 			});
 			this.model.show_agree = this.user.AccountStyle === '独立经纪人' ? true : false;
 			this.model.btnText = this.user.AccountStyle === '独立经纪人' ? '确认新增' : '确认分享';
+
 		},
 
 		onReady() {
@@ -762,6 +835,7 @@
 					this.model.CityName = this.estateObject.CityName;
 					this.model.DistrictName = this.estateObject.DistrictName;
 					this.model.EstateID = this.estateObject.EstateID;
+
 				}
 			},
 
@@ -800,8 +874,8 @@
 				this.optionalModel.commissionPay = '';
 				this.optionalModel.payment = '';
 				this.optionalModel.ownership = '';
-				this.optionalModel.entrustDate = '2020/01/01';
-				this.optionalModel.releaseDate = '2020/01/01';
+				this.optionalModel.entrustDate = '2020-01-01';
+				this.optionalModel.releaseDate = '2020-01-01';
 				this.optionalModel.builtYear = '2020';
 				this.optionalModel.Remark = '';
 				this.optionalModel.PropertyIntroduce = '';
@@ -859,7 +933,7 @@
 					PropertyRight: this.optionalModel.ownership,
 					Square: this.model.square,
 					PriceUnit: this.model.price / this.model.square,
-					Price: this.model.price,
+					Price: this.model.price, //只传一个参数，包括出售 和出租价格
 					PropertyDecoration: this.optionalModel.decoration === null || this.optionalModel.decoration === undefined ||
 						this.optionalModel.decoration === '' ? '*' : this.optionalModel.decoration,
 					OwnerName: this.model.ownerName,
@@ -898,12 +972,17 @@
 				}).then(res => {
 					console.log(res);
 					if (res.Flag === 'success' || res.Flag === 'SQLSuccess') {
-						this.$refs.uToast.show({
-							title: '修改房源成功',
-							type: 'success',
-							url: '/pages/Home/Home',
-							isTab: true,
-						});
+						if (this.model.shareToOutside === true) {
+							this.ToExtranet();
+						} else {
+							this.$refs.uToast.show({
+								title: '修改房源成功',
+								type: 'success',
+								url: '/pages/Home/Home',
+								isTab: true,
+							});
+						}
+
 					}
 				}).catch(res => {
 					console.log(res);
@@ -913,6 +992,190 @@
 					});
 				});
 			},
+
+			//外网接口，通过estatename获取对应的estateid
+			EGetEstateIdByName(estateName) {
+				console.log('进入estatenane');
+				uni.request({
+					url: config.outerServer + '/estate/getIdByName',
+					method: 'get',
+					data: {
+						"estateName": estateName,
+						"cityPinYin": "chengdu"
+					},
+					success: (res) => {
+						console.log(res);
+						this.extranetModel.proEstId = res.data.data.estate;
+						this.EGetEstateDetailById(this.extranetModel.proEstId);
+					}
+				});
+			},
+
+			//外网接口，通过estateid获取对应的estatedatail
+			EGetEstateDetailById(estateId) {
+				uni.request({
+					url: config.outerServer + '/estate/getEstateDetail',
+					method: 'get',
+					data: {
+						estateId: estateId,
+						cityPinYin: "chengdu"
+					},
+					success: (res) => {
+						console.log(res);
+						this.extranetModel.proEstId = res.data.data.estId;
+						this.extranetModel.proAreId = res.data.data.estAreId;
+						this.extranetModel.proInnernetId = res.data.data.estInnernetId;
+						this.extranetModel.proEstateName = res.data.data.estName;
+						this.extranetModel.proCity = res.data.data.estCity;
+						this.extranetModel.proCityId = res.data.data.estCityId;
+						this.extranetModel.proDistrict = res.data.data.estDistrict;
+						this.extranetModel.proDistrictId = res.data.data.estDistrictId;
+						this.extranetModel.proArea = res.data.data.estArea;
+						this.extranetModel.proAreaId = res.data.data.estAreaId;
+						this.extranetModel.proAddr = res.data.data.estAddr;
+						this.extranetModel.proLat = res.data.data.estLat;
+						this.extranetModel.proLng = res.data.data.estLng;
+						//this.extranetModel.proLng = res.data.data.estBuildingTime;
+						//this.extranetModel.proLng = res.data.data.estBuildingType;
+						//this.extranetModel.proLng = res.data.data.estPropertyFee;
+						this.extranetModel.proCompanyName = res.data.data.estPropertyCompany;
+						//this.extranetModel.proCompanyName = res.data.data.estDeveloper;
+						//this.extranetModel.proCompanyName = res.data.data.estTotalBuilding;
+						//this.extranetModel.proCompanyName = res.data.data.estTotalProperty;
+						/* this.extranetModel.proCompanyName = res.data.data.estTotalPrice;
+						this.extranetModel.proCompanyName = res.data.data.estTotalRentProperty;
+						this.extranetModel.proCompanyName = res.data.data.estTotalRentPrice;
+						this.extranetModel.proCompanyName = res.data.data.estCreateDate;
+						this.extranetModel.proCompanyName = res.data.data.estStatus;
+						this.extranetModel.proCompanyName = res.data.data.estPhotoUrl; */
+
+					}
+				});
+			},
+
+			//发布到外网
+			ToExtranet() {
+				console.log('进入函数');
+				console.log(this.model);
+				console.log(this.extranetModel);
+				console.log(this.optionalModel);
+				var currentTime = this.getCurrentTime();
+				if (this.model.trade === '出售') {
+					this.extranetModel.proPrice = this.model.price;
+					this.extranetModel.proRentPrice = 0;
+				} else {
+					this.extranetModel.proPrice = 0;
+					this.extranetModel.proRentPrice = this.model.price;
+				}
+				//但时间格式要正确，后台要求2020-12-05T16:03:28 就不能2020-01-01
+				uni.request({
+					url: config.outerServer +
+						'/property/updateProperty?AK=qwert09876nvnvn%40%23r&cityPinYin=chengdu&cityName=default',
+					method: 'POST',
+					data: {
+						proAddr: this.extranetModel.proAddr,
+						proAreId: this.extranetModel.proAreId, //同proAreaId
+						proArea: this.extranetModel.proArea,
+						proAreaId: this.extranetModel.proAreaId,
+						proCity: this.extranetModel.proCity,
+						proCityId: this.extranetModel.proCityId,
+						proCollectCount: 0, //?
+						proCompanyName: this.extranetModel.proCompanyName,
+						proCompleteYear: this.optionalModel.builtYear, //this.extranetModel.proCompleteYear,
+						proCountF: this.model.countF,
+						proCountT: this.model.countT,
+						proCountW: this.model.countW,
+						proCountY: this.model.countY,
+						proCoverUrl: "",
+						proCreateDate: currentTime, //获取当前时间
+						proDataId: "",
+						proDate: currentTime, //当前时间
+						proDbName: this.user.DBName,
+						proDecoration: this.optionalModel.decoration === null || this.optionalModel.decoration === undefined ||
+							this.optionalModel.decoration === '' ? '*' : this.optionalModel.decoration,
+						proDetail: "",
+						proDirection: this.model.direction === null || this.model.direction === undefined || this.model.direction ===
+							'' ? '*' : this.model.direction,
+						proDistrict: this.extranetModel.proDistrict,
+						proDistrictId: this.extranetModel.proDistrictId,
+						proEavgPrice: 0,
+						proElevator: "",
+						proEmployee1Id: this.user.EmpID,
+						proEmployee1Img: this.user.PhotoUrl,
+						proEmployee1Name: this.user.EmpName,
+						proEmployee1Phone: this.user.Tel, //经纪人电话
+						proEstId: this.extranetModel.proEstId,
+						proEstateName: this.extranetModel.proEstateName,
+						proFirstPay: "", // ?
+						proFloor: this.model.floor,
+						proFloorAll: this.model.floorAll,
+						proHouseCheck: "", // ?
+						proId: 0,
+						proInnernetId: "20111617222323FB23C583B1AEA13620", //内网proid？ 内网接口返回
+						proKey: true, // ?
+						proKeywords: "", // ?
+						proLadderRatio: "", // ?
+						proLat: this.extranetModel.proLat,
+						proLng: this.extranetModel.proLng,
+						proLooknum: 0, // ?
+						proModDate: currentTime,  //当前时间
+						proMonthPay: "", // ?
+						proMortgate: "", // ?
+						proNo: "", // ? XT7
+						proOwn: this.optionalModel.ownership,
+						proOwnership: this.optionalModel.right,
+						proPhotoUrl: "",
+						proPrice: this.extranetModel.proPrice, //需转化成 数字
+						proPriceType: "万元/平米",
+						proRentPrice: this.extranetModel.proRentPrice,
+						proRentPriceType: "元/月",
+						proRightYears: 70, //都是70
+						proScore: 0,
+						proSquare: this.model.square, //需转化成 数字
+						proStatus: 0,
+						proTitle: this.model.houseTitle,
+						proTrade: this.model.trade,
+						proTrustDate: this.optionalModel.entrustDate, //传日期 格式有问题 ？需要2020-01-01格式
+						proType: this.model.type,
+						proUnitPrice: this.extranetModel.proPrice / this.extranetModel.proSquare,
+						proUnitPriceType: "万元/平米",
+						proUsage: this.optionalModel.usage
+					},
+					success: (res) => {
+						console.log(res.statusCode);
+						if (res.statusCode === 200) {
+							if(res.data.code === 200){
+								this.$refs.uToast.show({
+									title: '修改房源成功',
+									type: 'success',
+									url: '/pages/Home/Home',
+									isTab: true,
+								});
+							}else{
+								return this.$u.toast(res.data.message);  //显示相关错误
+							}
+							
+						} else {  //发生 400错误，参数不正确
+							this.$refs.uToast.show({
+								title: '修改房源成功,同步至外网失败！',
+								type: 'warning',
+								url: '/pages/Home/Home',
+								isTab: true,
+							});
+						}
+					},
+					fail: (res) => {
+						console.log(res);
+						this.$refs.uToast.show({
+							title: '修改房源成功,同步至外网失败！',
+							type: 'warning',
+							url: '/pages/Home/Home',
+							isTab: true,
+						});
+					}
+				});
+			},
+
 
 
 			NewHouseData() {
@@ -1011,6 +1274,34 @@
 			checkboxChange1(e) {
 				this.model.shareToBroker = e.value;
 			},
+			/**
+			 * 获取当前时间 格式：yyyy-MM-dd HH:MM:SS
+			 */
+			getCurrentTime() {
+				var date = new Date(); //当前时间
+				var month = this.zeroFill(date.getMonth() + 1); //月
+				var day = this.zeroFill(date.getDate()); //日
+				var hour = this.zeroFill(date.getHours()); //时
+				var minute = this.zeroFill(date.getMinutes()); //分
+				var second = this.zeroFill(date.getSeconds()); //秒
+
+				//当前时间
+				var curTime = date.getFullYear() + "-" + month + "-" + day +
+					"T" + hour + ":" + minute + ":" + second;
+
+				return curTime;
+			},
+
+			/**
+			 * 补零
+			 */
+			zeroFill(i) {
+				if (i >= 0 && i <= 9) {
+					return "0" + i;
+				} else {
+					return i;
+				}
+			}
 		}
 	};
 </script>
