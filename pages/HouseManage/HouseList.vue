@@ -48,10 +48,10 @@
 									</view>
 									<view>{{item.CountF}}室{{item.CountT}}厅/{{item.Square}}㎡/{{item.PropertyDirection}}/{{item.EstateName}}</view>
 									<view>
-										<text class="HouseTag">满五唯一</text>
-										<text class="HouseTag">无抵押</text>
-										<text class="HouseTag">可带看</text>
-										<text class="HouseTag">新上房源</text>
+										<text v-if="item.FlagMWWY==='1'" class="HouseTag">满五唯一</text>
+										<text v-if="item.FlagWDY==='1'" class="HouseTag">无抵押</text>
+										<text v-if="item.FlagKDK==='1'" class="HouseTag">可带看</text>
+										<text v-if="item.FlagXSFY==='1'" class="HouseTag">新上房源</text>
 									</view>
 									<view>
 										<u-row>
@@ -103,10 +103,10 @@
 									</view>
 									<view>{{item.CountF}}室{{item.CountT}}厅/{{item.Square}}㎡/{{item.PropertyDirection}}/{{item.EstateName}}</view>
 									<view>
-										<text class="HouseTag">满五唯一</text>
-										<text class="HouseTag">无抵押</text>
-										<text class="HouseTag">可带看</text>
-										<text class="HouseTag">新上房源</text>
+										<text v-if="item.FlagMWWY==='1'" class="HouseTag">满五唯一</text>
+										<text v-if="item.FlagWDY==='1'" class="HouseTag">无抵押</text>
+										<text v-if="item.FlagKDK==='1'" class="HouseTag">可带看</text>
+										<text v-if="item.FlagXSFY==='1'" class="HouseTag">新上房源</text>
 									</view>
 									<view class="HousePrice">{{item.RentPrice}}{{item.RentUnitName}}</view>
 								</view>
@@ -528,6 +528,14 @@
 					EmpID: this.user.EmpID,
 				}).then(res => {
 					this.saleHouseList = res.Result;
+					//console.log(this.saleHouseList);
+					//手动处理后台返回的带有大段空白符的字串
+					for (var i = 0; i < this.saleHouseList.length; i++) {
+						this.saleHouseList[i].FlagMWWY = this.saleHouseList[i].FlagMWWY === null? 0:this.saleHouseList[i].FlagMWWY.trim();
+						this.saleHouseList[i].FlagKDK = this.saleHouseList[i].FlagKDK === null? 0:this.saleHouseList[i].FlagKDK.trim(); 
+						this.saleHouseList[i].FlagWDY = this.saleHouseList[i].FlagWDY === null? 0:this.saleHouseList[i].FlagWDY.trim(); 
+						this.saleHouseList[i].FlagXSFY = this.saleHouseList[i].FlagXSFY === null? 0:this.saleHouseList[i].FlagXSFY.trim(); 
+					}
 					uni.stopPullDownRefresh();
 				})
 			},
@@ -553,6 +561,13 @@
 					EmpID: this.user.EmpID,
 				}).then(res => {
 					this.rentHouseList = res.Result;
+					//手动处理后台返回的带有大段空白符的字串
+					for (var i = 0; i < this.rentHouseList.length; i++) {
+						this.rentHouseList[i].FlagMWWY = this.rentHouseList[i].FlagMWWY === null? 0:this.rentHouseList[i].FlagMWWY.trim();
+						this.rentHouseList[i].FlagKDK = this.rentHouseList[i].FlagKDK === null? 0:this.rentHouseList[i].FlagKDK.trim(); 
+						this.rentHouseList[i].FlagWDY = this.rentHouseList[i].FlagWDY === null? 0:this.rentHouseList[i].FlagWDY.trim(); 
+						this.rentHouseList[i].FlagXSFY = this.rentHouseList[i].FlagXSFY === null? 0:this.rentHouseList[i].FlagXSFY.trim(); 
+					}
 					uni.stopPullDownRefresh();
 				})
 			},

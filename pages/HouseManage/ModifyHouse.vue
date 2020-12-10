@@ -417,8 +417,8 @@
 					OwnerIntroduce: '',
 					ServiceIntroduce: '',
 
-					FlagMWWY: false,
-					FlagWDY: false,
+					FlagMWWY: true,
+					FlagWDY: true,
 					FlagKDK: false,
 					FlagXSFY: false,
 				},
@@ -692,7 +692,7 @@
 				this.model.countY = data.CountY;
 				this.model.ownerName = data.ownername;
 				this.model.ownerMobile = data.ownermobile;
-				this.model.shareToOutside = data.FlagWeb === '1' ? true : false;
+				this.model.shareToOutside = data.FlagWeb;
 				this.model.shareToBroker = data.FlagShare === '1' ? true : false;
 				this.model.CityName = data.CityName;
 				this.model.DistrictName = data.DistrictName;
@@ -716,11 +716,11 @@
 				this.optionalModel.PropertyIntroduce = data.PropertyIntroduce;
 				this.optionalModel.OwnerIntroduce = data.OwnerIntroduce;
 				this.optionalModel.ServiceIntroduce = data.ServiceIntroduce;
-
-				this.optionalModel.FlagMWWY = data.FlagMWWY === '1' ? true : false;
-				this.optionalModel.FlagWDY = data.FlagWDY === '1' ? true : false;
-				this.optionalModel.FlagKDK = data.FlagKDK === '1' ? true : false;
-				this.optionalModel.FlagXSFY = data.FlagXSFY === '1' ? true : false;
+				console.log('data.FlagMWWY:'+(data.FlagMWWY)+'gg');
+				this.optionalModel.FlagMWWY = data.FlagMWWY.trim() === '1' ? true : false;
+				this.optionalModel.FlagWDY = data.FlagWDY.trim() === '1' ? true : false;
+				this.optionalModel.FlagKDK = data.FlagKDK.trim() === '1' ? true : false;
+				this.optionalModel.FlagXSFY = data.FlagXSFY.trim() === '1' ? true : false;
 				this.EGetEstateIdByName(this.model.estate);
 			});
 			this.model.show_agree = this.user.AccountStyle === '独立经纪人' ? true : false;
@@ -1111,7 +1111,7 @@
 						proFloorAll: this.model.floorAll,
 						proHouseCheck: "", // ?
 						proId: 0,
-						proInnernetId: "20111617222323FB23C583B1AEA13620", //内网proid？ 内网接口返回
+						proInnernetId: this.propertyID,//"20111617222323FB23C583B1AEA13620", //内网proid？ 内网接口返回
 						proKey: true, // ?
 						proKeywords: "", // ?
 						proLadderRatio: "", // ?
@@ -1126,7 +1126,7 @@
 						proOwnership: this.optionalModel.right,
 						proPhotoUrl: "",
 						proPrice: this.extranetModel.proPrice, //需转化成 数字
-						proPriceType: "万元/平米",
+						proPriceType: "万元",
 						proRentPrice: this.extranetModel.proRentPrice,
 						proRentPriceType: "元/月",
 						proRightYears: 70, //都是70
@@ -1142,7 +1142,7 @@
 						proUsage: this.optionalModel.usage
 					},
 					success: (res) => {
-						console.log(res.statusCode);
+						console.log(res);
 						if (res.statusCode === 200) {
 							if(res.data.code === 200){
 								this.$refs.uToast.show({

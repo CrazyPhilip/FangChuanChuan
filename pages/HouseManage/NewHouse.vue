@@ -1058,7 +1058,7 @@
 						proFloorAll: this.model.floorAll,
 						proHouseCheck: "", // ?
 						proId: 0,
-						proInnernetId: "20111617222323FB23C583B1AEA13620", //内网proid？ 内网接口返回
+						proInnernetId: this.extranetModel.proInnernetId,//"20111617222323FB23C583B1AEA13620", //内网proid？ 内网接口返回
 						proKey: true, // ?
 						proKeywords: "", // ?
 						proLadderRatio: "", // ?
@@ -1073,7 +1073,7 @@
 						proOwnership: this.optionalModel.right,
 						proPhotoUrl: "",
 						proPrice: this.extranetModel.proPrice, //需转化成 数字
-						proPriceType: "万元/平米",
+						proPriceType: "万元",
 						proRentPrice: this.extranetModel.proRentPrice,
 						proRentPriceType: "元/月",
 						proRightYears: 70, //都是70

@@ -7,8 +7,8 @@
 				 :is-scroll="false"></u-tabs-swiper>
 			</view>
 			<view class="right">
-				<u-icon class="rightIcon" pros="1" name="heart" size="50rpx" :color="collectColor" @click="CollectHouse"></u-icon>
-				<u-icon class="rightIcon" pros="2" name="zhuanfa" size="50rpx" color="#ffffff"></u-icon>
+				<u-icon class="rightIcon" pros="1" name="heart-fill" size="50rpx" :color="collectColor" @click="CollectHouse"></u-icon>
+				<!-- <u-icon class="rightIcon" pros="2" name="zhuanfa" size="50rpx" color="#ffffff"></u-icon> -->
 			</view>
 		</view>
 
@@ -19,10 +19,10 @@
 					 img-mode="aspectFill"></u-swiper>
 
 					<view class="section">
-						<u-tag v-if="house.FlagMWWY === 1" text="满五唯一" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
-						<u-tag v-if="house.FlagWDY === 1" text="无抵押" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
-						<u-tag v-if="house.FlagKDK === 1" text="可贷款" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
-						<u-tag v-if="house.FlagXSFY === 1" text="新上房源" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
+						<u-tag v-if="house.FlagMWWY === '1'" text="满五唯一" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
+						<u-tag v-if="house.FlagWDY === '1'" text="无抵押" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
+						<u-tag v-if="house.FlagKDK === '1'" text="可贷款" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
+						<u-tag v-if="house.FlagXSFY === '1'" text="新上房源" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
 						<!-- <u-tag text="随时看房" mode="dark" shape="circle"></u-tag> -->
 						<view class="title">{{house.Title}}</view>
 
@@ -324,12 +324,10 @@
 			eventChannel.on('acceptDataFromHouseList', (data) => {
 				this.house = data;
 			});
-			
-			this.getPhotos();
 		},
 
 		onReady() {
-
+			this.getPhotos();
 			this.CheckIfCollected();
 			//this.getCommentList();
 			//this.getRecommendedList();
@@ -376,7 +374,7 @@
 				}).then(res => {
 					if (res.Flag === 'Collected') {
 						this.ifCollected = true;
-						this.collectColor = '#ffff01';
+						this.collectColor = '#ffff00';
 					} else {
 						this.ifCollected = false;
 						this.collectColor = '#ffffff';
@@ -419,7 +417,7 @@
 								type: 'success'
 							});
 							this.ifCollected = true;
-							this.collectColor = '#ffff01';
+							this.collectColor = '#ffff00';
 						} else {
 							this.$refs.uToast.show({
 								title: '收藏失败',

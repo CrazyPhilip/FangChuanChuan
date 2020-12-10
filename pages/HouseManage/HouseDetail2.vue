@@ -10,10 +10,10 @@
 		<view class="topNav">
 			<u-icon class="leftIcon" pros="0" name="arrow-leftward" size="50rpx" color="#ffffff" @click="goBack"></u-icon>
 			<!-- <view class="title">{{house.proTitle}}</view> -->
-			<view class="right">
+			<!-- <view class="right">
 				<u-icon class="rightIcon" pros="1" name="heart" size="50rpx" color="#ffffff" @click="goBack"></u-icon>
 				<u-icon class="rightIcon" pros="2" name="zhuanfa" size="50rpx" color="#ffffff" @click="goBack"></u-icon>
-			</view>
+			</view> -->
 		</view>
 
 		<u-swiper :list="photoList" mode="dot" indicator-pos="bottomCenter" :title="false" height="600" border-radius="0" img-mode="aspectFill"></u-swiper>
@@ -231,12 +231,12 @@
 			
 			callActionSheetClick(index) {
 				if (index === 0) {
-					if(this.house.proEmployee1Phone !== null || this.house.proEmployee1Phone !== undefined || this.house.proEmployee1Phone !== ''){
+					if(this.house.proEmployee1Phone === null || this.house.proEmployee1Phone === undefined || this.house.proEmployee1Phone === ''){
 						this.$refs.uToast.show({ title: '号码为空', type: 'error'});
 					}
 					else{
 						uni.makePhoneCall({
-							phoneNumber: this.house.CustMobile,
+							phoneNumber: this.house.proEmployee1Phone,
 						});
 					}
 				}

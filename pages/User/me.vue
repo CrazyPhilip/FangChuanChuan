@@ -115,6 +115,12 @@
 					</u-grid>
 				</view>
 		 -->
+			<view class="section" @click="ToMyCollect">
+				<view class="sectionBar">
+					<view class="sectionTitle">我的收藏</view>
+					<u-icon name="arrow-right"></u-icon>
+				</view>
+			</view>
 			<view class="section" @click="ToSetting">
 				<view class="sectionBar">
 					<view class="sectionTitle">更多设置</view>
@@ -180,6 +186,12 @@
 			ToSetting() {
 				uni.navigateTo({
 					url: '../Setting/Setting'
+				});
+			},
+			
+			ToMyCollect() {
+				uni.navigateTo({
+					url: './myCollection'
 				});
 			},
 

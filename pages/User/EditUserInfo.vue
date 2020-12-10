@@ -249,9 +249,9 @@
 							}
 											
 							try {
-								uni.setStorageSync('user', _user);
-								uni.setStorageSync('telephone', data.Result[0].Tel);
-								uni.setStorageSync('password', data.Result[0].password);
+								uni.setStorageSync('i_user', _user);
+								uni.setStorageSync('i_telephone', data.Result[0].Tel);
+								uni.setStorageSync('i_password', data.Result[0].password);
 							} catch (e) {
 								//TODO handle the exception
 								console.log('setStorageSync异常')

@@ -100,32 +100,47 @@
 				fangxingList: [{
 						label: '全部房型',
 						value: 0,
+						maxValue: 99999999,
+						minValue: 0
 					},
 					{
 						label: '1室',
 						value: 1,
+						maxValue: 1,
+						minValue: 1
 					},
 					{
 						label: '2室',
 						value: 2,
+						maxValue: 2,
+						minValue: 2
 					},
 					{
 						label: '3室',
 						value: 3,
+						maxValue: 3,
+						minValue: 3
 					},
 					{
 						label: '4室',
 						value: 4,
+						maxValue: 4,
+						minValue: 4
 					},
 					{
 						label: '5室',
 						value: 5,
+						maxValue: 5,
+						minValue: 5
 					},
 					{
-						label: '大于5室',
+						label: '6室及以上',
 						value: 6,
+						maxValue: 99999999,
+						minValue: 6
 					},
 				],
+				
 
 				priceList: [{
 						label: '全部价格',
@@ -264,6 +279,7 @@
 
 		methods: {
 			toSearch(){
+				this.houseList.splice(0, this.houseList.length);
 				this.GetHouseList();
 			},
 			
@@ -299,6 +315,8 @@
 			// 筛选房型
 			change2(e) {
 				this.fangxingSelected = e;
+				this.houseList.splice(0, this.houseList.length);
+				this.GetHouseList();
 			},
 			
 			// 筛选价格
@@ -325,13 +343,21 @@
 				
 				// 关键词
 				if (this.searchContent){
-					searchParam.keywords = this.searchContent;
+					searchParam.keyWords = this.searchContent;
 				}
 				
 				// 区域id
 				if (this.areaSelected > 0){
 					searchParam.areaId = this.areaList[this.areaSelected].areId;
 					searchParam.areaLevel = this.areaList[this.areaSelected].areLevel;
+				}
+				
+				// 房型
+				if (this.fangxingSelected > 0){
+					searchParam.countFRanges = [{
+						maxValue: this.fangxingList[this.fangxingSelected].maxValue,
+						minValue: this.fangxingList[this.fangxingSelected].minValue
+					}]
 				}
 				
 				// 价格
@@ -451,6 +477,8 @@
 						pAreaCode: 1
 					},
 					success: (res) => {
+						console.log(res.data.code);
+						/* console.log(res);
 						let data = res.data;
 						if (res.code == 200) {
 							if (!data) return;
@@ -459,6 +487,18 @@
 								this.areaList.push({
 									value: i + 1,
 									label: res.data[i].areName
+								});
+							}
+							console.log(this.areaList);
+						} */
+						let data = res.data;
+						if (data.code == 200) {
+							if (!data.data) return;
+							for (var i = 0; i < data.data.length; i++) {
+								this.areaList.push({
+									areId:data.data[i].areId,
+									areLevel:data.data[i].areLevel,
+									areName: data.data[i].areName
 								});
 							}
 						}

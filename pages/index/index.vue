@@ -105,10 +105,11 @@
 		methods: {
 			getCache() {
 				try {
-					let status = uni.getStorageSync('loggedWithoutPassword');
+					let status = uni.getStorageSync('i_loggedWithoutPassword');
 					if (status == true) {
-						let telephone = uni.getStorageSync('telephone');
-						let password = uni.getStorageSync('password');
+						let telephone = uni.getStorageSync('i_telephone');
+						let password = uni.getStorageSync('i_password');
+						console.log('pas:'+password);
 						if (telephone) {
 							this.model.phone = telephone;
 							if (password) {
@@ -190,10 +191,10 @@
 
 						if (this.model.remember) {
 							try {
-								uni.setStorageSync('user', _user);
-								uni.setStorageSync('telephone', this.model.phone);
-								uni.setStorageSync('password', this.model.password);
-								uni.setStorageSync('loggedWithoutPassword', true);
+								uni.setStorageSync('i_user', _user);
+								uni.setStorageSync('i_telephone', this.model.phone);
+								uni.setStorageSync('i_password', this.model.password);
+								uni.setStorageSync('i_loggedWithoutPassword', true);
 							} catch (e) {
 								//TODO handle the exception
 								console.log('setStorageSync异常')

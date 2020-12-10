@@ -5,10 +5,10 @@
 		<view>
 			<u-dropdown ref="uDropdown" activeColor="#2979ff">
 				<!-- <u-dropdown-item @change="change1" v-model="value1" :options="areaList"></u-dropdown-item> -->
-				<u-dropdown-item :title="areaList[value1].label">
+				<u-dropdown-item :title="areaList[value1].areName">
 					<view class="slot-content" style="background-color: #FFFFFF;">
 						<scroll-view scroll-y="true" style="height: 500rpx;">
-							<view class="u-text-center u-content-color u-m-t-30 u-m-b-30" v-for="(item, index) in areaList" @click="change1(item.value)">{{item.label}}</view>
+							<view class="u-text-center u-content-color u-m-t-30 u-m-b-30" v-for="(item, index) in areaList" @click="change1(index)">{{item.areName}}</view>
 						</scroll-view>
 					</view>
 				</u-dropdown-item>
@@ -79,7 +79,7 @@
 	export default {
 		data() {
 			return {
-				searchParam: {
+				/* searchParam: {
 					areaId: 0,
 					areaLevel: 0,
 					completeYearRanges: [{
@@ -111,7 +111,7 @@
 					sortByLatest: -1,
 					sortBySoldPrice: -1,
 					sortByUnitPrice: -1
-				},
+				}, */
 				scrollTop: 0,
 				current: 0,
 				show: false,
@@ -121,109 +121,156 @@
 				value4: 0,
 				defaultValue: [0, 0, 0],
 				areaList: [{
-					value: 0,
-					label: '全部区域'
+					areId:-1,
+					areaLevel:1,
+					areName:"全部区域"
 				}],
 
 				fangxingList: [{
 						label: '全部房型',
 						value: 0,
+						maxValue: 99999999,
+						minValue: 0
 					},
 					{
 						label: '1室',
 						value: 1,
+						maxValue: 1,
+						minValue: 1
 					},
 					{
 						label: '2室',
 						value: 2,
+						maxValue: 2,
+						minValue: 2
 					},
 					{
 						label: '3室',
 						value: 3,
+						maxValue: 3,
+						minValue: 3
 					},
 					{
 						label: '4室',
 						value: 4,
+						maxValue: 4,
+						minValue: 4
 					},
 					{
 						label: '5室',
 						value: 5,
+						maxValue: 5,
+						minValue: 5
 					},
 					{
-						label: '5室及以上',
+						label: '6室及以上',
 						value: 6,
+						maxValue: 99999999,
+						minValue: 6
 					},
 				],
 
 				priceList: [{
 						label: '全部价格',
 						value: 0,
+						maxValue: 99999999,
+						minValue: 0
 					},
 					{
 						label: '小于40万',
 						value: 1,
+						maxValue: 40,
+						minValue: 0
 					},
 					{
 						label: '50-80万',
 						value: 2,
+						maxValue: 80,
+						minValue: 50
 					},
 					{
 						label: '80-100万',
 						value: 3,
+						maxValue: 100,
+						minValue: 80
 					},
 					{
 						label: '100-120万',
 						value: 4,
+						maxValue: 120,
+						minValue: 100
 					},
 					{
 						label: '120-200万',
 						value: 5,
+						maxValue: 200,
+						minValue: 120
 					},
 					{
 						label: '200-500万',
 						value: 6,
+						maxValue: 500,
+						minValue: 200
 					},
 					{
 						label: '大于500万',
 						value: 7,
+						maxValue: 99999999,
+						minValue: 500
 					},
 				],
 
 				squareList: [{
 						label: '全部面积',
 						value: 0,
+						maxValue: 99999999,
+						minValue: 0
 					},
 					{
 						label: '小于50㎡',
 						value: 1,
+						maxValue: 50,
+						minValue: 0
 					},
 					{
 						label: '50-70㎡',
 						value: 2,
+						maxValue: 70,
+						minValue: 50
 					},
 					{
 						label: '70-90㎡',
 						value: 3,
+						maxValue: 90,
+						minValue: 70
 					},
 					{
 						label: '90-120㎡',
 						value: 4,
+						maxValue: 120,
+						minValue: 90
 					},
 					{
 						label: '120-140㎡',
 						value: 5,
+						maxValue: 140,
+						minValue: 120
 					},
 					{
 						label: '140-200㎡',
 						value: 6,
+						maxValue: 200,
+						minValue: 140
 					},
 					{
 						label: '大于200㎡',
 						value: 7,
+						maxValue: 99999999,
+						minValue: 200
 					}
 				],
 
-				list: [{
+				/* list: [{
 						value: 1,
 						label: '中国',
 						children: [{
@@ -266,7 +313,7 @@
 							}]
 						}]
 					}
-				],
+				], */
 
 				houseList: [],
 
@@ -323,23 +370,34 @@
 			cancel(e) {
 				console.log(e);
 			},
-
+			//筛选区域
 			change1(e) {
 				this.value1 = e;
 				this.$refs.uDropdown.close();
+				this.houseList.splice(0, this.houseList.length);
+				this.GetHouseList();
 			},
+			// 筛选房型
 			change2(e) {
 				this.value2 = e;
+				this.houseList.splice(0, this.houseList.length);
+				this.GetHouseList();
 			},
+			// 筛选价格
 			change3(e) {
 				this.value3 = e;
+				this.houseList.splice(0, this.houseList.length);
+				this.GetHouseList();
 			},
+			// 筛选面积
 			change4(e) {
 				this.value4 = e;
+				this.houseList.splice(0, this.houseList.length);
+				this.GetHouseList();
 			},
 
 			GetHouseList() {
-				uni.request({
+				/* uni.request({
 					url: 'https://gl.junjunhouse.com/property/search?cityPinYin=chengdu&pageNum=' + this.pageNum +
 						'&pageSize=' + this.pageSize,
 					method: 'post',
@@ -356,7 +414,72 @@
 						} else {
 							this.status = 'loadmore';
 						}
+					} */
+					let searchParam = {
+						saleRanges:[{
+							maxValue: 99999999,
+							minValue: 0
+						}]
+					};
+					
+					// 关键词
+					/* if (this.searchContent){
+						searchParam.keyWords = this.searchContent;
+					} */
+					
+					// 区域id
+					if (this.value1 > 0){
+						searchParam.areaId = this.areaList[this.value1].areId;
+						searchParam.areaLevel = this.areaList[this.value1].areLevel;
 					}
+					
+					// 房型
+					if (this.value2 > 0){
+						searchParam.countFRanges = [{
+							maxValue: this.fangxingList[this.value2].maxValue,
+							minValue: this.fangxingList[this.value2].minValue
+						}]
+					}
+					
+					// 价格    
+					if (this.value3 > 0){
+						searchParam.saleRanges = [{
+							maxValue: this.priceList[this.value3].maxValue,
+							minValue: this.priceList[this.value3].minValue
+						}]
+					}
+					
+					// 面积
+					if (this.value4 > 0){
+						searchParam.houseAreaRanges = [{
+							maxValue: this.squareList[this.value4].maxValue,
+							minValue: this.squareList[this.value4].minValue
+						}]
+					}
+					
+					uni.request({
+						url: config.outerServer + '/property/search?cityPinYin=chengdu&pageNum=' + this.pageNum +
+							'&pageSize=' + this.pageSize,
+						method: 'post',
+						data: searchParam,
+						success: (res) => {
+							// console.log(res);
+							if (res.data.data){
+								let data = res.data.data;
+								
+								for (var i = 0; i < data.list.length; i++) {
+									this.houseList.push(data.list[i]);
+								}
+								
+								if (data.list.length === 0) {
+									this.status = 'nomore';
+								} else {
+									this.status = 'loadmore';
+								}
+							} else {
+								this.status = 'nomore';
+							}
+						}
 				});
 				/* 
 				this.$u.post(this.global_data.global_data.BaseUrl + 'property/search?cityPinYin=chengdu&pageNum=' + this.pageNum +
@@ -427,24 +550,43 @@
 			},
 
 			getAreaList() {
-				this.$u.get(config.outerServer + "/area/getAreaByPCode", {
-					cityPinYin: this.city.cityPinYin,
-					pAreaCode: 1
-				}).then(res => {
-					let data = res.data;
-					if (res.code == 200) {
-						if (!data) return;
-						for (var i = 0; i < res.data.length; i++) {
-							this.areaList.push({
-								value: i + 1,
-								label: res.data[i].areName
-							});
+					uni.request({
+						url: config.outerServer + '/area/getAreaByPCode',
+						data: {
+							cityPinYin: this.city.cityPinYin,
+							pAreaCode: 1
+						},
+						success: (res) => {
+							console.log(res.data.code);
+							/* console.log(res);
+							let data = res.data;
+							if (res.code == 200) {
+								if (!data) return;
+								console.log(data);
+								for (var i = 0; i < res.data.length; i++) {
+									this.areaList.push({
+										value: i + 1,
+										label: res.data[i].areName
+									});
+								}
+								console.log(this.areaList);
+							} */
+							let data = res.data;
+							if (data.code == 200) {
+								if (!data.data) return;
+								for (var i = 0; i < data.data.length; i++) {
+									this.areaList.push({
+										areId:data.data[i].areId,
+										areLevel:data.data[i].areLevel,
+										areName: data.data[i].areName
+									});
+								}
+								console.log(this.areaList);
+							}
 						}
-					}
-				})
-			}
-		},
-
+					})
+				}
+			},
 		onPageScroll(e) {
 			this.scrollTop = e.scrollTop;
 		},
