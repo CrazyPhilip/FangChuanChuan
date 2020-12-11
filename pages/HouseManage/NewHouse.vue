@@ -6,7 +6,8 @@
 			<u-form :model="model" :rules="rules" ref="uForm0" :errorType="['message']">
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
 				 label="上传图片" prop="photo" label-width="200">
-					<u-upload width="160" height="160" :file-list="model.fileList"></u-upload>
+					<u-upload width="160" height="160" ref="uUpload" :action="action" :form-data="formData" :auto-upload="false"
+					 max-count="8" @on-uploaded="avatarUploaded" :file-list="model.fileList"></u-upload>
 				</u-form-item>
 
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
@@ -301,8 +302,8 @@
 	export default {
 		data() {
 			return {
-				flagPublish:false,   //房源发布状态标志
-				flagPushOut:false,   //房源发布到外网标志
+				action: '',
+				formData: Object,
 				model: {
 					fileList: [],
 					estate: '',
@@ -684,6 +685,11 @@
 		onReady() {
 			this.$refs.uForm0.setRules(this.rules);
 			this.$refs.uForm1.setRules(this.rules);
+			this.action = config.server + '/UpLoadPicture';
+			this.formData = {
+				/* DBName: this.user.DBName,
+				PropertyID: this.extranetModel.proInnernetId */
+			};
 		},
 
 		computed: {
@@ -848,11 +854,20 @@
 				});
 			},
 
+			avatarUploaded(res) {
+				console.log(res);
+				if (res[0].response.Flag === 'success') {
+					this.$refs.uToast.show({
+						title: res[0].response.Msg,
+						type: 'success'
+					});
+				}
+			},
 			NewHouse() {
 				if (this.user.AccountStyle === '物业管理中心') {
 					this.model.shareToBroker = true;
 				}
-				
+
 				this.$u.post(config.server + '/NewHouseData', {
 					DBName: this.user.DBName,
 					CityName: this.estateObject.CityName,
@@ -916,12 +931,17 @@
 					'content-type': 'application/x-www-form-urlencoded',
 				}).then(res => {
 					if (res.Flag === 'success' || res.Flag === 'SQLSuccess') {
-						this.extranetModel.proInnernetId = res.Result;   //接收返回的房源内网 id参数
+						this.extranetModel.proInnernetId = res.Result; //接收返回的房源内网 id参数
+						this.formData = {
+							DBName: this.user.DBName,
+							PropertyID: this.extranetModel.proInnernetId
+						};
+						this.$refs.uUpload.upload();
 						if (this.model.shareToOutside === true) {
 							this.ToExtranet();
 						} else {
 							this.$refs.uToast.show({
-								title: '修改房源成功',
+								title: '新增房源成功',
 								type: 'success',
 								url: '/pages/Home/Home',
 								isTab: true,
@@ -935,9 +955,9 @@
 						type: 'error',
 					});
 				});
-				
+
 			},
-			
+
 			//外网接口，通过estatename获取对应的estateid
 			EGetEstateIdByName(estateName) {
 				console.log('进入estatenane');
@@ -949,17 +969,17 @@
 						"cityPinYin": "chengdu"
 					},
 					success: (res) => {
-						 console.log(res);
-						 this.extranetModel.proEstId = res.data.data.estate;
-						 console.log('estid:'+this.extranetModel.proEstId);
-						 this.EGetEstateDetailById(this.extranetModel.proEstId);
+						console.log(res);
+						this.extranetModel.proEstId = res.data.data.estate;
+						console.log('estid:' + this.extranetModel.proEstId);
+						this.EGetEstateDetailById(this.extranetModel.proEstId);
 					}
-				});				
+				});
 			},
-			
+
 			//外网接口，通过estateid获取对应的estatedatail
 			EGetEstateDetailById(estateId) {
-				console.log('seateid:'+estateId);
+				console.log('seateid:' + estateId);
 				uni.request({
 					url: config.outerServer + '/estate/getEstateDetail',
 					method: 'get',
@@ -968,13 +988,13 @@
 						"cityPinYin": "chengdu"
 					},
 					success: (res) => {
-						 console.log(res);
-						 this.extranetModel.proEstId = res.data.data.estId;
+						console.log(res);
+						this.extranetModel.proEstId = res.data.data.estId;
 						this.extranetModel.proAreId = res.data.data.estAreId;
 						this.extranetModel.proInnernetId = res.data.data.estInnernetId;
 						this.extranetModel.proEstateName = res.data.data.estName;
 						this.extranetModel.proCity = res.data.data.estCity;
-						this.extranetModel.proCityId =  res.data.data.estCityId;
+						this.extranetModel.proCityId = res.data.data.estCityId;
 						this.extranetModel.proDistrict = res.data.data.estDistrict;
 						this.extranetModel.proDistrictId = res.data.data.estDistrictId;
 						this.extranetModel.proArea = res.data.data.estArea;
@@ -995,11 +1015,11 @@
 						this.extranetModel.proCompanyName = res.data.data.estCreateDate;
 						this.extranetModel.proCompanyName = res.data.data.estStatus;
 						this.extranetModel.proCompanyName = res.data.data.estPhotoUrl; */
-					
+
 					}
-				});				
+				});
 			},
-			
+
 			//发布到外网
 			ToExtranet() {
 				console.log('进入函数');
@@ -1058,14 +1078,14 @@
 						proFloorAll: this.model.floorAll,
 						proHouseCheck: "", // ?
 						proId: 0,
-						proInnernetId: this.extranetModel.proInnernetId,//"20111617222323FB23C583B1AEA13620", //内网proid？ 内网接口返回
+						proInnernetId: this.extranetModel.proInnernetId, //"20111617222323FB23C583B1AEA13620", //内网proid？ 内网接口返回
 						proKey: true, // ?
 						proKeywords: "", // ?
 						proLadderRatio: "", // ?
 						proLat: this.extranetModel.proLat,
 						proLng: this.extranetModel.proLng,
 						proLooknum: 0, // ?
-						proModDate: currentTime,  //当前时间
+						proModDate: currentTime, //当前时间
 						proMonthPay: "", // ?
 						proMortgate: "", // ?
 						proNo: "", // ? XT7
@@ -1091,18 +1111,18 @@
 					success: (res) => {
 						console.log(res);
 						if (res.statusCode === 200) {
-							if(res.data.code === 200){
+							if (res.data.code === 200) {
 								this.$refs.uToast.show({
 									title: '新增房源成功',
 									type: 'success',
 									url: '/pages/Home/Home',
 									isTab: true,
 								});
-							}else{
-								return this.$u.toast(res.data.message);  //显示相关错误
+							} else {
+								return this.$u.toast(res.data.message); //显示相关错误
 							}
-							
-						} else {  //发生 400错误，参数不正确
+
+						} else { //发生 400错误，参数不正确
 							this.$refs.uToast.show({
 								title: '新增房源成功,同步至外网失败！',
 								type: 'warning',
@@ -1230,14 +1250,14 @@
 				var hour = this.zeroFill(date.getHours()); //时
 				var minute = this.zeroFill(date.getMinutes()); //分
 				var second = this.zeroFill(date.getSeconds()); //秒
-			
+
 				//当前时间
 				var curTime = date.getFullYear() + "-" + month + "-" + day +
 					"T" + hour + ":" + minute + ":" + second;
-			
+
 				return curTime;
 			},
-			
+
 			/**
 			 * 补零
 			 */

@@ -328,7 +328,7 @@
 
 		onReady() {
 			this.getPhotos();
-			this.CheckIfCollected();
+			this.CheckIfCollected();  //放在onReady中确保执行顺序
 			//this.getCommentList();
 			//this.getRecommendedList();
 			//this.getHouseFollowInfo();

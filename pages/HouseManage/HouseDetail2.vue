@@ -31,9 +31,13 @@
 			<view class="mainIntro">
 				<u-row justify="center">
 					<u-col span="3">
-						<view>
-							<view class="value">{{house.proPrice}}万元</view>
+						<view v-if="house.proTrade === '出售'">
+							<view class="value">{{house.proPrice}}{{house.proPriceType}}</view>
 							<view class="description">售价</view>
+						</view>
+						<view v-if="house.proTrade === '出租'">
+							<view class="value1">{{house.proRentPrice}}{{house.proRentPriceType}}</view>
+							<view class="description">租金</view>
 						</view>
 					</u-col>
 					<u-col span="1">
@@ -362,6 +366,11 @@
 
 		.value {
 			font-size: large;
+			font-weight: bolder;
+			color: red;
+		}
+		.value1 {
+			font-size: medium;
 			font-weight: bolder;
 			color: red;
 		}
