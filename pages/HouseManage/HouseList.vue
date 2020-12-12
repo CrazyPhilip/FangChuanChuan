@@ -3,7 +3,7 @@
 		<view class="status_bar">
 			<!-- 这里是状态栏 -->
 		</view>
-		
+
 		<view class="wrap">
 			<view class="u-tabs-box">
 				<u-tabs-swiper ref="tabs" :list="[{name:'出售'}, {name:'出租'},{name:'已抢'}]" :current="current" @change="showChange"
@@ -33,14 +33,13 @@
 						</u-row>
 					</view>
 
-					<scroll-view scroll-y style="height: 100%;width: 100%;">
+					<scroll-view scroll-y style="height: 90%;width: 100%;" @scrolltolower="getData1">
 						<view class="uni-list">
 							<view class="uni-list-cell" v-for="(item,index) in saleHouseList" :key="index" v-on:click="ToHouseDetail(index)">
 								<view class="left">
-									<u-image width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
-									 mode="aspectFill"></u-image>
+									<u-image width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle" mode="aspectFill"></u-image>
 								</view>
-								
+
 								<view class="right">
 									<view class="title">
 										<text class="BiKan">必看</text>
@@ -62,9 +61,11 @@
 								</view>
 							</view>
 						</view>
-						<u-divider bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
-						<u-back-top :scroll-top="scrollTop"></u-back-top>
+						<u-divider v-if="this.status1 === 'loading'" bg-color="rgb(240, 240, 240)">努力加载中</u-divider>
+						<u-divider v-if="this.status1 === 'nomore'" bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
+						<u-divider v-if="this.status1 === 'loadmore'" bg-color="rgb(240, 240, 240)">轻轻上拉</u-divider>
 					</scroll-view>
+					<u-back-top :scroll-top="scrollTop"></u-back-top>
 				</swiper-item>
 
 				<swiper-item class="swiper-item">
@@ -88,14 +89,13 @@
 						</u-row>
 					</view>
 
-					<scroll-view scroll-y style="height: 100%;width: 100%;">
+					<scroll-view scroll-y style="height: 90%;width: 100%;" @scrolltolower="getData2">
 						<view class="uni-list">
 							<view class="uni-list-cell" v-for="(item,index) in rentHouseList" :key="index" v-on:click="ToHouseDetail(index)">
 								<view class="left">
-									<u-image width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
-									 mode="aspectFill"></u-image>
+									<u-image width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle" mode="aspectFill"></u-image>
 								</view>
-								
+
 								<view class="right">
 									<view class="title">
 										<text class="BiKan">必看</text>
@@ -112,7 +112,9 @@
 								</view>
 							</view>
 						</view>
-						<u-divider bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
+						<u-divider v-if="this.status2 === 'loading'" bg-color="rgb(240, 240, 240)">努力加载中</u-divider>
+						<u-divider v-if="this.status2 === 'nomore'" bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
+						<u-divider v-if="this.status2 === 'loadmore'" bg-color="rgb(240, 240, 240)">轻轻上拉</u-divider>
 						<u-back-top :scroll-top="scrollTop"></u-back-top>
 					</scroll-view>
 				</swiper-item>
@@ -142,10 +144,9 @@
 						<view class="uni-list">
 							<view class="uni-list-cell" v-for="(item,index) in grabedHouseList" :key="index" v-on:click="ToGrabHouseDetail(index)">
 								<view class="left">
-									<u-image width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle"
-									 mode="aspectFill"></u-image>
+									<u-image width="250" height="200" border-radius="8" :src="item.PhotoUrl" error-icon="error-circle" mode="aspectFill"></u-image>
 								</view>
-								
+
 								<view class="right">
 									<text class="BiKan">必看</text>
 									<view class="title">{{item.Title}}</view>
@@ -165,7 +166,10 @@
 								</view>
 							</view>
 						</view>
-						<u-divider bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
+						<!-- <u-divider v-if="this.status3 === 'loading'" bg-color="rgb(240, 240, 240)">努力加载中</u-divider>
+						<u-divider v-if="this.status3 === 'nomore'" bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
+						<u-divider v-if="this.status3 === 'loadmore'" bg-color="rgb(240, 240, 240)">轻轻上拉</u-divider> -->
+						<u-divider v-if="this.status3 === 'nomore'" bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
 						<u-back-top :scroll-top="scrollTop"></u-back-top>
 					</scroll-view>
 				</swiper-item>
@@ -177,8 +181,11 @@
 
 <script>
 	import config from '../../api/config.js';
-	import {mapState, mapMutations} from 'vuex';
-	
+	import {
+		mapState,
+		mapMutations
+	} from 'vuex';
+
 	export default {
 		data() {
 			return {
@@ -196,6 +203,20 @@
 				value12: 0,
 				value13: 0,
 				value14: 0,
+
+				pageSize: 20, //接口默认就是20
+				pageNum1: 0, //页数从0开始
+				pageNum2: 0, //页数从0开始
+				pageNum3: 0, //页数从0开始
+				status1: 'loading',
+				status2: 'loading',
+				status3: 'loading',
+				iconType: 'flower',
+				loadText: {
+					loadmore: '轻轻上拉',
+					loading: '努力加载中',
+					nomore: '实在没有了'
+				},
 
 				defaultValue: [0, 0, 0],
 				options2: [{
@@ -299,7 +320,7 @@
 						value: 9,
 					},
 				],
-				
+
 				options5: [{
 						label: '全部价格',
 						value: 0,
@@ -333,51 +354,7 @@
 						value: 7,
 					}
 				],
-				
-				list: [{
-						value: 1,
-						label: '中国',
-						children: [{
-								value: 2,
-								label: '广东',
-								children: [{
-										value: 3,
-										label: '深圳'
-									},
-									{
-										value: 4,
-										label: '广州'
-									}
-								]
-							},
-							{
-								value: 5,
-								label: '广西',
-								children: [{
-										value: 6,
-										label: '南宁'
-									},
-									{
-										value: 7,
-										label: '桂林'
-									}
-								]
-							}
-						]
-					},
-					{
-						value: 8,
-						label: '美国',
-						children: [{
-							value: 9,
-							label: '纽约',
-							children: [{
-								value: 10,
-								label: '皇后街区'
-							}]
-						}]
-					}
-				],
+
 
 				saleHouseList: [],
 				rentHouseList: [],
@@ -386,9 +363,9 @@
 		},
 
 		onLoad() {
-			
+
 		},
-		
+
 		onReady() {
 			this.GetSaleHouseList();
 			this.GetRentHouseList();
@@ -400,18 +377,19 @@
 			console.log('刷新');
 			console.log('swiper :' + this.swiperCurrent);
 			if (this.swiperCurrent === 0) {
-				this.GetSaleHouseList();
+				this.refreshSaleHouseList();
 			} else if (this.swiperCurrent === 1) {
-				this.GetRentHouseList();
+				this.refreshRentHouseList();
 			} else {
+				this.grabedHouseList.splice(0, this.grabedHouseList.length);
 				this.GetGrabedHouseList();
 			}
 		},
-		
-		computed:{
+
+		computed: {
 			...mapState(['user', 'city'])
 		},
-		
+
 		methods: {
 			ToHouseDetail: function(h) {
 				var obj = this.swiperCurrent === 0 ? this.saleHouseList[h] : this.rentHouseList[h];
@@ -453,7 +431,7 @@
 				this.current = current;
 			},
 
-			showChange(index) {
+			showChange(index) { //该函数暂未被触发
 				this.swiperCurrent = index;
 				console.log('showchange' + this.swiperCurrent);
 				if (index === 0) {
@@ -480,32 +458,67 @@
 				console.log(e);
 			},
 
+			//刷新函数
+			refreshSaleHouseList() //刷新出售房源列表
+			{
+				this.saleHouseList.splice(0, this.saleHouseList.length);
+				this.pageNum1 = 0;
+				this.status1 = 'loading';
+				this.GetSaleHouseList();
+			},
+
+			refreshRentHouseList() {
+				this.rentHouseList.splice(0, this.rentHouseList.length);
+				this.pageNum2 = 0;
+				this.status2 = 'loading';
+				this.GetRentHouseList();
+			},
+
+			//抢房接口 未做分页，保留原始方式
+
+
 			change02(e) {
 				this.value02 = e;
-				this.GetSaleHouseList();
+				this.refreshSaleHouseList();
 			},
 			change03(e) {
 				this.value03 = e;
-				this.GetSaleHouseList();
+				this.refreshSaleHouseList();
 			},
 			change04(e) {
 				this.value04 = e;
-				this.GetSaleHouseList();
+				this.refreshSaleHouseList();
 			},
 
 			change12(e) {
 				this.value12 = e;
-				this.GetRentHouseList();
+				this.refreshRentHouseList();
 			},
 			change13(e) {
 				this.value13 = e;
-				this.GetRentHouseList();
+				this.refreshRentHouseList();
 			},
 			change14(e) {
 				this.value14 = e;
-				this.GetRentHouseList();
+				this.refreshRentHouseList();
 			},
 
+			getData1() {
+				console.log('正在加载出售列表');
+				if (this.status1 === 'loadmore') {
+					this.pageNum1 = this.pageNum2 + 1;
+					console.log('正在加载出售列表第' + this.pageNum1 + '页');
+					this.GetSaleHouseList();
+				}
+			},
+			getData2() {
+				console.log('正在加载出租列表');
+				if (this.status2 === 'loadmore') {
+					this.pageNum2 = this.pageNum2 + 1;
+					console.log('正在加载出售列表第' + this.pageNum2 + '页');
+					this.GetRentHouseList();
+				}
+			},
 			GetSaleHouseList() {
 				console.log('正在请求 sale');
 				this.$u.get(config.server + '/QuerySaleHouseSource', {
@@ -524,17 +537,24 @@
 					BuildNo: '',
 					RoomNo: '',
 					SearchContent: '',
-					Page: '',
+					Page: this.pageNum1,
 					EmpID: this.user.EmpID,
 				}).then(res => {
-					this.saleHouseList = res.Result;
-					//console.log(this.saleHouseList);
-					//手动处理后台返回的带有大段空白符的字串
-					for (var i = 0; i < this.saleHouseList.length; i++) {
-						this.saleHouseList[i].FlagMWWY = this.saleHouseList[i].FlagMWWY === null? 0:this.saleHouseList[i].FlagMWWY.trim();
-						this.saleHouseList[i].FlagKDK = this.saleHouseList[i].FlagKDK === null? 0:this.saleHouseList[i].FlagKDK.trim(); 
-						this.saleHouseList[i].FlagWDY = this.saleHouseList[i].FlagWDY === null? 0:this.saleHouseList[i].FlagWDY.trim(); 
-						this.saleHouseList[i].FlagXSFY = this.saleHouseList[i].FlagXSFY === null? 0:this.saleHouseList[i].FlagXSFY.trim(); 
+					let houseList = res.Result;
+					console.log(houseList.length);
+					for (var i = 0; i < houseList.length; i++) {
+						//手动处理后台返回的带有大段空白符的字串
+						houseList[i].FlagMWWY = houseList[i].FlagMWWY === null ? 0 : houseList[i].FlagMWWY.trim();
+						houseList[i].FlagKDK = houseList[i].FlagKDK === null ? 0 : houseList[i].FlagKDK.trim();
+						houseList[i].FlagWDY = houseList[i].FlagWDY === null ? 0 : houseList[i].FlagWDY.trim();
+						houseList[i].FlagXSFY = houseList[i].FlagXSFY === null ? 0 : houseList[i].FlagXSFY.trim();
+						this.saleHouseList.push(houseList[i]);
+					}
+
+					if (houseList.length === 0 || houseList.length < this.pageSize) {
+						this.status1 = 'nomore';
+					} else {
+						this.status1 = 'loadmore';
 					}
 					uni.stopPullDownRefresh();
 				})
@@ -557,21 +577,28 @@
 					BuildNo: '',
 					RoomNo: '',
 					SearchContent: '',
-					Page: '',
+					Page: this.pageNum2,
 					EmpID: this.user.EmpID,
 				}).then(res => {
-					this.rentHouseList = res.Result;
-					//手动处理后台返回的带有大段空白符的字串
-					for (var i = 0; i < this.rentHouseList.length; i++) {
-						this.rentHouseList[i].FlagMWWY = this.rentHouseList[i].FlagMWWY === null? 0:this.rentHouseList[i].FlagMWWY.trim();
-						this.rentHouseList[i].FlagKDK = this.rentHouseList[i].FlagKDK === null? 0:this.rentHouseList[i].FlagKDK.trim(); 
-						this.rentHouseList[i].FlagWDY = this.rentHouseList[i].FlagWDY === null? 0:this.rentHouseList[i].FlagWDY.trim(); 
-						this.rentHouseList[i].FlagXSFY = this.rentHouseList[i].FlagXSFY === null? 0:this.rentHouseList[i].FlagXSFY.trim(); 
+					let houseList = res.Result;
+					for (var i = 0; i < houseList.length; i++) {
+						//手动处理后台返回的带有大段空白符的字串
+						houseList[i].FlagMWWY = houseList[i].FlagMWWY === null ? 0 : houseList[i].FlagMWWY.trim();
+						houseList[i].FlagKDK = houseList[i].FlagKDK === null ? 0 : houseList[i].FlagKDK.trim();
+						houseList[i].FlagWDY = houseList[i].FlagWDY === null ? 0 : houseList[i].FlagWDY.trim();
+						houseList[i].FlagXSFY = houseList[i].FlagXSFY === null ? 0 : houseList[i].FlagXSFY.trim();
+						this.rentHouseList.push(houseList[i]);
+					}
+
+					if (houseList.length === 0 || houseList.length < this.pageSize) {
+						this.status2 = 'nomore';
+					} else {
+						this.status2 = 'loadmore';
 					}
 					uni.stopPullDownRefresh();
 				})
 			},
-			
+
 			GetGrabedHouseList() {
 				this.$u.get(config.server + '/GetGrabbedHouses', {
 					DBName: this.user.DBName,
@@ -594,12 +621,12 @@
 				})
 			},
 
-			onPageScroll(e) {
+			onPageScroll(e) { //下拉刷新
 				this.scrollTop = e.scrollTop;
 				if (this.swiperCurrent === 0) {
-					this.GetSaleHouseList();
+					this.refreshSaleHouseList();
 				} else if (this.swiperCurrent === 1) {
-					this.GetRentHouseList();
+					this.refreshRentHouseList();
 				} else {
 					this.GetGrabedHouseList();
 				}
@@ -644,7 +671,7 @@
 		width: 100%;
 		padding-top: var(--status-bar-height);
 	}
-	
+
 	.status_bar {
 		height: var(--status-bar-height);
 		width: 100%;
@@ -670,17 +697,17 @@
 		background-color: #ffffff;
 		padding: 8px;
 	}
-	
-	.left{
+
+	.left {
 		width: 250rpx;
 	}
-	
-	.right{
+
+	.right {
 		width: 430rpx;
 		margin-left: 20rpx;
 	}
-	
-	.title{
+
+	.title {
 		font-weight: bolder;
 		font-size: large;
 		max-lines: 2;
@@ -693,7 +720,7 @@
 		/* 属性规定框的子元素应该被水平或垂直排列。 */
 		-webkit-box-orient: vertical;
 	}
-	
+
 	.BiKan {
 		font-size: small;
 		padding: 2rpx;
@@ -701,7 +728,7 @@
 		border-radius: 10rpx 10rpx 10rpx 0;
 		color: white;
 	}
-	
+
 	.HouseTag {
 		max-lines: 1;
 		font-weight: lighter;
@@ -712,15 +739,14 @@
 		padding: 2rpx;
 		margin-right: 4rpx;
 	}
-	
+
 	.HousePrice {
 		font-weight: bolder;
 		font-size: large;
 		color: #FA3534;
 	}
-	
+
 	.HouseUnitPrice {
 		font-size: small;
 	}
-	
 </style>

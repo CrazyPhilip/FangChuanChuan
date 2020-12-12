@@ -22,7 +22,7 @@
 						</u-dropdown>
 					</view>
 
-					<scroll-view scroll-y style="height: 100%;width: 100%;">
+					<scroll-view scroll-y style="height: 90%;width: 100%;">
 						<view class="uni-list">
 							<view class="uni-list-cell" v-for="(item,index) in saleCustomerList" :key="index" v-on:click="ToCustomerDetail(index)">
 								<text class="left">{{item.CustName[0]}}</text>
@@ -57,7 +57,7 @@
 						</u-dropdown>
 					</view>
 
-					<scroll-view scroll-y style="height: 100%;width: 100%;">
+					<scroll-view scroll-y style="height: 90%;width: 100%;">
 						<view class="uni-list">
 							<view class="uni-list-cell" v-for="(item,index) in rentCustomerList" :key="index" v-on:click="ToCustomerDetail(index)">
 								<text class="left">{{item.CustName[0]}}</text>
