@@ -40,6 +40,10 @@
 				 :label-position="labelPosition" label="姓名" prop="name">
 					<u-input :border="border" placeholder="请输入姓名" v-model="model.name" type="text"></u-input>
 				</u-form-item>
+				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="chat" label-width="170" :label-position="labelPosition"
+				 label="邀请码" prop="inviteCode">
+					<u-input :border="border" placeholder="请输入邀请码(选填)" v-model="model.inviteCode" type="text"></u-input>
+				</u-form-item>
 			</u-form>
 			<view class="agreement">
 				<u-checkbox v-model="check" @change="checkboxChange"></u-checkbox>
@@ -89,6 +93,7 @@
 					password: '',
 					rePassword: '',
 					accountStyle: '',
+					inviteCode: '',
 
 					maskShow: false,
 					source: '',
@@ -191,6 +196,17 @@
 						{
 							type: 'number',
 							message: '验证码只能为数字',
+							trigger: ['change', 'blur'],
+						},
+						{
+							validator: (rule, value, callback) => {
+								if (this.authCode !== '') //验证码已发送
+								{
+									return this.authCode === this.model.code;
+								}
+
+							},
+							message: '验证码不正确',
 							trigger: ['change', 'blur'],
 						}
 					],
@@ -299,6 +315,7 @@
 					Password: this.model.password,
 					EmpName: this.model.name,
 					AccountStyle: this.model.accountStyle === '独立经纪人' ? '1' : '2',
+					InviteCode: this.model.inviteCode
 				}).then(res => {
 					console.log(res);
 					this.$u.toast(res.Msg);
@@ -350,7 +367,7 @@
 					this.$u.get(config.server + '/GetTelCode', {
 						Tel: this.model.phone
 					}).then(res => {
-						this.code = res.Result;
+						this.authCode = res.Result;
 					});
 					// 模拟向后端请求验证码
 					uni.showLoading({

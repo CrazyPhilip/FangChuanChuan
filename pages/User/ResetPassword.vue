@@ -45,6 +45,7 @@
 					password: '',
 					rePassword: '',
 				},
+				code:'',
 				rules: {
 					phone: [{
 							required: true,
@@ -92,7 +93,10 @@
 						},
 						{
 							validator: (rule, value, callback) => {
-								return value === this.authCode;
+								if (this.authCode !== '') //验证码已发送
+								{
+									return value === this.authCode;
+								}
 							},
 							message: '验证码输入不正确',
 							trigger: ['change', 'blur'],
