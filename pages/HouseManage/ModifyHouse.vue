@@ -4,9 +4,10 @@
 			<u-navbar is-back="true" title="修改房源"></u-navbar>
 			<!--必填信息-->
 			<u-form :model="model" :rules="rules" ref="uForm0" :errorType="['message']">
-				<!-- <u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition" 
-				label="上传图片" prop="photo" label-width="200">
-					<u-upload width="160" height="160" :file-list="model.fileList"></u-upload>
+				<!-- <u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
+				 label="上传图片" prop="photo" label-width="200">
+					<u-upload width="160" height="160" ref="uUpload" :action="action" :form-data="formData" :auto-upload="false"
+					 max-count="8" @on-uploaded="avatarUploaded" :file-list="model.fileList"></u-upload>
 				</u-form-item> -->
 
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
@@ -301,6 +302,8 @@
 	export default {
 		data() {
 			return {
+				action: '',
+				formData: {},
 				model: {
 					fileList: [],
 					estate: '',
@@ -731,6 +734,13 @@
 		onReady() {
 			this.$refs.uForm0.setRules(this.rules);
 			this.$refs.uForm1.setRules(this.rules);
+			/* this.action = config.server + '/UpLoadPicture';
+			this.formData = {
+				DBName: this.user.DBName,
+				PropertyID: '',
+				RegPerson:this.user.EmpName
+			}; */
+			//this.getPhotos();
 		},
 
 		computed: {
@@ -744,6 +754,50 @@
 					url: './EstateSelector'
 				});
 			},
+			
+			getPhotos() {
+				this.$u.get(config.server + '/GetPhotoUrlByPropertyID', {
+					DBName: this.user.DBName,
+					PropertyID: this.propertyID
+				}).then(res => {
+					if (res.Flag === 'success') {
+						let photoList = res.Result;
+						for (var i = 0; i < photoList.length; i++) {
+							var obj = {};
+							obj['url'] = photoList[i];
+							this.model.fileList.push(obj);
+						}
+						console.log(this.model.fileList);
+					} else {
+						this.model.fileList = [];
+					}
+				});
+			},
+			avatarUploaded(res) {
+							console.log(res);
+							let photoArray = [];
+							for (var i = 0; i < res.length; i++) {
+								
+								if (res[i].response.Flag === 'success'){
+									photoArray.push(res[i].response.Result);   
+								}
+							}
+							if(photoArray.length > 0){
+								this.extranetModel.proCoverUrl = photoArray[0];
+								let photoString = photoArray.join(',');
+								this.extranetModel.proPhotoUrl = photoString;
+							}
+							if (this.model.shareToOutside === true) {
+								this.ToExtranet();
+							} else {
+								this.$refs.uToast.show({
+									title: '新增房源成功',
+									type: 'success',
+									url: '/pages/Home/Home',
+									isTab: true,
+								});
+							}
+						},
 
 			buildingCallback(index) {
 				this.model.building = this.buildingList[index];
@@ -972,6 +1026,8 @@
 				}).then(res => {
 					console.log(res);
 					if (res.Flag === 'success' || res.Flag === 'SQLSuccess') {
+						//this.formData.PropertyID = this.propertyID;
+						//this.$refs.uUpload.upload();
 						if (this.model.shareToOutside === true) {
 							this.ToExtranet();
 						} else {
@@ -1086,7 +1142,7 @@
 						proCountT: this.model.countT,
 						proCountW: this.model.countW,
 						proCountY: this.model.countY,
-						proCoverUrl: "",
+						proCoverUrl: this.extranetModel.proCoverUrl,
 						proCreateDate: currentTime, //获取当前时间
 						proDataId: "",
 						proDate: currentTime, //当前时间
@@ -1124,7 +1180,7 @@
 						proNo: "", // ? XT7
 						proOwn: this.optionalModel.ownership,
 						proOwnership: this.optionalModel.right,
-						proPhotoUrl: "",
+						proPhotoUrl: this.extranetModel.proPhotoUrl,
 						proPrice: this.extranetModel.proPrice, //需转化成 数字
 						proPriceType: "万元",
 						proRentPrice: this.extranetModel.proRentPrice,
@@ -1174,96 +1230,6 @@
 						});
 					}
 				});
-			},
-
-
-
-			NewHouseData() {
-				uni.request({
-					url: config.server + '/NewHouseData',
-					data: {
-						DBName: this.user.DBName,
-						CityName: this.estateObject.CityName,
-						DistrictName: this.estateObject.DistrictName,
-						EstateID: this.estateObject.EstateID,
-						RoomNo: this.model.roomNo,
-						Title: this.model.houseTitle,
-						Floor: this.model.floor,
-						Trade: this.model.trade,
-						CountF: this.model.countF,
-						CountT: this.model.countT,
-						CountW: this.model.countW,
-						CountY: this.model.countY,
-						PropertyUsage: this.optionalModel.usage === null || this.optionalModel.usage === undefined || this.optionalModel
-							.usage === '' ? '*' : this.optionalModel.usage,
-						PropertyType: this.optionalModel.type === null || this.optionalModel.type === undefined || this.optionalModel.type ===
-							'' ? '*' : this.optionalModel.type,
-						PropertyDirection: this.model.direction === null || this.model.direction === undefined || this.model.direction ===
-							'' ? '*' : this.model.direction,
-						PropertySource: this.optionalModel.source === null || this.optionalModel.source === undefined || this.optionalModel
-							.source === '' ? '*' : this.optionalModel.source,
-						PropertyRight: this.optionalModel.ownership,
-						Square: this.model.square,
-						PriceUnit: this.model.price / this.model.square,
-						Price: this.model.price,
-						PropertyDecoration: this.optionalModel.decoration === null || this.optionalModel.decoration === undefined ||
-							this.optionalModel.decoration === '' ? '*' : this.optionalModel.decoration,
-						OwnerName: this.model.ownerName,
-						BuildNo: this.model.building + this.model.unit,
-						FloorAll: this.model.floorAll,
-						OwnerMobile: this.model.ownerMobile,
-						EmpNoOrTel: this.user.Tel,
-						Privy: '',
-						PropertyOwn: this.optionalModel.right,
-						PropertyCertificate: this.optionalModel.credentials,
-						PropertyOccupy: this.optionalModel.status,
-						PropertyCommission: this.optionalModel.commissionPay,
-						PropertyBuy: this.optionalModel.payment,
-						ZhuZhaiPropertyFurniture: this.optionalModel.furniture,
-						HandOverDate: this.optionalModel.releaseDate,
-						HangDate: this.optionalModel.entrustDate,
-						CompleteYear: this.optionalModel.builtYear,
-						PropertyLook: this.optionalModel.lookWay,
-						KeyNo: this.optionalModel.KeyNo,
-						Remark: this.optionalModel.Remark,
-						PropertyIntroduce: this.optionalModel.PropertyIntroduce,
-						OwnerIntroduce: this.optionalModel.OwnerIntroduce,
-						ServiceIntroduce: this.optionalModel.ServiceIntroduce,
-						OwnerMobile2: '',
-						OwnerMobile3: '',
-						FlagWeb: this.model.shareToOutside ? "1" : "0",
-						FlagMWWY: this.optionalModel.FlagMWWY ? "1" : "0",
-						FlagWDY: this.optionalModel.FlagWDY ? "1" : "0",
-						FlagKDK: this.optionalModel.FlagKDK ? "1" : "0",
-						FlagXSFY: this.optionalModel.FlagXSFY ? "1" : "0",
-						PropertyID: '',
-						ChangeLog: '',
-						Status: ''
-					},
-					header: {
-						'content-type': 'application/x-www-form-urlencoded',
-					},
-					method: 'POST',
-					dataType: 'json',
-					success: (res) => {
-						console.log(res);
-						if (res.Flag === 'success') {
-							this.$refs.uToast.show({
-								title: '新增房源成功',
-								type: 'success',
-								url: '/pages/Home/Home',
-								isTab: true,
-							});
-						}
-					},
-					fail: (res) => {
-						console.log(res);
-						this.$refs.uToast.show({
-							title: '错误',
-							type: 'error',
-						});
-					}
-				})
 			},
 
 			//分享到外网

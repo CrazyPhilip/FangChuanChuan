@@ -303,7 +303,7 @@
 		data() {
 			return {
 				action: '',
-				formData: Object,
+				formData: {},
 				model: {
 					fileList: [],
 					estate: '',
@@ -687,8 +687,9 @@
 			this.$refs.uForm1.setRules(this.rules);
 			this.action = config.server + '/UpLoadPicture';
 			this.formData = {
-				/* DBName: this.user.DBName,
-				PropertyID: this.extranetModel.proInnernetId */
+				DBName: this.user.DBName,
+				PropertyID: '',
+				RegPerson:this.user.EmpName
 			};
 		},
 
@@ -793,6 +794,32 @@
 					this.EGetEstateIdByName(this.model.estate);
 				}
 			},
+			
+			avatarUploaded(res) {
+							console.log(res);
+							let photoArray = [];
+							for (var i = 0; i < res.length; i++) {
+								
+								if (res[i].response.Flag === 'success'){
+									photoArray.push(res[i].response.Result);   
+								}
+							}
+							if(photoArray.length > 0){
+								this.extranetModel.proCoverUrl = photoArray[0];
+								let photoString = photoArray.join(',');
+								this.extranetModel.proPhotoUrl = photoString;
+							}
+							if (this.model.shareToOutside === true) {
+								this.ToExtranet();
+							} else {
+								this.$refs.uToast.show({
+									title: '新增房源成功',
+									type: 'success',
+									url: '/pages/Home/Home',
+									isTab: true,
+								});
+							}
+						},
 
 			reset() {
 				this.model.fileList = [];
@@ -854,15 +881,7 @@
 				});
 			},
 
-			avatarUploaded(res) {
-				console.log(res);
-				if (res[0].response.Flag === 'success') {
-					this.$refs.uToast.show({
-						title: res[0].response.Msg,
-						type: 'success'
-					});
-				}
-			},
+			
 			NewHouse() {
 				if (this.user.AccountStyle === '物业管理中心') {
 					this.model.shareToBroker = true;
@@ -932,12 +951,9 @@
 				}).then(res => {
 					if (res.Flag === 'success' || res.Flag === 'SQLSuccess') {
 						this.extranetModel.proInnernetId = res.Result; //接收返回的房源内网 id参数
-						this.formData = {
-							DBName: this.user.DBName,
-							PropertyID: this.extranetModel.proInnernetId
-						};
+						this.formData.PropertyID = res.Result;
 						this.$refs.uUpload.upload();
-						if (this.model.shareToOutside === true) {
+						/* if (this.model.shareToOutside === true) {
 							this.ToExtranet();
 						} else {
 							this.$refs.uToast.show({
@@ -946,7 +962,7 @@
 								url: '/pages/Home/Home',
 								isTab: true,
 							});
-						}
+						} */
 					}
 				}).catch(res => {
 					console.log(res);
@@ -1053,7 +1069,7 @@
 						proCountT: this.model.countT,
 						proCountW: this.model.countW,
 						proCountY: this.model.countY,
-						proCoverUrl: "",
+						proCoverUrl: this.extranetModel.proCoverUrl,
 						proCreateDate: currentTime, //获取当前时间
 						proDataId: "",
 						proDate: currentTime, //当前时间
@@ -1091,7 +1107,7 @@
 						proNo: "", // ? XT7
 						proOwn: this.optionalModel.ownership,
 						proOwnership: this.optionalModel.right,
-						proPhotoUrl: "",
+						proPhotoUrl: this.extranetModel.proPhotoUrl,
 						proPrice: this.extranetModel.proPrice, //需转化成 数字
 						proPriceType: "万元",
 						proRentPrice: this.extranetModel.proRentPrice,
