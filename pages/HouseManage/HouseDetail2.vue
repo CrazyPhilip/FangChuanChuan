@@ -19,7 +19,7 @@
 		<u-swiper :list="photoList" mode="dot" indicator-pos="bottomCenter" :title="false" height="600" border-radius="0" img-mode="aspectFill"></u-swiper>
 
 		<view class="section">
-			<u-tag :text="house.proKeywords" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
+			<u-tag v-if="house.proKeywords" :text="house.proKeywords" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
 			<!-- <u-tag text="随时看房" mode="dark" shape="circle"></u-tag> -->
 			<view class="title">{{this.house.proTitle}}</view>
 
@@ -108,6 +108,7 @@
 
 		<view class="section">
 			<view class="sectionTitle">房源评论</view>
+			<u-empty v-if="commentList.length <= 0" text="暂无评论" mode="list"></u-empty>
 			<view class="uni-list">
 				<view class="uni-list-cell" v-for="(item,index) in commentList" :key="index">
 					<view class="commentItem" v-on:click="ToHouseDetail(index)">
@@ -268,10 +269,8 @@
 			},
 
 			getCommentList() {
-				this.$u.get(config.outerServer + '/property/getCommentsByPropertyId?propId=45&cityPinYin=' +
-					this.cityPinYin, {
-
-					}).then(res => {
+				this.$u.get(config.outerServer + '/property/getCommentsByPropertyId?propId=' + this.proId + '&cityPinYin=' +
+					this.cityPinYin, {}).then(res => {
 					//console.log(res.data);
 					this.commentList = res.data;
 				});

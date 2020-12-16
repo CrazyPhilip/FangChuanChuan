@@ -113,7 +113,6 @@
 
 	export default {
 		data() {
-			let that = this;
 			return {
 				swiperCurrent: 0,
 				tabsHeight: 0,
@@ -145,9 +144,8 @@
 				labelPosition0: 'left',
 				labelPosition1: 'center',
 				labelPosition2: 'right',
-				border: false,
-
-			};
+				border: false
+			}
 		},
 
 		onLoad() {
@@ -173,15 +171,14 @@
 			},
 
 			add() {
-				if (this.focusAreaList.length >= 3) //最多只能添加3个
-				{
+				// 最多只能添加3个
+				if (Array.prototype.isPrototypeOf(this.focusAreaList) && this.focusAreaList.length >= 3) {
 					this.$u.toast('最多只能添加3个关注区域！');
 				} else if (this.dbArray.indexOf(this.model.dBName) > -1) { //已存在
 					this.$u.toast('已关注该区域！');
 				} else {
 					this.submit();
 				}
-
 			},
 			closeTag(index) {
 				console.log(index);
@@ -190,9 +187,7 @@
 					title: '提示',
 					content: '是否删除\"' + this.focusAreaList[index].location + '\"？',
 					success: function(res) {
-						var that = this;
 						if (res.confirm) {
-
 							this.deleteFollowArea(index);
 						} else if (res.cancel) {
 							console.log('用户点击取消');
@@ -222,7 +217,6 @@
 				});
 			},
 
-
 			confirm(e) {
 				this.result = '';
 				e.map((val, index) => {
@@ -234,17 +228,17 @@
 				console.log(e);
 			},
 			submit() {
-
 				if (this.model.city === '' || this.model.district === '' || this.model.area === '') {
 					this.$u.toast('请选择区域');
 				} else if (this.dbArray.indexOf(this.model.dBName) > -1) { //已存在
 					this.$u.toast('已关注该区域！');
 				} else {
-					var newFollowArea = {};
+					let newFollowArea = {};
 					newFollowArea['city'] = this.model.city;
 					newFollowArea['district'] = this.model.district;
 					newFollowArea['area'] = this.model.area;
 					newFollowArea['dbName'] = this.model.dBName;
+
 					this.focusAreaListSource.push(newFollowArea); //先更新界面视图，再更新后台
 
 					var followAreaString = this.getFollowAreaString();
@@ -278,6 +272,7 @@
 					if (res.Flag === 'success') {
 						var content = res.Result;
 						var FollowArea = content[0]['FollowArea'];
+						FollowArea = FollowArea === null ? '':FollowArea;
 						this.focusAreaListSource = FollowArea === '' ? [] : this.getFocusLocationList(FollowArea);
 						this.focusAreaList = FollowArea === '' ? [] : this.getFocusLocationList(FollowArea);
 						this.showNone = this.focusAreaList.length > 0 ? false : true;
