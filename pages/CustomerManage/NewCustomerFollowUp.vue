@@ -99,18 +99,20 @@
 					Content: this.model.content,
 					FollowType: this.model.followType
 				}).then(res =>{
+					console.log(res);
 					if(res.Flag === 'success'){
 						this.$refs.uToast.show({
 											title: '新增跟进成功',
 											type: 'success',
-											back:true,
+											back:true
 											});
+						
 					}
 					else{
 						this.$refs.uToast.show({
 											title: '新增跟进失败',
 											type: 'erro',
-											back:false,
+											back:false
 											});
 					}
 				});

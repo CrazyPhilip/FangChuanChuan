@@ -134,7 +134,7 @@
 							"backgroundColor": "#fff",
 							"borderRadius": "8px", //输入框圆角
 							"placeholder": "搜索房源",
-							"disabled": true //disable时点击输入框不置焦，可以跳到新页面搜索
+							"disabled": false //disable时点击输入框不置焦，可以跳到新页面搜索
 						},
 						"backButton": { //自定义 backButton
 							"background": "#00FF00"

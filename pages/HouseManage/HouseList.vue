@@ -11,7 +11,7 @@
 			</view>
 
 			<swiper class="swiper-box" :current="swiperCurrent" @transition="transition" @animationfinish="animationfinish">
-
+				<!--出售-->
 				<swiper-item class="swiper-item">
 					<view>
 						<u-row gutter="16" justify="center">
@@ -41,10 +41,8 @@
 								</view>
 
 								<view class="right">
-									<view class="title">
-										<text class="BiKan">必看</text>
-										<text>{{item.Title}}</text>
-									</view>
+									<text class="BiKan">必看</text>
+									<view class="title">{{item.Title}}</view>
 									<view>{{item.CountF}}室{{item.CountT}}厅/{{item.Square}}㎡/{{item.PropertyDirection}}/{{item.EstateName}}</view>
 									<view>
 										<text v-if="item.FlagMWWY==='1'" class="HouseTag">满五唯一</text>
@@ -68,6 +66,7 @@
 					<u-back-top :scroll-top="scrollTop"></u-back-top>
 				</swiper-item>
 
+				<!--出租-->
 				<swiper-item class="swiper-item">
 					<view>
 						<u-row gutter="16" justify="center">
@@ -97,10 +96,8 @@
 								</view>
 
 								<view class="right">
-									<view class="title">
-										<text class="BiKan">必看</text>
-										<text>{{item.Title}}</text>
-									</view>
+									<text class="BiKan">必看</text>
+									<view class="title">{{item.Title}}</view>
 									<view>{{item.CountF}}室{{item.CountT}}厅/{{item.Square}}㎡/{{item.PropertyDirection}}/{{item.EstateName}}</view>
 									<view>
 										<text v-if="item.FlagMWWY==='1'" class="HouseTag">满五唯一</text>
@@ -119,6 +116,7 @@
 					</scroll-view>
 				</swiper-item>
 
+				<!--已抢-->
 				<swiper-item class="swiper-item">
 					<!-- <view>
 						<u-row gutter="16" justify="center">

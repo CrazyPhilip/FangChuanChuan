@@ -47,10 +47,11 @@
 			</u-form>
 			<view class="agreement">
 				<u-checkbox v-model="check" @change="checkboxChange"></u-checkbox>
-				<view class="agreement-text">
+				<text class="agreement-text">
 					勾选代表同意军军房产的
-					<u-tag text="用户协议" type="info" size="default" mode="light" bg-color="white" border-color="white" @click="toShow" />
-				</view>
+					<text @click="toShow" style="text-decoration: underline;color: #007AFF;">用户协议</text>
+					<!-- <u-tag text="用户协议" type="info" size="default" mode="light" bg-color="white" border-color="white" @click="toShow" /> -->
+				</text>
 			</view>
 			<u-button @click="submit" type="primary">注册</u-button>
 			<u-picker mode="selector" v-model="districtListShow" range-key="town" :default-selector="[0]" :range="districtList"
@@ -317,9 +318,18 @@
 					AccountStyle: this.model.accountStyle === '独立经纪人' ? '1' : '2',
 					InviteCode: this.model.inviteCode
 				}).then(res => {
-					console.log(res);
+					// console.log(res);
 					this.$u.toast(res.Msg);
 					if (res.Flag === 'success') {
+						
+						uni.request({
+							url:'http://47.108.202.57:8099/perform/addPerformance?type=4&inviteCode=' + this.model.inviteCode,
+							method:'GET',
+							success: (res) => {
+								
+							}
+						});
+						
 						uni.navigateBack({
 							delta: 1
 						});

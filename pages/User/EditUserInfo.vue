@@ -39,7 +39,7 @@
 
 		<u-mask :show="maskShow" @click="maskShow = false">
 			<view class="warp">
-				<view style="color: white; text-align: center;">向您的独立经纪人展示二维码</view>
+				<view style="color: white; text-align: center;">向您的客户展示二维码</view>
 				<view class="rect" @tap.stop>
 					<tki-qrcode ref="qrcode" :val="value" :size="400" background="#ffffff" foreground="#000000" pdground="#000000"
 					 :icon="avatar" :iconSize="40" :onval="true" :loadMake="true" @result="qrcode"></tki-qrcode>

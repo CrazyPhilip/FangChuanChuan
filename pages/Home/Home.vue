@@ -173,8 +173,11 @@
 					case 1:
 						{
 							uni.navigateTo({
-								url: '../HouseManage/OuterNet'
+								url:'../HouseManage/SearchList?keyword='
 							});
+							/* uni.navigateTo({
+								url: '../HouseManage/OuterNet'
+							}); */
 						}
 						break;
 

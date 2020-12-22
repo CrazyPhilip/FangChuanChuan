@@ -6,7 +6,7 @@
 				<u-icon class="rightIcon" :name="shareIcon" size="48" color="white" @click="goBack()"></u-icon>
 			</view>
 		</u-navbar> -->
-		
+
 		<view class="topNav">
 			<u-icon class="leftIcon" pros="0" name="arrow-leftward" size="50rpx" color="#ffffff" @click="goBack"></u-icon>
 			<!-- <view class="title">{{house.proTitle}}</view> -->
@@ -16,7 +16,8 @@
 			</view> -->
 		</view>
 
-		<u-swiper :list="photoList" mode="dot" indicator-pos="bottomCenter" :title="false" height="600" border-radius="0" img-mode="aspectFill"></u-swiper>
+		<u-swiper :list="photoList" mode="dot" indicator-pos="bottomCenter" :title="false" height="600" border-radius="0"
+		 img-mode="aspectFill" @click="imageClicked"></u-swiper>
 
 		<view class="section">
 			<u-tag v-if="house.proKeywords" :text="house.proKeywords" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
@@ -114,8 +115,7 @@
 					<view class="commentItem" v-on:click="ToHouseDetail(index)">
 						<u-row>
 							<u-col span="2">
-								<u-image :width="80" :height="80" border-radius="8" :src="item.photoUrl" error-icon="error-circle"
-								 mode="aspectFill"></u-image>
+								<u-image :width="80" :height="80" border-radius="8" :src="item.photoUrl" error-icon="error-circle" mode="aspectFill"></u-image>
 							</u-col>
 
 							<u-col span="10">
@@ -136,7 +136,7 @@
 						<u-image width="250" height="200" border-radius="8" :src="item.proCoverUrl" error-icon="/static/icon/NullPic.png"
 						 mode="aspectFill"></u-image>
 					</view>
-					
+
 					<view class="right">
 						<text class="BiKan">必看</text>
 						<view class="title">{{item.proTitle}}</view>
@@ -154,19 +154,19 @@
 							</u-row>
 						</view>
 					</view>
-				
+
 				</view>
 			</view>
 		</view>
-		
+
 		<u-gap bg-color="#eeeeee" height="100"></u-gap>
-		
+
 		<view class="navigation">
 			<view class="left">
 				<view class="u-m-r-10">
 					<u-avatar :src="pic" size="80"></u-avatar>
 				</view>
-				
+
 				<view class="center">
 					<view style="font-size: medium;font-weight: bold;">{{house.proEmployee1Name}}</view>
 					<view>房屋信息发布人</view>
@@ -178,13 +178,19 @@
 		</view>
 		<u-action-sheet v-model="callActionSheetShow" :list="callActionSheet" :cancel-btn="true" :mask-close-able="true"
 		 :safe-area-inset-bottom="true" @click="callActionSheetClick"></u-action-sheet>
-		<u-toast ref="uToast"/>
+		<u-toast ref="uToast" />
+
+		<u-mask class="mask" :show="maskShow" @click="maskShow = false">
+			<u-swiper class="rect" :list="photoList" mode="number" height="1000" img-mode="aspectFit" bg-color="#00000000" :autoplay="false"></u-swiper>
+			<!-- <u-image :src="imageSrc" mode="aspectFit" height="1000rpx" width="750rpx"></u-image> -->
+			<u-icon name="close-circle-fill" color="#c8c9cc" size="80"></u-icon>
+		</u-mask>
 	</view>
 </template>
 
 <script>
 	import config from '../../api/config.js';
-	
+
 	export default {
 		data() {
 			return {
@@ -197,7 +203,7 @@
 				commentList: [],
 				recommendedList: [],
 				house: Object,
-				
+
 				callActionSheetShow: false,
 				callActionSheet: [{
 					text: '打电话',
@@ -205,6 +211,9 @@
 					text: '发短信',
 					disabled: true
 				}, ],
+
+				maskShow: false,
+				imageSrc: ''
 			}
 		},
 
@@ -214,13 +223,19 @@
 			//console.log(params.proId);
 			this.cityPinYin = params.cityPinYin;
 			this.proId = params.proId;
-			
+
 			this.getHouseDetail();
 			this.getCommentList();
 			this.getRecommendedList();
 		},
-		
-		onReady() {
+
+		onReady() {},
+
+		onBackPress() {
+			if (this.maskShow) {
+				this.maskShow = false;
+				return true;
+			}
 		},
 
 		methods: {
@@ -229,17 +244,25 @@
 					delta: 1
 				});
 			},
-			
+
+			imageClicked(index) {
+				this.imageSrc = this.photoList[index];
+				this.maskShow = true;
+			},
+
 			Call() {
 				this.callActionSheetShow = true;
 			},
-			
+
 			callActionSheetClick(index) {
 				if (index === 0) {
-					if(this.house.proEmployee1Phone === null || this.house.proEmployee1Phone === undefined || this.house.proEmployee1Phone === ''){
-						this.$refs.uToast.show({ title: '号码为空', type: 'error'});
-					}
-					else{
+					if (this.house.proEmployee1Phone === null || this.house.proEmployee1Phone === undefined || this.house.proEmployee1Phone ===
+						'') {
+						this.$refs.uToast.show({
+							title: '号码为空',
+							type: 'error'
+						});
+					} else {
 						uni.makePhoneCall({
 							phoneNumber: this.house.proEmployee1Phone,
 						});
@@ -253,11 +276,10 @@
 				}).then(res => {
 					this.house = res.data;
 					console.log(this.house);
-					if(this.house.proPhotoUrl === null || this.house.proPhotoUrl === 'null'){
+					if (this.house.proPhotoUrl === null || this.house.proPhotoUrl === 'null') {
 						console.log('没图片');
 						this.photoList.push('/static/icon/NullPic.png');
-					}
-					else{
+					} else {
 						console.log(this.house.proPhotoUrl.toString());
 						var list = this.house.proPhotoUrl.split(',');
 						this.photoList = list;
@@ -285,16 +307,16 @@
 					this.recommendedList = res.data.list;
 				});
 			},
-			
+
 			ToHouseDetail(index) {
 				uni.navigateTo({
 					url: 'HouseDetail2?proId=' + this.recommendedList[index].proId + "&cityPinYin=" + "chengdu"
 				});
 			},
-			
-			ToWarning(){
+
+			ToWarning() {
 				uni.navigateTo({
-					url:"../Setting/Warning"
+					url: "../Setting/Warning"
 				});
 			}
 		},
@@ -319,7 +341,6 @@
 </style>
 
 <style lang="scss" scoped>
-	
 	.topNav {
 		position: fixed;
 		top: 0;
@@ -333,8 +354,9 @@
 		padding-right: 20rpx;
 		width: 100%;
 	}
-	
-	.leftIcon,.rightIcon {
+
+	.leftIcon,
+	.rightIcon {
 		background-color: rgba($color: #bfbfbf, $alpha: 0.8);
 		border-radius: 35rpx;
 		padding: 10rpx;
@@ -368,6 +390,7 @@
 			font-weight: bolder;
 			color: red;
 		}
+
 		.value1 {
 			font-size: medium;
 			font-weight: bolder;
@@ -394,17 +417,17 @@
 		margin: 5px;
 		background-color: #ffffff;
 		padding: 8px;
-		
-		.left{
+
+		.left {
 			width: 250rpx;
 		}
-		
-		.right{
+
+		.right {
 			width: 430rpx;
 			margin-left: 20rpx;
 		}
-		
-		.title{
+
+		.title {
 			font-weight: bolder;
 			font-size: large;
 			max-lines: 2;
@@ -417,7 +440,7 @@
 			/* 属性规定框的子元素应该被水平或垂直排列。 */
 			-webkit-box-orient: vertical;
 		}
-		
+
 		.BiKan {
 			font-size: small;
 			padding: 2rpx;
@@ -425,7 +448,7 @@
 			border-radius: 10rpx 10rpx 10rpx 0;
 			color: white;
 		}
-		
+
 		.HouseTag {
 			max-lines: 1;
 			font-weight: lighter;
@@ -436,35 +459,35 @@
 			padding: 2rpx;
 			margin-right: 4rpx;
 		}
-		
+
 		.HousePrice {
 			font-weight: bolder;
 			font-size: large;
 			color: #FA3534;
 		}
-		
+
 		.HouseUnitPrice {
 			font-size: small;
 		}
 	}
 
-	
+
 	.section .uni-list .uni-list-cell {
 		margin-top: 10rpx;
-		
+
 		.commentPerson {
 			font-weight: bold;
 			font-size: small;
 		}
-	
+
 		.comment {
 			font-size: small;
 		}
 	}
-	
+
 	.navigation {
-		position: fixed;  
-		bottom: var(--window-bottom) ;	
+		position: fixed;
+		bottom: var(--window-bottom);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -472,16 +495,31 @@
 		background-color: #ffffff;
 		padding: 10rpx;
 		width: 100%;
-		
+
 		.left {
 			display: flex;
 			font-size: 20rpx;
-			.center{
+
+			.center {
 				display: flex;
 				flex-direction: column;
 				align-items: flex-start;
 				justify-content: space-between;
 			}
+		}
+	}
+	
+	.mask {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 750rpx;
+		height: 100%;
+		
+		.rect {
+			width: 750rpx;
+			height: 1000rpx;
 		}
 	}
 </style>

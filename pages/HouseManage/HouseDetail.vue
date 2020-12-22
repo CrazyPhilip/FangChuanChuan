@@ -16,7 +16,7 @@
 			<swiper-item class="swiper-item">
 				<scroll-view scroll-y style="height: 100%;width: 100%;">
 					<u-swiper :list="photoList" mode="dot" indicator-pos="bottomCenter" :title="false" height="600" border-radius="0"
-					 img-mode="aspectFill"></u-swiper>
+					 img-mode="aspectFill" @click="imageClicked"></u-swiper>
 
 					<view class="section">
 						<u-tag v-if="house.FlagMWWY === '1'" text="满五唯一" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
@@ -281,6 +281,12 @@
 		<u-action-sheet v-model="callActionSheetShow" :list="callActionSheet" :cancel-btn="true" :mask-close-able="true"
 		 :safe-area-inset-bottom="true" @click="callActionSheetClick"></u-action-sheet>
 		<u-toast ref="uToast" />
+		
+		<u-mask class="mask" :show="maskShow" @click="maskShow = false">
+			<u-swiper class="rect" :list="photoList" mode="number" height="1000" img-mode="aspectFit" bg-color="#00000000" :autoplay="false"></u-swiper>
+			<!-- <u-image :src="imageSrc" mode="aspectFit" height="1000rpx" width="750rpx"></u-image> -->
+			<u-icon name="close-circle-fill" color="#c8c9cc" size="80"></u-icon>
+		</u-mask>
 	</view>
 </template>
 
@@ -316,6 +322,9 @@
 					text: '发短信',
 					disabled: true
 				}, ],
+				
+				maskShow: false,
+				imageSrc:''
 			}
 		},
 
@@ -337,6 +346,13 @@
 		computed: {
 			...mapState(['user'])
 		},
+		
+		onBackPress() {
+			  if(this.maskShow) {  
+			    this.maskShow = false;  
+			    return true;  
+			  }
+		},
 
 		methods: {
 			transition({
@@ -356,6 +372,12 @@
 				this.swiperCurrent = current;
 				this.current = current;
 			},
+			
+			imageClicked(index) {
+				this.imageSrc = this.photoList[index];
+				this.maskShow = true;
+			},
+			
 
 			showChange(index) {
 				this.swiperCurrent = index;
@@ -374,7 +396,7 @@
 				}).then(res => {
 					if (res.Flag === 'Collected') {
 						this.ifCollected = true;
-						this.collectColor = '#ffff00';
+						this.collectColor = '#ff0000';
 					} else {
 						this.ifCollected = false;
 						this.collectColor = '#ffffff';
@@ -417,7 +439,7 @@
 								type: 'success'
 							});
 							this.ifCollected = true;
-							this.collectColor = '#ffff00';
+							this.collectColor = '#ff0000';
 						} else {
 							this.$refs.uToast.show({
 								title: '收藏失败',
@@ -434,7 +456,7 @@
 
 			callActionSheetClick(index) {
 				if (index === 0) {
-					if (this.house.proEmployee1Phone !== null || this.house.proEmployee1Phone !== undefined || this.house.proEmployee1Phone !==
+					if (this.house.CustMobile !== null || this.house.CustMobile !== undefined || this.house.CustMobile !==
 						'') {
 						this.$refs.uToast.show({
 							title: '号码为空',
@@ -701,5 +723,19 @@
 
 	.timeLineBox {
 		padding: 200rpx 24rpx 24rpx 40rpx;
+	}
+	
+	.mask {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 750rpx;
+		height: 100%;
+		
+		.rect {
+			width: 750rpx;
+			height: 1000rpx;
+		}
 	}
 </style>

@@ -34,10 +34,8 @@
 								</view>
 								
 								<view class="right">
-									<view class="title">
-										<text class="BiKan">必看</text>
-										<text>{{item.Title}}</text>
-									</view>
+									<text class="BiKan">必看</text>
+									<view class="title">{{item.Title}}</view>
 									<view>{{item.CountF}}室{{item.CountT}}厅/{{item.Square}}㎡/{{item.PropertyDirection}}/{{item.EstateName}}</view>
 									<view>
 										<text v-if="item.FlagMWWY==='1'" class="HouseTag">满五唯一</text>

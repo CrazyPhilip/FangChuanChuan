@@ -44,6 +44,13 @@
 
 		onLoad(params) {
 			this.InquiryID = params.InquiryID;
+		},
+		
+		onReady() {
+			
+		},
+		
+		onShow() {
 			this.getInquiryFollowInfo();
 		},
 
@@ -53,10 +60,11 @@
 
 		methods: {
 			getInquiryFollowInfo() {
-				this.$u.get(config.server + +'/GetInquiryFollowInfo', {
+				this.$u.get(config.server + '/GetInquiryFollowInfo', {
 					DBName: this.user.DBName,
 					InquiryID: this.InquiryID,
 				}).then(res => {
+					console.log(res);
 					this.list = res.Result;
 				});
 			},

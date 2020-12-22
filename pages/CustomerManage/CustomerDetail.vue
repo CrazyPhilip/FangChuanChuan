@@ -196,8 +196,7 @@
 	}
 
 	.tag {
-		font-size: small;
-		padding: 2rpx;
+		font-size: medium;
 		background-color: #FA3534;
 		border-radius: 10rpx;
 		color: white;

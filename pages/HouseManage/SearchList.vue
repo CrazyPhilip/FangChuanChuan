@@ -1,6 +1,11 @@
 <template>
 	<view class="">
 		<u-navbar is-back="true" title="">
+			<view style="border-width: 2rpx;border-color: #007AFF;border-radius: 8rpx;padding: 10rpx;background-color: #007AFF;">
+				<picker @change="typeChange" :value="typeValue" :range="typeList">
+					<text style="font-size: 30rpx;color: white;">{{typeList[typeValue]}}</text>
+				</picker>
+			</view>
 			<view class="search-wrap">
 				<u-search placeholder="输入小区名搜索房源" v-model="searchContent" @custom="toSearch" @search="toSearch"></u-search>
 			</view>
@@ -17,7 +22,8 @@
 					</view>
 				</u-dropdown-item>
 				<u-dropdown-item @change="change2" v-model="fangxingSelected" :title="fangxingList[fangxingSelected].label" :options="fangxingList"></u-dropdown-item>
-				<u-dropdown-item @change="change3" v-model="priceSelected" :title="priceList[priceSelected].label" :options="priceList"></u-dropdown-item>
+				<u-dropdown-item v-if="typeValue === 0" @change="change3" v-model="salePriceSelected" :title="salePriceList[salePriceSelected].label" :options="salePriceList"></u-dropdown-item>
+				<u-dropdown-item v-if="typeValue === 1" @change="change3" v-model="rentPriceSelected" :title="rentPriceList[rentPriceSelected].label" :options="rentPriceList"></u-dropdown-item>
 				<u-dropdown-item @change="change4" v-model="squareSelected" :title="squareList[squareSelected].label" :options="squareList"></u-dropdown-item>
 			</u-dropdown>
 
@@ -58,12 +64,13 @@
 						<text class="HouseTag">随时看房</text>
 					</view>
 					<view class="">{{item.proCountF}}室{{item.proCountT}}厅/{{item.proSquare}}㎡/{{item.proDirection}}/{{item.EstateName}}</view>
-					<view>
+					<view v-if="typeValue === 0">
 						<u-row>
 							<u-col class="HousePrice" span="6">{{item.proPrice}}{{item.proPriceType}}</u-col>
 							<u-col class="HouseUnitPrice" span="6">{{item.proUnitPrice}}{{item.proUnitPriceType}}</u-col>
 						</u-row>
 					</view>
+					<view v-if="typeValue === 1" class="HousePrice">{{item.proRentPrice}}{{item.proRentPriceType}}</view>
 				</view>
 
 			</view>
@@ -89,14 +96,18 @@
 				show: false,
 				areaSelected: 0,
 				fangxingSelected: 0,
-				priceSelected: 0,
+				salePriceSelected: 0,
+				rentPriceSelected: 0,
 				squareSelected: 0,
 				areaList: [{
 					areId:-1,
 					areaLevel:1,
 					areName:"全部区域"
 				}],
-
+				
+				typeValue: 0,
+				typeList: ['二手房', '租房'],
+				
 				fangxingList: [{
 						label: '全部房型',
 						value: 0,
@@ -141,18 +152,17 @@
 					},
 				],
 				
-
-				priceList: [{
+				salePriceList: [{
 						label: '全部价格',
 						value: 0,
-						maxValue: 99999999,
-						minValue: 0
+						maxValue: 100000000,
+						minValue: 1
 					},
 					{
 						label: '小于40万',
 						value: 1,
 						maxValue: 40,
-						minValue: 0
+						minValue: 1
 					},
 					{
 						label: '50-80万',
@@ -187,11 +197,61 @@
 					{
 						label: '大于500万',
 						value: 7,
-						maxValue: 99999999,
+						maxValue: 100000000,
 						minValue: 500
 					},
 				],
 
+				rentPriceList: [{
+						label: '全部价格',
+						value: 0,
+						maxValue: 100000000,
+						minValue: 1
+					},
+					{
+						label: '小于500元',
+						value: 1,
+						maxValue: 500,
+						minValue: 1
+					},
+					{
+						label: '500-1000',
+						value: 2,
+						maxValue: 1000,
+						minValue: 500
+					},
+					{
+						label: '1000-2000',
+						value: 3,
+						maxValue: 2000,
+						minValue: 1000
+					},
+					{
+						label: '2000-3000',
+						value: 4,
+						maxValue: 3000,
+						minValue: 2000
+					},
+					{
+						label: '3000-5000',
+						value: 5,
+						maxValue: 5000,
+						minValue: 3000
+					},
+					{
+						label: '5000-8000',
+						value: 6,
+						maxValue: 8000,
+						minValue: 5000
+					},
+					{
+						label: '大于8000元',
+						value: 7,
+						maxValue: 100000000,
+						minValue: 8000
+					},
+				],
+				
 				squareList: [{
 						label: '全部面积',
 						value: 0,
@@ -278,6 +338,11 @@
 		},
 
 		methods: {
+			typeChange(e) {
+				this.typeValue = e.detail.value;
+				this.GetHouseList();
+			},
+			
 			toSearch(){
 				this.houseList.splice(0, this.houseList.length);
 				this.GetHouseList();
@@ -321,7 +386,12 @@
 			
 			// 筛选价格
 			change3(e) {
-				this.priceSelected = e;
+				if (this.typeValue === 0){
+					this.salePriceSelected = e;
+				} else {
+					this.rentPriceSelected = e;
+				}
+				
 				this.houseList.splice(0, this.houseList.length);
 				this.GetHouseList();
 			},
@@ -334,12 +404,19 @@
 			},
 
 			GetHouseList() {
-				let searchParam = {
-					saleRanges:[{
-						maxValue: 99999999,
-						minValue: 0
-					}]
-				};
+				let searchParam = {};
+				
+				if (this.typeValue === 0) {
+					searchParam.saleRanges = [{
+						maxValue: 100000000,
+						minValue: 1
+					}];
+				} else {
+					searchParam.rentRanges = [{
+						maxValue: 100000000,
+						minValue: 1
+					}];
+				}
 				
 				// 关键词
 				if (this.searchContent){
@@ -361,11 +438,16 @@
 				}
 				
 				// 价格
-				if (this.priceSelected > 0){
+				if (this.typeValue === 0) {
 					searchParam.saleRanges = [{
-						maxValue: this.priceList[this.priceSelected].maxValue,
-						minValue: this.priceList[this.priceSelected].minValue
+						maxValue: this.salePriceList[this.salePriceSelected].maxValue,
+						minValue: this.salePriceList[this.salePriceSelected].minValue
 					}]
+				} else {
+					searchParam.rentRanges = [{
+						maxValue: this.rentPriceList[this.rentPriceSelected].maxValue,
+						minValue: this.rentPriceList[this.rentPriceSelected].minValue
+					}];
 				}
 				
 				// 面积

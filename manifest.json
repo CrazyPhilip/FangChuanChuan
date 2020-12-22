@@ -2,8 +2,8 @@
     "name" : "房串串经纪人版",
     "appid" : "__UNI__C85840F",
     "description" : "",
-    "versionName" : "1.2.0",
-    "versionCode" : 120,
+    "versionName" : "1.6.0",
+    "versionCode" : 160,
     "transformPx" : false,
     "app-plus" : {
         "nvueCompiler" : "uni-app",
