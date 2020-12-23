@@ -9,7 +9,7 @@
 			</u-cell-group>
 		</view>
 
-		<u-modal content="拨打举报电话028-61834237？" v-model="modalShow1" @confirm="confirm1" ref="uModal1" :mask-close-able="true"
+		<u-modal content="拨打举报电话028-68094220？" v-model="modalShow1" @confirm="confirm1" ref="uModal1" :mask-close-able="true"
 		 :show-cancel-button="true"></u-modal>
 		<u-modal content="复制邮箱1770973601@qq.com？" v-model="modalShow2" @confirm="confirm2" ref="uModal2" :mask-close-able="true"
 		 :show-cancel-button="true"></u-modal>
@@ -21,7 +21,7 @@
 	export default {
 		data() {
 			return {
-				phone: '028-61834237',
+				phone: '028-68094220',
 				email: '1770973601@qq.com',
 
 				modalShow1: false,

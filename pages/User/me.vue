@@ -154,7 +154,9 @@
 			}
 		},
 
-		onLoad() {},
+		onLoad() {
+			console.log(this.user);
+		},
 
 		computed: {
 			...mapState(['user'])

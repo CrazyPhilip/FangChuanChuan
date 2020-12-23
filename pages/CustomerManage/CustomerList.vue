@@ -237,6 +237,30 @@
 
 				saleCustomerList: [],
 				rentCustomerList: [],
+				
+				pageSize: 10,
+				iconType: 'flower',
+				pageNum1: 1,
+				status1: 'loadmore',
+				loadText1: {
+					loadmore: '轻轻上拉',
+					loading: '努力加载中',
+					nomore: '实在没有了'
+				},
+				pageNum2: 1,
+				status2: 'loadmore',
+				loadText2: {
+					loadmore: '轻轻上拉',
+					loading: '努力加载中',
+					nomore: '实在没有了'
+				},
+				pageNum3: 1,
+				status3: 'loadmore',
+				loadText3: {
+					loadmore: '轻轻上拉',
+					loading: '努力加载中',
+					nomore: '实在没有了'
+				},
 			}
 		},
 
@@ -253,6 +277,19 @@
 				this.GetRentCustomerList();
 			}
 		},
+		
+		/* onReachBottom() {
+			console.log('onReachBottom:' + this.swiperCurrent);
+			if (this.swiperCurrent === 0) {
+				this.status1 = 'loading';
+				this.pageNum1 = ++this.pageNum1;
+				this.GetSaleCustomerList();
+			} else if (this.swiperCurrent === 1) {
+				this.status2 = 'loading';
+				this.pageNum2 = ++this.pageNum2;
+				this.GetRentCustomerList();
+			}
+		}, */
 
 		computed:{
 			...mapState(['user', 'city'])

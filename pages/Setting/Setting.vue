@@ -7,7 +7,7 @@
 				<u-cell-item icon="clock" title="夜间模式" :arrow="false">
 					<u-switch slot="right-icon" v-model="checked" size="30" @change="darkModeChange"></u-switch>
 				</u-cell-item>
-				<u-cell-item icon="trash" title="清理缓存" :arrow="true" arrow-direction="right" @click="toClearCache"></u-cell-item>
+				<u-cell-item icon="trash" title="清理缓存" :value="cache" :arrow="true" arrow-direction="right" @click="toClearCache"></u-cell-item>
 				<u-cell-item icon="reload" title="检查更新" :arrow="true" arrow-direction="right" @click="download"></u-cell-item>
 			</u-cell-group>
 
@@ -25,12 +25,12 @@
 		<u-toast ref="uToast"/>
 		<u-modal content="清理缓存？" v-model="modalShow" @confirm="confirm" ref="uModal" :async-close="true" :mask-close-able="true" :show-cancel-button="true"></u-modal>
 	
-		<u-modal v-model="downloadModalShow" title="下载apk" :show-confirm-button="showConfirmButton" confirm-text="安装"
+		<!-- <u-modal v-model="downloadModalShow" title="下载apk" :show-confirm-button="showConfirmButton" confirm-text="安装"
 		 :show-cancel-button="true" :mask-close-able="true" @confirm="openFile">
 			<view class="slot-content" style="display: flex;justify-content: center;margin: 40rpx;">
 				<u-line-progress active-color="#2979ff" :percent="percent"></u-line-progress>
 			</view>
-		</u-modal>
+		</u-modal> -->
 	</view>
 </template>
 
@@ -41,12 +41,19 @@
 				toastShow: false,
 				modalShow: false,
 				checked: false,
+				cache:'',
 				
 				percent: 0,
 				downloadModalShow: false,
 				showConfirmButton: false,
 				filePath:'',
 			}
+		},
+
+		onReady(){
+			const res = uni.getStorageInfoSync();
+			console.log(res);
+			this.cache = res.currentSize + 'kB';
 		},
 
 		methods: {
@@ -106,7 +113,13 @@
 			},
 			
 			download() {
-				this.downloadModalShow = true;
+				plus.runtime.openURL("https://www.fangchuanchuan.com/download/consumer-verson.apk", function(res) {
+				                    this.$refs.uToast.show({
+				                    	title: '链接有错，请访问房串串官网',
+				                    	type: 'error'
+				                    })
+				                }); 
+				/* this.downloadModalShow = true;
 				
 				const downloadTask = uni.downloadFile({
 				    url: "https://www.fangchuanchuan.com/download/agent-verson.apk", 
@@ -131,6 +144,7 @@
 				    //     downloadTask.abort();
 				    // }
 				});
+			 */
 			},
 			
 			openFile(){

@@ -2,8 +2,8 @@
     "name" : "房串串经纪人版",
     "appid" : "__UNI__C85840F",
     "description" : "",
-    "versionName" : "1.6.0",
-    "versionCode" : 160,
+    "versionName" : "1.7.0",
+    "versionCode" : 170,
     "transformPx" : false,
     "app-plus" : {
         "nvueCompiler" : "uni-app",
@@ -112,9 +112,9 @@
             "splashscreen" : {
                 "androidStyle" : "default",
                 "android" : {
-                    "hdpi" : "unpackage/res/drawable-hdpi/splash.9.png",
-                    "xhdpi" : "unpackage/res/drawable-xhdpi/splash.9.png",
-                    "xxhdpi" : "unpackage/res/drawable-xxhdpi/splash.9.png"
+                    "hdpi" : "unpackage/res/drawable-hdpi/splash2_720_720_9.9.png",
+                    "xhdpi" : "unpackage/res/drawable-xhdpi/splash2_720_720_9.9.png",
+                    "xxhdpi" : "unpackage/res/drawable-xxhdpi/splash2_720_720_9.9.png"
                 }
             }
         },

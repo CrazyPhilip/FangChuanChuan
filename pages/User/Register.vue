@@ -62,13 +62,21 @@
 			<u-verification-code seconds="60" ref="uCode" @change="codeChange"></u-verification-code>
 		</view>
 
-		<u-mask :show="model.maskShow" @click="model.maskShow = false">
+<!-- 		<u-mask :show="model.maskShow" @click="model.maskShow = false">
 			<view class="warp">
 				<view class="rect">
 					<u-swiper :list="model.sourceList" mode="number" height="1000" :autoplay="false"></u-swiper>
 				</view>
 			</view>
-		</u-mask>
+		</u-mask> -->
+		
+		<u-modal v-model="downloadModalShow" title="下载文档" :show-confirm-button="showConfirmButton" confirm-text="打开文档"
+		 :show-cancel-button="true" :mask-close-able="true" @confirm="openFile">
+			<view class="slot-content" style="display: flex;justify-content: center;margin: 40rpx;">
+				<u-line-progress active-color="#2979ff" :percent="percent"></u-line-progress>
+			</view>
+		</u-modal>
+		
 	</view>
 </template>
 
@@ -95,10 +103,6 @@
 					rePassword: '',
 					accountStyle: '',
 					inviteCode: '',
-
-					maskShow: false,
-					source: '',
-					sourceList: [],
 				},
 				rules: {
 					name: [{
@@ -252,6 +256,12 @@
 				districtListShow: false,
 				areaListShow: false,
 				accountStyleListShow: false,
+				
+				percent: 0,
+				downloadModalShow: false,
+				showConfirmButton: false,
+				filePath:'',
+				source: '',
 			};
 		},
 
@@ -301,12 +311,54 @@
 			},
 
 			toShow() {
+				this.downloadModalShow = true;
+				this.source = "https://www.fangchuanchuan.com/files/junjunhouse_service.pdf";
+				this.download(this.source);
+				/* 
 				this.model.maskShow = true;
 				this.model.sourceList = [];
 				for (var i = 1; i <= 10; i++) {
 					this.model.sourceList.push("http://www.junjunhouse.com/files/service/service_" + i + ".png");
+				} */
+			},
+			
+			download(url) {
+				const downloadTask = uni.downloadFile({
+				    url: url, //仅为示例，并非真实的资源
+				    success: (res) => {
+						console.log(res);
+				        if (res.statusCode === 200) {
+				            // console.log('下载成功');
+							this.showConfirmButton = true;
+							this.filePath = res.tempFilePath;
+				        }
+				    }
+				});
+				
+				downloadTask.onProgressUpdate((res) => {
+				    // console.log('下载进度' + res.progress);
+				    // console.log('已经下载的数据长度' + res.totalBytesWritten);
+				    // console.log('预期需要下载的数据总长度' + res.totalBytesExpectedToWrite);
+					this.percent = res.progress;
+				
+				    // 测试条件，取消下载任务。
+				    // if (res.progress > 50) {
+				    //     downloadTask.abort();
+				    // }
+				});
+			},
+			
+			openFile(){
+				if (this.filePath) {
+					uni.openDocument({
+					  filePath: this.filePath,
+					  success: function (res) {
+					    // console.log('打开文档成功');
+					  }
+					});
 				}
 			},
+			
 			//注册
 			register() {
 				this.$u.get(config.server + '/ApplyForRegister', {
