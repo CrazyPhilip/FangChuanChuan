@@ -222,6 +222,7 @@
 					CustMobile: this.scannedCustomer.CustMobile,
 					EmpTel: this.user.Tel
 				}).then((res) => {
+					console.log(res);
 					this.modalShow = false;
 					if (res.Flag === 'failed') {
 						this.$refs.uToast.show({

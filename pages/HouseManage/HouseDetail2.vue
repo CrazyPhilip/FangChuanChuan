@@ -105,6 +105,8 @@
 
 		<view class="section">
 			<view class="sectionTitle">房源特色</view>
+			<u-empty v-if="house.proDetail == ''" text="暂无房源特色" mode="list"></u-empty>
+			<u-parse :content="house.proDetail" noData=""/>
 		</view>
 
 		<view class="section">
@@ -112,17 +114,13 @@
 			<u-empty v-if="commentList.length <= 0" text="暂无评论" mode="list"></u-empty>
 			<view class="uni-list">
 				<view class="uni-list-cell" v-for="(item,index) in commentList" :key="index">
-					<view class="commentItem" v-on:click="ToHouseDetail(index)">
-						<u-row>
-							<u-col span="2">
-								<u-image :width="80" :height="80" border-radius="8" :src="item.photoUrl" error-icon="error-circle" mode="aspectFill"></u-image>
-							</u-col>
-
-							<u-col span="10">
-								<view class="commentPerson">{{item.commentPerson}}</view>
-								<view class="comment">{{item.content}}</view>
-							</u-col>
-						</u-row>
+					<view class="commentItem">
+						<u-image :width="80" :height="80" border-radius="8" :src="item.photoUrl" error-icon="error-circle" mode="aspectFill"></u-image>
+						<view style="margin-left: 20rpx;">
+							<view class="commentPerson">{{item.commentPerson}}</view>
+							<u-parse :content="item.content" noData=""/>
+							<!-- <view class="comment">{{item.content}}</view> -->
+						</view>
 					</view>
 				</view>
 			</view>
@@ -189,9 +187,13 @@
 </template>
 
 <script>
+	import uParse from '@/components/gaoyia-parse/parse.vue'  //引入组件
 	import config from '../../api/config.js';
 
 	export default {
+		components: {
+		    uParse  //注册组件
+		},
 		data() {
 			return {
 				pic: '/static/icon/avatar.png',

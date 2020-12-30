@@ -42,7 +42,10 @@
 								<view class="right">{{item.PriceMin}}~{{item.PriceMax}}{{item.UnitName}}</view>
 							</view>
 						</view>
-						<u-divider bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
+						<u-divider v-if="this.status1 === 'loading'" bg-color="rgb(240, 240, 240)">努力加载中</u-divider>
+						<u-divider v-if="this.status1 === 'nomore'" bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
+						<u-divider v-if="this.status1 === 'loadmore'" bg-color="rgb(240, 240, 240)">轻轻上拉</u-divider>
+						<!-- <u-divider bg-color="rgb(240, 240, 240)">没有更多了</u-divider> -->
 						<u-back-top :scroll-top="scrollTop"></u-back-top>
 					</scroll-view>
 				</swiper-item>
@@ -77,7 +80,10 @@
 								<view class="right">{{item.PriceMin}}~{{item.PriceMax}}{{item.UnitName}}</view>
 							</view>
 						</view>
-						<u-divider bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
+						<u-divider v-if="this.status2 === 'loading'" bg-color="rgb(240, 240, 240)">努力加载中</u-divider>
+						<u-divider v-if="this.status2 === 'nomore'" bg-color="rgb(240, 240, 240)">没有更多了</u-divider>
+						<u-divider v-if="this.status2 === 'loadmore'" bg-color="rgb(240, 240, 240)">轻轻上拉</u-divider>
+						<!-- <u-divider bg-color="rgb(240, 240, 240)">没有更多了</u-divider> -->
 						<u-back-top :scroll-top="scrollTop"></u-back-top>
 					</scroll-view>
 				</swiper-item>
@@ -240,21 +246,21 @@
 				
 				pageSize: 10,
 				iconType: 'flower',
-				pageNum1: 1,
+				pageNum1: 0,
 				status1: 'loadmore',
 				loadText1: {
 					loadmore: '轻轻上拉',
 					loading: '努力加载中',
 					nomore: '实在没有了'
 				},
-				pageNum2: 1,
+				pageNum2: 0,
 				status2: 'loadmore',
 				loadText2: {
 					loadmore: '轻轻上拉',
 					loading: '努力加载中',
 					nomore: '实在没有了'
 				},
-				pageNum3: 1,
+				pageNum3: 0,
 				status3: 'loadmore',
 				loadText3: {
 					loadmore: '轻轻上拉',
@@ -296,6 +302,22 @@
 		},
 		
 		methods: {
+			//刷新函数
+			refreshSaleCustomerList() //刷新出售房源列表
+			{
+				this.saleCustomerList.splice(0, this.saleCustomerList.length);
+				this.pageNum1 = 0;
+				this.status1 = 'loading';
+				this.GetSaleCustomerList();
+			},
+			
+			refreshRentCustomerList() {
+				this.rentCustomerList.splice(0, this.rentCustomerList.length);
+				this.pageNum2 = 0;
+				this.status2 = 'loading';
+				this.GetRentCustomerList();
+			},
+			
 			ToCustomerDetail: function(h) {
 				var obj = this.swiperCurrent === 0 ? this.saleCustomerList[h] : this.rentCustomerList[h];
 				uni.navigateTo({
@@ -387,8 +409,9 @@
 					Page: '',
 					EmpID: '',
 				}).then(res => {
-					//console.log(res.Result);
+					console.log(res.Result);
 					this.saleCustomerList = res.Result;
+					this.status1 = 'nomore';
 					uni.stopPullDownRefresh();
 				});
 			},
@@ -411,6 +434,7 @@
 				}).then(res => {
 					//console.log(res.Result);
 					this.rentCustomerList = res.Result;
+					this.status2 = 'nomore';
 					uni.stopPullDownRefresh();
 				});
 			},

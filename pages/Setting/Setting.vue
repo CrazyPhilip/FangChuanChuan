@@ -85,7 +85,7 @@
 			// 跳转到隐私页面
 			toPrivacy() {
 				uni.navigateTo({
-					url: './Privacy'
+					url: './PrivacyAndRegulation'
 				});
 			},
 			

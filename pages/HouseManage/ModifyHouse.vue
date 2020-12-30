@@ -4,11 +4,11 @@
 			<u-navbar is-back="true" title="修改房源"></u-navbar>
 			<!--必填信息-->
 			<u-form :model="model" :rules="rules" ref="uForm0" :errorType="['message']">
-				<!-- <u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
+				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
 				 label="上传图片" prop="photo" label-width="200">
 					<u-upload width="160" height="160" ref="uUpload" :action="action" :form-data="formData" :auto-upload="false"
 					 max-count="8" @on-uploaded="avatarUploaded" :file-list="model.fileList"></u-upload>
-				</u-form-item> -->
+				</u-form-item>
 
 				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="map-fill" :label-position="labelPosition"
 				 label="小区" prop="district" label-width="300">
@@ -734,12 +734,12 @@
 		onReady() {
 			this.$refs.uForm0.setRules(this.rules);
 			this.$refs.uForm1.setRules(this.rules);
-			/* this.action = config.server + '/UpLoadPicture';
+			this.action = config.server + '/UpLoadPicture';
 			this.formData = {
 				DBName: this.user.DBName,
 				PropertyID: '',
 				RegPerson:this.user.EmpName
-			}; */
+			};
 			//this.getPhotos();
 		},
 
@@ -1026,8 +1026,8 @@
 				}).then(res => {
 					console.log(res);
 					if (res.Flag === 'success' || res.Flag === 'SQLSuccess') {
-						//this.formData.PropertyID = this.propertyID;
-						//this.$refs.uUpload.upload();
+						this.formData.PropertyID = this.propertyID;
+						this.$refs.uUpload.upload();
 						if (this.model.shareToOutside === true) {
 							this.ToExtranet();
 						} else {

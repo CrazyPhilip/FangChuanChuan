@@ -313,9 +313,16 @@
 			}
 		},
 		{
-			"path": "pages/Setting/Privacy",
+			"path": "pages/Setting/PrivacyAndRegulation",
 			"style": {
 				"navigationBarTitleText": "用户隐私与规则中心",
+				"navigationStyle": "custom" // 隐藏系统导航栏
+			}
+		},
+		{
+			"path": "pages/Setting/Privacy",
+			"style": {
+				"navigationBarTitleText": "隐私设置",
 				"navigationStyle": "custom" // 隐藏系统导航栏
 			}
 		},

@@ -24,8 +24,11 @@
 						<u-tag v-if="house.FlagKDK === '1'" text="可贷款" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
 						<u-tag v-if="house.FlagXSFY === '1'" text="新上房源" bg-color="#ff0000" mode="dark" shape="circle"></u-tag>
 						<!-- <u-tag text="随时看房" mode="dark" shape="circle"></u-tag> -->
-						<view class="title">{{house.Title}}</view>
-
+						<u-row justify="center">
+							<u-col span="10"><view class="title">{{house.Title}}</view></u-col>
+							<u-col span="2"><u-tag :text="house.Status" :bg-color="house.Status === '有效'?'#00aa00':'#ff0000'" mode="dark" shape="square"></u-tag></u-col>
+						</u-row>
+						
 						<view @click="ToWarning">
 							<u-icon name="question-circle-fill" size="30"></u-icon>
 							<text class="tips">风险提示</text>
@@ -66,31 +69,44 @@
 					<view class="section">
 						<view class="sectionTitle">基本信息</view>
 						<u-row justify="center">
-							<u-col span="6">单价：{{house.SinglePrice}}万元</u-col>
+							<u-col span="12">房源ID：{{house.PropertyID}}</u-col>
+						</u-row>
+						<u-row justify="center">
+							<u-col span="6">单价：{{(house.Price/house.Square).toFixed(2)}}万元/㎡</u-col>
+							<u-col span="6">楼栋：{{house.BuildNo}}</u-col>
+						</u-row>
+						<u-row justify="center">
 							<u-col span="6">楼层：{{house.Floor}}/{{house.FloorAll}}</u-col>
+							<u-col span="6">房号：{{house.RoomNo}}</u-col>
 						</u-row>
 						<u-row justify="center">
 							<u-col span="6">朝向：{{house.PropertyDirection}}</u-col>
-							<u-col span="6">结构：{{house.PropertyType}}</u-col>
+							<u-col span="6">结构：{{house.PropertyType?house.PropertyType:'无'}}</u-col>
 						</u-row>
 						<u-row justify="center">
-							<u-col span="6">装修：{{house.PropertyDecoration}}</u-col>
+							<u-col span="6">装修：{{house.PropertyDecoration?house.PropertyDecoration:'无'}}</u-col>
 							<u-col span="6">挂牌：01</u-col>
 						</u-row>
 						<u-row justify="center">
-							<u-col span="6">产权：{{house.PropertyRight}}</u-col>
+							<u-col span="6">产权：{{house.PropertyRight?house.PropertyRight:'无'}}</u-col>
 							<u-col span="6">用途：{{house.PropertyUsage}}</u-col>
 						</u-row>
 						<u-row justify="center">
-							<u-col span="12">小区：{{house.EstateName}}</u-col>
+							<u-col span="6">街道：{{house.CityName}} {{house.DistrictName}} {{house.AreaName}}</u-col>
+							<u-col span="6">小区：{{house.EstateName}}</u-col>
 						</u-row>
 					</view>
 
 					<view class="section">
 						<view class="sectionTitle">交易属性</view>
 						<u-row justify="center">
-							<u-col span="6">委托时间：</u-col>
-							<u-col span="6">刷新时间：</u-col>
+							<u-col span="12">委托时间：{{house.TrustDate}}</u-col>
+						</u-row>
+						<u-row justify="center">
+							<u-col span="12">刷新时间：{{house.TrustDate}}</u-col>
+						</u-row>
+						<u-row justify="center">
+							<u-col span="12">挂牌时间：{{house.HangDate}}</u-col>
 						</u-row>
 						<u-row justify="center">
 							<u-col span="6">属性：</u-col>
@@ -99,6 +115,14 @@
 						<u-row justify="center">
 							<u-col span="6">产权所属：</u-col>
 							<u-col span="6">抵押状态：</u-col>
+						</u-row>
+					</view>
+					
+					<view class="section">
+						<view class="sectionTitle">业主信息</view>
+						<u-row justify="center">
+							<u-col span="6">姓名：{{house.ownername}}</u-col>
+							<u-col span="6">电话：{{house.ownermobile}}</u-col>
 						</u-row>
 					</view>
 
@@ -328,16 +352,18 @@
 			}
 		},
 
-		onLoad: function(params) {
+		onLoad(params) {
 			const eventChannel = this.getOpenerEventChannel();
 			eventChannel.on('acceptDataFromHouseList', (data) => {
+				console.log(data);
 				this.house = data;
+				this.getPhotos();
+				this.CheckIfCollected();  //放在onReady中确保执行顺序
 			});
 		},
 
 		onReady() {
-			this.getPhotos();
-			this.CheckIfCollected();  //放在onReady中确保执行顺序
+			
 			//this.getCommentList();
 			//this.getRecommendedList();
 			//this.getHouseFollowInfo();
@@ -456,15 +482,14 @@
 
 			callActionSheetClick(index) {
 				if (index === 0) {
-					if (this.house.CustMobile !== null || this.house.CustMobile !== undefined || this.house.CustMobile !==
-						'') {
+					if (this.house.ownermobile) {
+						uni.makePhoneCall({
+							phoneNumber: this.house.ownermobile,
+						});
+					} else {
 						this.$refs.uToast.show({
 							title: '号码为空',
 							type: 'error'
-						});
-					} else {
-						uni.makePhoneCall({
-							phoneNumber: this.house.CustMobile,
 						});
 					}
 				}
@@ -487,6 +512,7 @@
 					DBName: this.user.DBName,
 					PropertyID: this.house.PropertyID
 				}).then(res => {
+					console.log(res);
 					if (res.Flag === 'success') {
 						this.photoList = res.Result;
 					} else {

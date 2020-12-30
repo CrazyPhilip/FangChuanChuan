@@ -353,7 +353,6 @@
 					}
 				],
 
-
 				saleHouseList: [],
 				rentHouseList: [],
 				grabedHouseList: [],
@@ -539,7 +538,7 @@
 					EmpID: this.user.EmpID,
 				}).then(res => {
 					let houseList = res.Result;
-					console.log(houseList.length);
+					console.log(houseList);
 					for (var i = 0; i < houseList.length; i++) {
 						//手动处理后台返回的带有大段空白符的字串
 						houseList[i].FlagMWWY = houseList[i].FlagMWWY === null ? 0 : houseList[i].FlagMWWY.trim();

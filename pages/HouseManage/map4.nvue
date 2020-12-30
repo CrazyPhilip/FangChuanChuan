@@ -304,8 +304,8 @@
 					for (let i = 0; i < arr.length; i++) {
 						let arr3 = arr[i].split(",");
 						arr2.push({
-							lng: parseFloat(arr3[0]),
-							lat: parseFloat(arr3[1])
+							lng: parseFloat(arr3[0]) - 0.0065,
+							lat: parseFloat(arr3[1]) - 0.006
 						});
 					}
 				}
@@ -375,8 +375,8 @@
 				url: config.outerServer + '/map/getCityV2?cityPinyin=chengdu',
 				success: (res) => {
 					const data = res.data;
-					this.center.lng = data.lng;
-					this.center.lat = data.lat;
+					this.center.lng = data.lng - 0.0065;
+					this.center.lat = data.lat - 0.006;
 					//this.$set(this.center, "lng", data.lng);
 					//this.$set(this.center, "lat", data.lat);
 				}
@@ -448,8 +448,8 @@
 						for (var i = 0; i < this.districts.length; i++) {
 							b[i] = {
 								id: this.districts[i].areaId,
-								latitude: this.districts[i].lat,
-								longitude: this.districts[i].lng,
+								latitude: this.districts[i].lat - 0.006,
+								longitude: this.districts[i].lng - 0.0065,
 								iconPath: '/static/icon/blue_bubble.png',
 								height: 20,
 								width: 20,
@@ -592,15 +592,15 @@
 				if (this.scale < 12) {
 					for (var i = 0; i < this.districts.length; i++) {
 						if (this.districts[i].areaId === e.detail.markerId) {
-							this.center.lng = this.districts[i].lng;
-							this.center.lat = this.districts[i].lat;
+							this.center.lng = this.districts[i].lng - 0.0065;
+							this.center.lat = this.districts[i].lat - 0.006;
 							//this.zoom = 10;
 							var ps = this.districts[i].border.split(';');
 							for (var j = 0; j < ps.length; j++) {
 								var p = ps[j].split(',');
 								points.push({
-									longitude: parseFloat(p[0]),
-									latitude: parseFloat(p[1])
+									longitude: parseFloat(p[0]) - 0.0065,
+									latitude: parseFloat(p[1]) - 0.006
 								});
 							}
 
@@ -667,11 +667,78 @@
 							console.log(res.data);
 							this.estates = res.data.data;
 							var b = [];
-							for (var i = 0; i < this.estates.length; i++) {
+							if (this.value0 === 0) {
+								// 二手房
+								for (var i = 0; i < this.estates.length; i++) {
+									if (this.estates[i].houseCnt > 0){
+										b.push({
+											id: this.estates[i].estateId,
+											latitude: this.estates[i].lat - 0.0060,
+											longitude: this.estates[i].lng - 0.0065,
+											iconPath: '/static/icon/blue_bubble.png',
+											height: 20,
+											width: 20,
+											callout: {
+												content: this.estates[i].estateName + ' ' + this.estates[i].houseCnt + '套 ' + this.estates[i].salePrice +
+													'万',
+												color: '#FFFFFF',
+												bgColor: '#2979ff',
+												display: 'ALWAYS',
+												borderRadius: 8,
+												padding: 8
+											},
+											level: 'estate',
+											/* label:{
+												content:this.estates[i].districtName + ' ' + this.estates[i].houseCnt + '套',
+												color:'#000000',
+												bgColor: '#FFFFFF',
+												textAlign: 'center',
+												x: '10',
+												y: '10',
+											} */
+										})
+									}
+								};
+							} else {
+								// 租房
+								for (var i = 0; i < this.estates.length; i++) {
+									if (this.estates[i].rentCnt > 0){
+										b.push({
+											id: this.estates[i].estateId,
+											latitude: this.estates[i].lat - 0.0060,
+											longitude: this.estates[i].lng - 0.0065,
+											iconPath: '/static/icon/blue_bubble.png',
+											height: 20,
+											width: 20,
+											callout: {
+												content: this.estates[i].estateName + ' ' + this.estates[i].rentCnt + '套 ' + this.estates[i].salePrice +
+													'万',
+												color: '#FFFFFF',
+												bgColor: '#2979ff',
+												display: 'ALWAYS',
+												borderRadius: 8,
+												padding: 8
+											},
+											level: 'estate',
+											/* label:{
+												content:this.estates[i].districtName + ' ' + this.estates[i].houseCnt + '套',
+												color:'#000000',
+												bgColor: '#FFFFFF',
+												textAlign: 'center',
+												x: '10',
+												y: '10',
+											} */
+										})
+									}
+								};
+								
+							}
+							
+							/* for (var i = 0; i < this.estates.length; i++) {
 								b[i] = {
 									id: this.estates[i].estateId,
-									latitude: this.estates[i].lat,
-									longitude: this.estates[i].lng,
+									latitude: this.estates[i].lat - 0.006,
+									longitude: this.estates[i].lng - 0.0065,
 									iconPath: '/static/icon/blue_bubble.png',
 									height: 20,
 									width: 20,
@@ -685,31 +752,23 @@
 										padding: 8
 									},
 									level: 'estate',
-									/* label:{
-										content:this.estates[i].districtName + ' ' + this.estates[i].houseCnt + '套',
-										color:'#000000',
-										bgColor: '#FFFFFF',
-										textAlign: 'center',
-										x: '10',
-										y: '10',
-									} */
 								};
-							};
+							}; */
 							this.bubbles = b;
 						}
 					});
 
 					for (var i = 0; i < this.zones.length; i++) {
 						if (this.zones[i].areaId === e.detail.markerId) {
-							this.center.lng = this.zones[i].lng;
-							this.center.lat = this.zones[i].lat;
+							this.center.lng = this.zones[i].lng - 0.0065;
+							this.center.lat = this.zones[i].lat - 0.006;
 							this.zoom = 15;
 							var ps = this.zones[i].border.split(';');
 							for (var j = 0; j < ps.length; j++) {
 								var p = ps[j].split(',');
 								points.push({
-									longitude: parseFloat(p[0]),
-									latitude: parseFloat(p[1])
+									longitude: parseFloat(p[0]) - 0.0065,
+									latitude: parseFloat(p[1]) - 0.006
 								});
 							}
 
@@ -758,8 +817,8 @@
 							for (var i = 0; i < this.districts.length; i++) {
 								b[i] = {
 									id: this.districts[i].areaId,
-									latitude: this.districts[i].lat,
-									longitude: this.districts[i].lng,
+									latitude: this.districts[i].lat - 0.006,
+									longitude: this.districts[i].lng - 0.0065,
 									iconPath: '/static/icon/blue_bubble.png',
 									height: 20,
 									width: 20,
@@ -790,8 +849,8 @@
 							for (var i = 0; i < this.zones.length; i++) {
 								b[i] = {
 									id: this.zones[i].areaId,
-									latitude: this.zones[i].lat,
-									longitude: this.zones[i].lng,
+									latitude: this.zones[i].lat - 0.006,
+									longitude: this.zones[i].lng - 0.0065,
 									iconPath: '/static/icon/blue_bubble.png',
 									height: 20,
 									width: 20,

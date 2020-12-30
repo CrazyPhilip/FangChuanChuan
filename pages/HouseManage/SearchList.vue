@@ -321,8 +321,9 @@
 		},
 
 		onLoad: function(params) {
-			this.searchContent = decodeURIComponent(params.keyword);
-			
+			if(params.keyword){
+				this.searchContent = decodeURIComponent(params.keyword);
+			}
 			this.getAreaList();
 			this.GetHouseList();
 		},
@@ -340,6 +341,7 @@
 		methods: {
 			typeChange(e) {
 				this.typeValue = e.detail.value;
+				this.houseList.splice(0, this.houseList.length);
 				this.GetHouseList();
 			},
 			

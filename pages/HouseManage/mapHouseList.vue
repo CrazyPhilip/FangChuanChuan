@@ -299,7 +299,7 @@
 		padding: 8px;
 
 		.BiKan {
-			font-size: xx-small;
+			font-size: small;
 			padding: 2rpx;
 			background-color: #FA3534;
 			border-radius: 10rpx;
@@ -324,7 +324,7 @@
 		.HouseTag {
 			max-lines: 1;
 			font-weight: lighter;
-			font-size: xx-small;
+			font-size: small;
 			background-color: #A0CFFF;
 			border-radius: 10rpx;
 			color: white;
