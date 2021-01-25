@@ -407,7 +407,7 @@
 					Contact: '',
 					SearchContent: '',
 					Page: '',
-					EmpID: '',
+					EmpID: this.user.EmpID,
 				}).then(res => {
 					console.log(res.Result);
 					this.saleCustomerList = res.Result;
@@ -430,7 +430,7 @@
 					Contact: '',
 					SearchContent: '',
 					Page: '',
-					EmpID: '',
+					EmpID: this.user.EmpID,
 				}).then(res => {
 					//console.log(res.Result);
 					this.rentCustomerList = res.Result;

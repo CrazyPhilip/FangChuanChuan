@@ -3,7 +3,7 @@
 		<view class="wrap">
 			<u-navbar is-back="true" title="搜索小区"></u-navbar>
 			<u-search placeholder="请输入小区名" v-model="keyword" shape="round" :clearabled="true" :show-action="true" :animation="true"
-			 :focus="true" @custom="searchEstate" @search="searchEstate"></u-search>
+			 :focus="true" @custom="searchEstate" @search="searchEstate" @change="searchEstate"></u-search>
 
 			<view v-for="(item,index) in list">
 				<view class="cell" v-on:click="select(index)">

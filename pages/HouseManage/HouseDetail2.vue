@@ -179,7 +179,7 @@
 		<u-toast ref="uToast" />
 
 		<u-mask class="mask" :show="maskShow" @click="maskShow = false">
-			<u-swiper class="rect" :list="photoList" mode="number" height="1000" img-mode="aspectFit" bg-color="#00000000" :autoplay="false"></u-swiper>
+			<u-swiper class="rect" :list="photoList" :current="photoSwiperCurrent" mode="number" height="1000" img-mode="aspectFit" bg-color="#00000000" :autoplay="false"></u-swiper>
 			<!-- <u-image :src="imageSrc" mode="aspectFit" height="1000rpx" width="750rpx"></u-image> -->
 			<u-icon name="close-circle-fill" color="#c8c9cc" size="80"></u-icon>
 		</u-mask>
@@ -196,6 +196,7 @@
 		},
 		data() {
 			return {
+				photoSwiperCurrent: 0,
 				pic: '/static/icon/avatar.png',
 				cityPinYin: '',
 				proId: '',
@@ -248,7 +249,8 @@
 			},
 
 			imageClicked(index) {
-				this.imageSrc = this.photoList[index];
+				this.photoSwiperCurrent = index;
+				//this.imageSrc = this.photoList[index];
 				this.maskShow = true;
 			},
 

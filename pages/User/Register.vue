@@ -40,8 +40,8 @@
 				 :label-position="labelPosition" label="姓名" prop="name">
 					<u-input :border="border" placeholder="请输入姓名" v-model="model.name" type="text"></u-input>
 				</u-form-item>
-				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="chat" label-width="170" :label-position="labelPosition"
-				 label="邀请码" prop="inviteCode">
+				<u-form-item :leftIconStyle="{color: '#888', fontSize: '32rpx'}" left-icon="chat" label-width="170" 
+				:label-position="labelPosition" label="邀请码" prop="inviteCode">
 					<u-input :border="border" placeholder="请输入邀请码(选填)" v-model="model.inviteCode" type="text"></u-input>
 				</u-form-item>
 			</u-form>
@@ -370,7 +370,7 @@
 					AccountStyle: this.model.accountStyle === '独立经纪人' ? '1' : '2',
 					InviteCode: this.model.inviteCode
 				}).then(res => {
-					// console.log(res);
+					console.log(res);
 					this.$u.toast(res.Msg);
 					if (res.Flag === 'success') {
 						

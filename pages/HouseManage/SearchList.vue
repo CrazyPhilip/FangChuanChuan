@@ -1,5 +1,5 @@
 <template>
-	<view class="">
+	<view>
 		<u-navbar is-back="true" title="">
 			<view style="border-width: 2rpx;border-color: #007AFF;border-radius: 8rpx;padding: 10rpx;background-color: #007AFF;">
 				<picker @change="typeChange" :value="typeValue" :range="typeList">
@@ -14,16 +14,33 @@
 		<view>
 			<u-dropdown ref="uDropdown" activeColor="#2979ff">
 				<!-- <u-dropdown-item @change="change1" v-model="value1" :options="areaList"></u-dropdown-item> -->
-				<u-dropdown-item :title="areaList[areaSelected].areName">
-					<view class="slot-content" style="background-color: #FFFFFF;">
+				<u-dropdown-item :title="subAreaList[subAreaSelected].areName">
+					<view class="slot-content" style="background-color: #FFFFFF;height: 500rpx;margin-top: 60rpx;" @touchmove.stop.prevent="clear">
+						<u-row>
+							<u-col span="6">
+								<scroll-view scroll-y="true" style="height: 500rpx;">
+									<view class="u-text-center u-content-color u-m-t-30 u-m-b-30" v-for="(item, index) in areaList" @click="changeArea(index)">{{item.areName}}</view>
+								</scroll-view>
+							</u-col>
+							<u-col span="6">
+								<scroll-view scroll-y="true" style="height: 500rpx;">
+									<view class="u-text-center u-content-color u-m-t-30 u-m-b-30" v-for="(item, index) in subAreaList" @click="changeSubArea(index)">{{item.areName}}</view>
+								</scroll-view>
+							</u-col>
+						</u-row>
+					</view>
+					<!-- <view class="slot-content" style="background-color: #FFFFFF;">
 						<scroll-view scroll-y="true" style="height: 500rpx;">
 							<view class="u-text-center u-content-color u-m-t-30 u-m-b-30" v-for="(item, index) in areaList" @click="change1(index)">{{item.areName}}</view>
 						</scroll-view>
-					</view>
+					</view> -->
 				</u-dropdown-item>
-				<u-dropdown-item @change="change2" v-model="fangxingSelected" :title="fangxingList[fangxingSelected].label" :options="fangxingList"></u-dropdown-item>
-				<u-dropdown-item v-if="typeValue === 0" @change="change3" v-model="salePriceSelected" :title="salePriceList[salePriceSelected].label" :options="salePriceList"></u-dropdown-item>
-				<u-dropdown-item v-if="typeValue === 1" @change="change3" v-model="rentPriceSelected" :title="rentPriceList[rentPriceSelected].label" :options="rentPriceList"></u-dropdown-item>
+				<u-dropdown-item @change="change2" v-model="fangxingSelected" :title="fangxingList[fangxingSelected].label"
+				 :options="fangxingList"></u-dropdown-item>
+				<u-dropdown-item v-if="typeValue === 0" @change="change3" v-model="salePriceSelected" :title="salePriceList[salePriceSelected].label"
+				 :options="salePriceList"></u-dropdown-item>
+				<u-dropdown-item v-if="typeValue === 1" @change="change3" v-model="rentPriceSelected" :title="rentPriceList[rentPriceSelected].label"
+				 :options="rentPriceList"></u-dropdown-item>
 				<u-dropdown-item @change="change4" v-model="squareSelected" :title="squareList[squareSelected].label" :options="squareList"></u-dropdown-item>
 			</u-dropdown>
 
@@ -51,7 +68,7 @@
 					<u-image width="250" height="200" border-radius="8" :src="item.proCoverUrl" error-icon="/static/icon/NullPic.png"
 					 mode="aspectFill">
 						<u-loading slot="loading"></u-loading>
-					 </u-image>
+					</u-image>
 				</view>
 
 				<view class="right">
@@ -94,20 +111,28 @@
 				scrollTop: 0,
 				current: 0,
 				show: false,
+				
 				areaSelected: 0,
+				subAreaSelected: 0,
 				fangxingSelected: 0,
 				salePriceSelected: 0,
 				rentPriceSelected: 0,
 				squareSelected: 0,
 				areaList: [{
-					areId:-1,
-					areaLevel:1,
-					areName:"全部区域"
+					areId: -1,
+					areaLevel: 1,
+					areName: "全部区域"
 				}],
-				
+
+				subAreaList: [{
+					areId: -1,
+					areaLevel: 1,
+					areName: "全部区域"
+				}],
+
 				typeValue: 0,
 				typeList: ['二手房', '租房'],
-				
+
 				fangxingList: [{
 						label: '全部房型',
 						value: 0,
@@ -151,7 +176,7 @@
 						minValue: 6
 					},
 				],
-				
+
 				salePriceList: [{
 						label: '全部价格',
 						value: 0,
@@ -251,7 +276,7 @@
 						minValue: 8000
 					},
 				],
-				
+
 				squareList: [{
 						label: '全部面积',
 						value: 0,
@@ -315,20 +340,20 @@
 					loading: '努力加载中',
 					nomore: '实在没有了'
 				},
-				
-				searchContent:''
+
+				searchContent: ''
 			}
 		},
 
 		onLoad: function(params) {
-			if(params.keyword){
+			if (params.keyword) {
 				this.searchContent = decodeURIComponent(params.keyword);
 			}
 			this.getAreaList();
 			this.GetHouseList();
 		},
 
- 		onReachBottom() {
+		onReachBottom() {
 			this.status = 'loading';
 			this.pageNum = ++this.pageNum;
 			this.GetHouseList();
@@ -344,12 +369,12 @@
 				this.houseList.splice(0, this.houseList.length);
 				this.GetHouseList();
 			},
-			
-			toSearch(){
+
+			toSearch() {
 				this.houseList.splice(0, this.houseList.length);
 				this.GetHouseList();
 			},
-			
+
 			ToHouseDetail(index) {
 				uni.navigateTo({
 					url: 'HouseDetail2?proId=' + this.houseList[index].proId + "&cityPinYin=" + "chengdu"
@@ -370,34 +395,49 @@
 			cancel(e) {
 				console.log(e);
 			},
-			
+
 			// 筛选区域
-			change1(e) {
+			changeArea(e) {
 				this.areaSelected = e;
+				this.subAreaSelected = 0;
+				this.subAreaList.splice(0, this.subAreaList.length);
+				if (e > 0){
+					this.getSubAreaList(this.areaList[e].areId);
+				} else {
+					this.subAreaList.push({
+						areId: -1,
+						areaLevel: 1,
+						areName: "全部区域"
+					});
+				}
+			},
+
+			changeSubArea(e) {
+				this.subAreaSelected = e;
 				this.$refs.uDropdown.close();
 				this.houseList.splice(0, this.houseList.length);
 				this.GetHouseList();
 			},
-			
+
 			// 筛选房型
 			change2(e) {
 				this.fangxingSelected = e;
 				this.houseList.splice(0, this.houseList.length);
 				this.GetHouseList();
 			},
-			
+
 			// 筛选价格
 			change3(e) {
-				if (this.typeValue === 0){
+				if (this.typeValue === 0) {
 					this.salePriceSelected = e;
 				} else {
 					this.rentPriceSelected = e;
 				}
-				
+
 				this.houseList.splice(0, this.houseList.length);
 				this.GetHouseList();
 			},
-			
+
 			// 筛选面积
 			change4(e) {
 				this.squareSelected = e;
@@ -407,7 +447,7 @@
 
 			GetHouseList() {
 				let searchParam = {};
-				
+
 				if (this.typeValue === 0) {
 					searchParam.saleRanges = [{
 						maxValue: 100000000,
@@ -419,26 +459,26 @@
 						minValue: 1
 					}];
 				}
-				
+
 				// 关键词
-				if (this.searchContent){
+				if (this.searchContent) {
 					searchParam.keyWords = this.searchContent;
 				}
-				
+
 				// 区域id
-				if (this.areaSelected > 0){
-					searchParam.areaId = this.areaList[this.areaSelected].areId;
-					searchParam.areaLevel = this.areaList[this.areaSelected].areLevel;
+				if (this.areaSelected > 0) {
+					searchParam.areaId = this.subAreaList[this.subAreaSelected].areId;
+					searchParam.areaLevel = this.subAreaList[this.subAreaSelected].areLevel;
 				}
-				
+
 				// 房型
-				if (this.fangxingSelected > 0){
+				if (this.fangxingSelected > 0) {
 					searchParam.countFRanges = [{
 						maxValue: this.fangxingList[this.fangxingSelected].maxValue,
 						minValue: this.fangxingList[this.fangxingSelected].minValue
 					}]
 				}
-				
+
 				// 价格
 				if (this.typeValue === 0) {
 					searchParam.saleRanges = [{
@@ -451,29 +491,31 @@
 						minValue: this.rentPriceList[this.rentPriceSelected].minValue
 					}];
 				}
-				
+
 				// 面积
-				if (this.squareSelected > 0){
+				if (this.squareSelected > 0) {
 					searchParam.houseAreaRanges = [{
 						maxValue: this.squareList[this.squareSelected].maxValue,
 						minValue: this.squareList[this.squareSelected].minValue
 					}]
 				}
 				
+				console.log(searchParam);
+
 				uni.request({
 					url: config.outerServer + '/property/search?cityPinYin=chengdu&pageNum=' + this.pageNum +
 						'&pageSize=' + this.pageSize,
 					method: 'post',
 					data: searchParam,
 					success: (res) => {
-						// console.log(res);
-						if (res.data.data){
+						console.log(res);
+						if (res.data.data) {
 							let data = res.data.data;
-							
+
 							for (var i = 0; i < data.list.length; i++) {
 								this.houseList.push(data.list[i]);
 							}
-							
+
 							if (data.list.length === 0) {
 								this.status = 'nomore';
 							} else {
@@ -580,14 +622,58 @@
 							if (!data.data) return;
 							for (var i = 0; i < data.data.length; i++) {
 								this.areaList.push({
-									areId:data.data[i].areId,
-									areLevel:data.data[i].areLevel,
+									areId: data.data[i].areId,
+									areLevel: data.data[i].areLevel,
 									areName: data.data[i].areName
 								});
 							}
 						}
 					}
 				})
+			},
+
+
+			getSubAreaList(pAreaId) {
+				uni.request({
+					url: config.outerServer + '/area/getAreaByPId',
+					data: {
+						cityPinYin: this.city.cityPinYin,
+						pAreaId: pAreaId
+					},
+					success: (res) => {
+						console.log(res.data.code);
+						/* console.log(res);
+						let data = res.data;
+						if (res.code == 200) {
+							if (!data) return;
+							console.log(data);
+							for (var i = 0; i < res.data.length; i++) {
+								this.areaList.push({
+									value: i + 1,
+									label: res.data[i].areName
+								});
+							}
+							console.log(this.areaList);
+						} */
+						let data = res.data;
+						if (data.code == 200) {
+							if (!data.data) return;
+							this.subAreaList.push(this.areaList[this.areaSelected]);
+							for (var i = 0; i < data.data.length; i++) {
+								this.subAreaList.push({
+									areId: data.data[i].areId,
+									areLevel: data.data[i].areLevel,
+									areName: data.data[i].areName
+								});
+							}
+							console.log(this.subAreaList);
+						}
+					}
+				})
+			},
+
+			clear(){
+				return
 			}
 		},
 
@@ -609,7 +695,7 @@
 		margin: 0 20rpx;
 		flex: 1;
 	}
-	
+
 	.uni-list-cell {
 		display: flex;
 		justify-content: flex-start;
